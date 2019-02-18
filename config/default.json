@@ -5,5 +5,11 @@
     "database": "blog_codeto",
     "user": "root",
     "password": "ford12345"
+  },
+  "App": {
+    "api": {
+      "show_error_messages": true,
+      "default_error_message": "There was an error processing this message"
+    }
   }
 }
