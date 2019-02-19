@@ -6,7 +6,7 @@ var conn = db.getConnection();
 //Select all record in post
 function getAllPosts() {
   var defer = q.defer();
-  var query = conn.query("SELECT * FROM posts", function(err, posts) {
+  var query = conn.query("SELECT * FROM user", function(err, posts) {
     if (err) {
       defer.reject(err);
     } else {
