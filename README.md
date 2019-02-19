@@ -1,2 +1,2 @@
 # Capstone2_Backend
-Change host and port in default.json
+Change host, port and username and password in default.json
