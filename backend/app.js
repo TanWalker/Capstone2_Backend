@@ -24,4 +24,6 @@ app.use((req, res, next) => {
 // use this url to call routes/example.js
 app.use('/api/posts', exampleRoutes);
 
+app.use(userRoutes);
+
 module.exports = app;
