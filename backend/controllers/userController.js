@@ -7,21 +7,65 @@ const jwt = require('jsonwebtoken');
 
 // signup
 exports.Signup = (req, res, next) => {
-  var user = req.body;
-  bcrypt.hash(user.password, 10).then(function(hash) {
-    const users = {
-      username: user.username,
-      email: user.email,
-      password: hash,
-      first_name: user.firstname,
-      last_name: user.lastname,
-      dob: user.dateofbirth,
-      phone_num: user.phone_num
-    };
-    user.save().then(re);
-  });
-
-  var result = user_md.addUser(users);
+  var params = req.body;
+  var data = user_md.getUserByUsername(params.username);
+  if (
+    params.username.trim().length == 0 ||
+    params.email.trim().length == 0 ||
+    params.password.trim().length == 0 ||
+    params.lastname.trim().length == 0
+  ) {
+    return res
+      .status(401)
+      .json(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.MISSING_INFORMATION
+        )
+      );
+  } else if (data) {
+    return res
+      .status(401)
+      .json(
+        new ReturnResult('Error', null, null, Constants.messages.EXISTING_USER)
+      );
+  } else {
+    bcrypt.hash(params.password, 10).then(function(password) {
+      const users = {
+        username: params.username,
+        email: params.email,
+        password: password,
+        first_name: params.firstname,
+        last_name: params.lastname,
+        dob: params.dateofbirth,
+        phone_num: params.phone_num
+      };
+      var result = user_md.addUser(users);
+      result
+        .then(function(user) {
+          var result = {
+            user: user
+          };
+          res
+            .status(200)
+            .json(new ReturnResult(null, user, 'User Created', null));
+        })
+        .catch(function(err) {
+          res
+            .status(500)
+            .json(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.USER_NOT_FOUND
+              )
+            );
+        });
+    });
+  }
 };
 
 // Signin
