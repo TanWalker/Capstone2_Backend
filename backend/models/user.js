@@ -1,13 +1,13 @@
-var db = require("../common/database");
-var q = require("q");
+var db = require('../common/database');
+var q = require('q');
 
 var conn = db.getConnection();
 
-//add user to db
+// add user to db
 function addUser(user) {
   if (user) {
     var defer = q.defer();
-    var query = conn.query("INSERT INTO user SET ?", user, function(
+    var query = conn.query('INSERT INTO user SET ?', user, function(
       err,
       results
     ) {
@@ -22,29 +22,30 @@ function addUser(user) {
   return false;
 }
 
-//get user by email
-function getUserByEmail(email){
-  if(email){
+// get user by email
+function getUserByEmail(email) {
+  if (email) {
     var defer = q.defer();
-    var query = conn.query("SELECT * FROM user WHERE ?", {email:email}, function(
-      err,
-      results
-    ) {
-      if (err) {
-        defer.reject(err);
-      } else {
-        defer.resolve(results);
+    var query = conn.query(
+      'SELECT * FROM user WHERE ?',
+      { email: email },
+      function(err, results) {
+        if (err) {
+          defer.reject(err);
+        } else {
+          defer.resolve(results);
+        }
       }
-    });
+    );
     return defer.promise;
   }
   return false;
 }
 
-//Select all users
-function getAllUsers(){
+// Select all users
+function getAllUsers() {
   var defer = q.defer();
-  var query = conn.query("SELECT * FROM user", function(err, users) {
+  var query = conn.query('SELECT * FROM user', function(err, users) {
     if (err) {
       defer.reject(err);
     } else {
@@ -54,9 +55,29 @@ function getAllUsers(){
   return defer.promise;
 }
 
+// get user by username
+function getUserByUsername(username) {
+  if (email) {
+    var defer = q.defer();
+    var query = conn.query(
+      'SELECT * FROM user WHERE ?',
+      { username: username },
+      function(err, results) {
+        if (err) {
+          defer.reject(err);
+        } else {
+          defer.resolve(results);
+        }
+      }
+    );
+    return defer.promise;
+  }
+  return false;
+}
 
-module.exports ={
-    addUser:addUser,
-    getUserByEmail:getUserByEmail,
-    getAllUsers:getAllUsers
+module.exports = {
+  addUser: addUser,
+  getUserByEmail: getUserByEmail,
+  getAllUsers: getAllUsers,
+  getUserByUsername:getUserByUsername
 };
