@@ -9,50 +9,63 @@ const jwt = require('jsonwebtoken');
 exports.Signup = (req, res, next) => {
   var params = req.body;
   var data = user_md.getUserByUsername(params.username);
-  if (params.username.trim().length == 0||params.email.trim().length == 0
-  ||params.password.trim().length==0||params.lastname.trim().length==0){
+  if (
+    params.username.trim().length == 0 ||
+    params.email.trim().length == 0 ||
+    params.password.trim().length == 0 ||
+    params.lastname.trim().length == 0
+  ) {
     return res
       .status(401)
       .json(
-        new ReturnResult('Error', null, null, Constants.messages.MISSING_INFORMATION)
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.MISSING_INFORMATION
+        )
       );
-  }
-  else if(data){
+  } else if (data) {
     return res
-    .status(401)
-    .json(
-      new ReturnResult('Error', null, null, Constants.messages.EXISTING_USER)
-    );
-  }
-  else{
+      .status(401)
+      .json(
+        new ReturnResult('Error', null, null, Constants.messages.EXISTING_USER)
+      );
+  } else {
     bcrypt.hash(params.password, 10).then(function(password) {
-    const users = {
-      username: params.username,
-      email: params.email,
-      password: password,
-      first_name: params.firstname,
-      last_name: params.lastname,
-      dob: params.dateofbirth,
-      phone_num: params.phone_num
-    };
-    var result = user_md.addUser(users);
-    result
-      .then(function(user) {
-        var result = {
-          user: user
-        };
-        res
-          .status(200)
-          .json(new ReturnResult(null, user, 'User Created', null));
-      })
-      .catch(function(err) {
-        res
-          .status(500)
-          .json(
-            new ReturnResult('Error',null,null,Constants.messages.USER_NOT_FOUND));
-      });
+      const users = {
+        username: params.username,
+        email: params.email,
+        password: password,
+        first_name: params.firstname,
+        last_name: params.lastname,
+        dob: params.dateofbirth,
+        phone_num: params.phone_num
+      };
+      var result = user_md.addUser(users);
+      result
+        .then(function(user) {
+          var result = {
+            user: user
+          };
+          res
+            .status(200)
+            .json(new ReturnResult(null, user, 'User Created', null));
+        })
+        .catch(function(err) {
+          res
+            .status(500)
+            .json(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.USER_NOT_FOUND
+              )
+            );
+        });
     });
-  };
+  }
 };
 
 // Signin
