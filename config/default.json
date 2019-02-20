@@ -4,7 +4,7 @@
     "port": 3306,
     "database": "swim",
     "user": "root",
-    "password": "ford12345"
+    "password": ""
   },
   "App": {
     "api": {
