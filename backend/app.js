@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const exampleRoutes = require('./routes/example');
-
+const userRoutes = require('./routes/user');
 const app = express();
 
 app.use(bodyParser.json());
@@ -23,5 +23,6 @@ app.use((req, res, next) => {
 
 // use this url to call routes/example.js
 app.use('/api/posts', exampleRoutes);
+app.use('/api/user',userRoutes);
 
 module.exports = app;
