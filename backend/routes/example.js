@@ -8,5 +8,4 @@ router.get('/get',exampleControllers.example1);
 // example router get json from frontend
 router.post('/post',exampleControllers.example2);
 
-//
 module.exports = router;
