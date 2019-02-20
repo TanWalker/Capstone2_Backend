@@ -2,14 +2,15 @@
   "mysql": {
     "host": "localhost",
     "port": 3306,
-    "database": "swim",
+    "database": "blog_demo",
     "user": "root",
-    "password": "ford12345"
+    "password": ""
   },
   "App": {
     "api": {
       "show_error_messages": true,
       "default_error_message": "There was an error processing this message"
     }
-  }
+  },
+  "salt" :10
 }
