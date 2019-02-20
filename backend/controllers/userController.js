@@ -5,6 +5,27 @@ const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// signup
+exports.signup = (req, res, next) => {
+  var user = req.body;
+  bcrypt.hash(user.password, 10).then(function(hash) {
+    const users = {
+      username: user.username,
+      email: user.email,
+      password: hash,
+      first_name: user.firstname,
+      last_name: user.lastname,
+      dob: user.dateofbirth,
+      phone_num: user.phone_num
+    };
+    user.save().then(re)
+  });
+
+  var result = user_md.addUser(users);
+};
+
+
+
 // Signin
 exports.Signin = (req, res, next) => {
   var params = req.body;
@@ -66,5 +87,3 @@ exports.Signin = (req, res, next) => {
   }
 };
 
-// Signup
-exports.Signup = (req, res, next) => {};
