@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // signup
-exports.signup = (req, res, next) => {
+exports.Signup = (req, res, next) => {
   var user = req.body;
   bcrypt.hash(user.password, 10).then(function(hash) {
     const users = {
@@ -18,13 +18,11 @@ exports.signup = (req, res, next) => {
       dob: user.dateofbirth,
       phone_num: user.phone_num
     };
-    user.save().then(re)
+    user.save().then(re);
   });
 
   var result = user_md.addUser(users);
 };
-
-
 
 // Signin
 exports.Signin = (req, res, next) => {
@@ -39,10 +37,12 @@ exports.Signin = (req, res, next) => {
   } else {
     // Compare password
     var data = user_md.getUserByUsername(params.username);
+    var fetchedUser;
     if (data) {
       data
         .then(function(user) {
           var user = user[0];
+          fetchedUser = user;
           return bcrypt.compare(params.password, user.password);
         })
         .then(function(result) {
@@ -61,14 +61,19 @@ exports.Signin = (req, res, next) => {
           }
           // json token to frontend
           const token = jwt.sign(
-            { username: user.username, role_id: user.role_id },
+            { username: fetchedUser.username, role_id: fetchedUser.role_id },
             'secret_this_should_be_longer',
             { expiresIn: '1h' }
           );
+          var expiresIn = 3600;
+          var data = {
+            token: token,
+            expiresIn: expiresIn
+          };
           return res
             .status(200)
             .json(
-              new ReturnResult(token, null, Constants.verification.ACCEPTED)
+              new ReturnResult(data, null, Constants.verification.ACCEPTED)
             );
         })
         .catch(function(err) {
@@ -86,4 +91,3 @@ exports.Signin = (req, res, next) => {
     }
   }
 };
-

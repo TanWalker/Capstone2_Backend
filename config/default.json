@@ -2,9 +2,9 @@
   "mysql": {
     "host": "localhost",
     "port": 3306,
-    "database": "blog_demo",
+    "database": "swim",
     "user": "root",
-    "password": ""
+    "password": "ford12345"
   },
   "App": {
     "api": {
