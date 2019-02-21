@@ -1,83 +1,35 @@
 var db = require('../common/database');
-var q = require('q');
+var sequelize = require('sequelize');
 
-var conn = db.getConnection();
+var user = db.connect.define('user', {
+  id: {
+    type: sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
+  },
+  role_id: { type: sequelize.INTEGER, allowNull: false },
+  username: { type: sequelize.TEXT, allowNull: false },
+  password: { type: sequelize.TEXT, allowNull: false },
+  first_name:{type:sequelize.TEXT},
+  last_name:{type:sequelize.TEXT},
+  dob:{type:sequelize.TIME},
+  phone:{type:sequelize.CHAR},
+  email:{type:sequelize.TEXT},
+  address:{type:sequelize.TEXT},
+  parent_name:{type:sequelize.TEXT},
+  parent_phone:{type:sequelize.CHAR},
+  gender:{type:sequelize.TINYINT},
+  is_verified:{type:sequelize.TINYINT},
+  age:{type:sequelize.INTEGER},
+  height:{type:sequelize.FLOAT},
+  weight:{type:sequelize.FLOAT},
+  avatar:{type:sequelize.TEXT},
+  slug:{type:sequelize.TEXT},
+},{
+  timestamps:false,
+  freezeTableName:true,
+  tableName:user
+});
 
-// add user to db
-function addUser(user) {
-  if (user) {
-    var defer = q.defer();
-    var query = conn.query('INSERT INTO user SET ?', user, function(
-      err,
-      results
-    ) {
-      if (err) {
-        defer.reject(err);
-      } else {
-        defer.resolve(results);
-      }
-    });
-    return defer.promise;
-  }
-  return false;
-}
-
-// get user by email
-function getUserByEmail(email) {
-  if (email) {
-    var defer = q.defer();
-    var query = conn.query(
-      'SELECT * FROM user WHERE ?',
-      { email: email },
-      function(err, results) {
-        if (err) {
-          defer.reject(err);
-        } else {
-          defer.resolve(results);
-        }
-      }
-    );
-    return defer.promise;
-  }
-  return false;
-}
-
-// Select all users
-function getAllUsers() {
-  var defer = q.defer();
-  var query = conn.query('SELECT * FROM user', function(err, users) {
-    if (err) {
-      defer.reject(err);
-    } else {
-      defer.resolve(users);
-    }
-  });
-  return defer.promise;
-}
-
-// get user by username
-function getUserByUsername(username) {
-  if (email) {
-    var defer = q.defer();
-    var query = conn.query(
-      'SELECT * FROM user WHERE ?',
-      { username: username },
-      function(err, results) {
-        if (err) {
-          defer.reject(err);
-        } else {
-          defer.resolve(results);
-        }
-      }
-    );
-    return defer.promise;
-  }
-  return false;
-}
-
-module.exports = {
-  addUser: addUser,
-  getUserByEmail: getUserByEmail,
-  getAllUsers: getAllUsers,
-  getUserByUsername:getUserByUsername
-};
+module.exports = user;
