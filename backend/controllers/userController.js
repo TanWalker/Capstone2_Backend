@@ -71,6 +71,7 @@ exports.Register = (req, res, next) => {
 // Signin
 exports.Login = (req, res, next) => {
   var params = req.body;
+  console.log(params);
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res
@@ -81,7 +82,7 @@ exports.Login = (req, res, next) => {
   } else {
     // Compare password
     var fetchedUser;
-    var data = user_md.find({ where: { username: params.username } });
+    var data = user_md.findOne({ where: { username: params.username } });
     data
       .then(function(user) {
         var user = user;
