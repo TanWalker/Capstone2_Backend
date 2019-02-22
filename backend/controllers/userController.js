@@ -75,7 +75,7 @@ exports.Login = (req, res, next) => {
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res
-      .status(401)
+      .status(400)
       .json(
         new ReturnResult('Error', null, null, Constants.messages.INVALID_USER)
       );
@@ -93,7 +93,7 @@ exports.Login = (req, res, next) => {
         // If wrong password
         if (!result) {
           return res
-            .status(401)
+            .status(400)
             .json(
               new ReturnResult(
                 'Error',
@@ -105,22 +105,23 @@ exports.Login = (req, res, next) => {
         }
         // json token to frontend
         const token = jwt.sign(
-          { username: fetchedUser.username, role_id: fetchedUser.role_id },
-          'secret_this_should_be_longer',
+          { username: fetchedUser.username },
+          'dgj1qgh21j125125k1hj25j125ghj21g4j1h2g51j5g6b09u8',
           { expiresIn: '1h' }
         );
         var expiresIn = 3600;
         var data = {
           token: token,
-          expiresIn: expiresIn
+          expiresIn: expiresIn,
+          user: fetchedUser
         };
         return res
           .status(200)
-          .json(new ReturnResult(data, null, Constants.verification.ACCEPTED));
+          .json(new ReturnResult(null, data, Constants.verification.ACCEPTED));
       })
       .catch(function(err) {
         return res
-          .status(401)
+          .status(400)
           .json(
             new ReturnResult(
               'Error',

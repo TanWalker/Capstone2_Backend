@@ -13,7 +13,7 @@ var user = db.connect.define('user', {
   password: { type: sequelize.TEXT, allowNull: false },
   first_name:{type:sequelize.TEXT},
   last_name:{type:sequelize.TEXT},
-  dob:{type:sequelize.TIME},
+  dob:{type:sequelize.DATEONLY},
   phone:{type:sequelize.CHAR},
   email:{type:sequelize.TEXT},
   address:{type:sequelize.TEXT},
