@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const config = require('config');
 
 // Register
 exports.Register = (req, res, next) => {
@@ -61,6 +62,7 @@ exports.Register = (req, res, next) => {
 // Signin
 exports.Login = (req, res, next) => {
   var params = req.body;
+  console.log(params);
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res
@@ -70,7 +72,7 @@ exports.Login = (req, res, next) => {
   } else {
     // Compare password
     var fetchedUser;
-    var data = user_md.find({ where: { username: params.username } });
+    var data = user_md.findOne({ where: { username: params.username } });
     data
       .then(function(user) {
         var user = user;
@@ -80,41 +82,57 @@ exports.Login = (req, res, next) => {
       .then(function(result) {
         // If wrong password
         if (!result) {
-          return res
-            .json(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.INVALID_PASSWORD
-              )
-            );
+          return res.json(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_PASSWORD
+            )
+          );
         }
         // json token to frontend
         const token = jwt.sign(
-          { username: fetchedUser.username, role_id: fetchedUser.role_id },
-          'secret_this_should_be_longer',
+          { username: fetchedUser.username },
+          config.get('token_key'),
           { expiresIn: '1h' }
         );
         var expiresIn = 3600;
         var data = {
           token: token,
-          expiresIn: expiresIn
+          expiresIn: expiresIn,
+          user: {
+            username:fetchedUser.username,
+            role_id:fetchedUser.role_id,
+            first_name:fetchedUser.first_name,
+            last_name:fetchedUser.last_name,
+            dob:fetchedUser.dob,
+            phone:fetchedUser.phone,
+            email:fetchedUser.email,
+            address:fetchedUser.address,
+            parent_name:fetchedUser.parent_name,
+            parent_phone:fetchedUser.parent_phone,
+            gender:fetchedUser.gender,
+            is_verified:fetchedUser.is_verified,
+            age:fetchedUser.age,
+            weight:fetchedUser.weight,
+            avatar:fetchedUser.avatar,
+            slug:fetchedUser.slug
+          }
         };
         return res
           .status(200)
-          .json(new ReturnResult(data, null, Constants.verification.ACCEPTED));
+          .json(new ReturnResult(null, data, Constants.verification.ACCEPTED));
       })
       .catch(function(err) {
-        return res
-          .json(
-            new ReturnResult(
-              'Error',
-              null,
-              null,
-              Constants.messages.USER_NOT_FOUND
-            )
-          );
+        return res.json(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.USER_NOT_FOUND
+          )
+        );
       });
   }
 };

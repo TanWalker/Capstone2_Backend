@@ -19,10 +19,10 @@ module.exports = Object.freeze({
         BILLBOARD: "BILLBOARD"
     },  
     verification: {
-        NOT_SUBMITTED: "U",
-        PENDING: "P",
-        ACCEPTED: "A",
-        REJECTED: "R"
+        NOT_SUBMITTED: "Not subimitted",
+        PENDING: "Pending",
+        ACCEPTED: "Accepted",
+        REJECTED: "Rejected"
     },
     communication_verification: {
         PHONE_CODE: "PHONE_CODE",
