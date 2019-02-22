@@ -12,5 +12,6 @@
       "default_error_message": "There was an error processing this message"
     }
   },
-  "salt" :10
+  "salt": 10,
+  "token_key": "dgj1qgh21j125125k1hj25j125ghj21g4j1h2g51j5g6b09u8"
 }

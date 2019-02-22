@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const config = require('config');
 
 // signup
 exports.Register = (req, res, next) => {
@@ -92,42 +93,57 @@ exports.Login = (req, res, next) => {
       .then(function(result) {
         // If wrong password
         if (!result) {
-          return res
-            .json(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.INVALID_PASSWORD
-              )
-            );
+          return res.json(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_PASSWORD
+            )
+          );
         }
         // json token to frontend
         const token = jwt.sign(
           { username: fetchedUser.username },
-          'dgj1qgh21j125125k1hj25j125ghj21g4j1h2g51j5g6b09u8',
+          config.get('token_key'),
           { expiresIn: '1h' }
         );
         var expiresIn = 3600;
         var data = {
           token: token,
           expiresIn: expiresIn,
-          user: fetchedUser
+          user: {
+            username:fetchedUser.username,
+            role_id:fetchedUser.role_id,
+            first_name:fetchedUser.first_name,
+            last_name:fetchedUser.last_name,
+            dob:fetchedUser.dob,
+            phone:fetchedUser.phone,
+            email:fetchedUser.email,
+            address:fetchedUser.address,
+            parent_name:fetchedUser.parent_name,
+            parent_phone:fetchedUser.parent_phone,
+            gender:fetchedUser.gender,
+            is_verified:fetchedUser.is_verified,
+            age:fetchedUser.age,
+            weight:fetchedUser.weight,
+            avatar:fetchedUser.avatar,
+            slug:fetchedUser.slug
+          }
         };
         return res
           .status(200)
           .json(new ReturnResult(null, data, Constants.verification.ACCEPTED));
       })
       .catch(function(err) {
-        return res
-          .json(
-            new ReturnResult(
-              'Error',
-              null,
-              null,
-              Constants.messages.USER_NOT_FOUND
-            )
-          );
+        return res.json(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.USER_NOT_FOUND
+          )
+        );
       });
   }
 };
