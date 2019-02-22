@@ -75,7 +75,7 @@ exports.Login = (req, res, next) => {
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res
-      .status(400)
+      .status(401)
       .json(
         new ReturnResult('Error', null, null, Constants.messages.INVALID_USER)
       );
@@ -93,7 +93,6 @@ exports.Login = (req, res, next) => {
         // If wrong password
         if (!result) {
           return res
-            .status(400)
             .json(
               new ReturnResult(
                 'Error',
@@ -121,7 +120,6 @@ exports.Login = (req, res, next) => {
       })
       .catch(function(err) {
         return res
-          .status(400)
           .json(
             new ReturnResult(
               'Error',
