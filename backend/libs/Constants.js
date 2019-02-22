@@ -80,7 +80,8 @@ module.exports = Object.freeze({
         VERIFICATION_EXPIRED: "Verification has expired.",
         CURRENT_PASSWORD_NOT_PROVIDED: "Current password not provided.",
         NEW_PASSWORD_NOT_PROVIDED: "New password not provided.",
-        MISSING_INFORMATION: "Some field(s) is/are empty"
+        MISSING_INFORMATION: "Some field(s) is/are empty",
+        INVALID_INFORMATION: "Data entered is not valid. Please try again."
     },
     mail: {
         PASSWORD_RESET_SUBJECT: "Password Reset",

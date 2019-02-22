@@ -5,67 +5,57 @@ const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// signup
+// Register
 exports.Register = (req, res, next) => {
   var params = req.body;
-  var data = user_md.getUserByUsername(params.username);
-  if (
-    params.username.trim().length == 0 ||
-    params.email.trim().length == 0 ||
-    params.password.trim().length == 0 ||
-    params.lastname.trim().length == 0
-  ) {
-    return res
-      .status(401)
-      .json(
-        new ReturnResult(
-          'Error',
-          null,
-          null,
-          Constants.messages.MISSING_INFORMATION
-        )
-      );
-  } else if (data) {
-    return res
-      .status(401)
-      .json(
-        new ReturnResult('Error', null, null, Constants.messages.EXISTING_USER)
-      );
-  } else {
-    bcrypt.hash(params.password, 10).then(function(password) {
-      const users = {
-        username: params.username,
-        email: params.email,
-        password: password,
-        first_name: params.firstname,
-        last_name: params.lastname,
-        dob: params.dateofbirth,
-        phone_num: params.phone_num
-      };
-      var result = user_md.addUser(users);
-      result
-        .then(function(user) {
-          var result = {
-            user: user
-          };
-          res
-            .status(200)
-            .json(new ReturnResult(null, user, 'User Created', null));
-        })
-        .catch(function(err) {
-          res
-            .status(500)
-            .json(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.USER_NOT_FOUND
-              )
-            );
-        });
-    });
-  }
+  var data = user_md.find({ where: { username: params.username } });
+//check whether existing user
+  data.then(function(data) {
+    if (data) {
+      return res
+        .json(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.EXISTING_USER
+          )
+        );
+    }else {
+    //hash password
+      bcrypt.hash(params.password, 10).then(function(password) {
+    //Insert user to database
+        var result = user_md.create({username: params.username,
+          email: params.email,
+          password: password,
+          first_name: params.firstname,
+          last_name: params.lastname,
+          dob: params.dateofbirth,
+          phone_num: params.phone_num,
+          role_id: params.role_id});
+        result
+          .then(function(user) {
+            var result = {
+              user: user
+            };
+            res
+              .status(200)
+              .json(new ReturnResult(null, result, 'User Created', null));
+          })
+          .catch(function(err) {
+            res
+              .json(
+                new ReturnResult(
+                  'Error',
+                  null,
+                  null,
+                  Constants.messages.INVALID_INFORMATION
+                )
+              );
+          });
+      });
+    }
+  });
 };
 
 // Signin
@@ -74,7 +64,6 @@ exports.Login = (req, res, next) => {
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res
-      .status(401)
       .json(
         new ReturnResult('Error', null, null, Constants.messages.INVALID_USER)
       );
@@ -92,7 +81,6 @@ exports.Login = (req, res, next) => {
         // If wrong password
         if (!result) {
           return res
-            .status(401)
             .json(
               new ReturnResult(
                 'Error',
@@ -119,7 +107,6 @@ exports.Login = (req, res, next) => {
       })
       .catch(function(err) {
         return res
-          .status(401)
           .json(
             new ReturnResult(
               'Error',
