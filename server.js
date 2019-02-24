@@ -46,6 +46,11 @@ const onListening = () => {
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+console.log('Port :' + process.env.PORT || 'default : 3000');
+console.log('Host :' + process.env.DB_HOST);
+console.log('DB_Port :' + process.env.DB_PORT);
+console.log('DB_USER :' + process.env.DB_USERNAME);
+
 const server = http.createServer(app);
 server.on('error', onError);
 server.on('listening', onListening);

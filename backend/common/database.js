@@ -1,14 +1,14 @@
-var config = require('config');
+var config = require('config')
 var mysql = require('mysql');
 var Sequelize = require('sequelize');
 
 
 var connect = new Sequelize(
-  config.get('mysql.database'),
-  config.get('mysql.user'),
-  config.get('mysql.password'),
+  process.env.DB_DATABASE || config.get('mysql.database'),
+  process.env.DB_USERNAME || config.get('mysql.user'),
+  process.env.DB_PASSWORD || config.get('mysql.password'),
   {
-    host: config.get('mysql.host'),
+    host: process.env.DB_HOST || config.get('mysql.host'),
     dialect: 'mysql',
     freezeTableName: true,
     operatorsAliases: false,

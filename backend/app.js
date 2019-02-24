@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const webRoutes = require('./routes/webRoutes');
 const backendVersion = require('./routes/backendVersion');
 
+// allow override of environment variables
+require('dotenv').config();
 const app = express();
 
 app.use(bodyParser.json());
