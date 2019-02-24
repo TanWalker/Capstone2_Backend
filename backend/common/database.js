@@ -1,6 +1,7 @@
 var config = require('config')
 var mysql = require('mysql');
 var Sequelize = require('sequelize');
+require('dotenv').config();
 
 
 var connect = new Sequelize(
@@ -21,7 +22,7 @@ var connect = new Sequelize(
     },
   },
 );
-
+console.log( process.env.DB_DATABASE);
 connect.authenticate().then(()=>console.log('connected')).catch(()=>console.log('error'));
 
 
