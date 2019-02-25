@@ -117,7 +117,9 @@ exports.Login = (req, res, next) => {
             age:fetchedUser.age,
             weight:fetchedUser.weight,
             avatar:fetchedUser.avatar,
-            slug:fetchedUser.slug
+            slug:fetchedUser.slug,
+            created_at:fetchedUser.created_at,
+            updated_at:fetchedUser.updated_at,
           }
         };
         return res
