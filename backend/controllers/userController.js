@@ -10,30 +10,26 @@ const config = require('config');
 exports.Register = (req, res, next) => {
   var params = req.body;
   var data = user_md.find({ where: { username: params.username } });
-//check whether existing user
+  //check whether existing user
   data.then(function(data) {
     if (data) {
-      return res
-        .json(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.EXISTING_USER
-          )
-        );
-    }else {
-    //hash password
+      return res.json(
+        new ReturnResult('Error', null, null, Constants.messages.EXISTING_USER)
+      );
+    } else {
+      //hash password
       bcrypt.hash(params.password, 10).then(function(password) {
-    //Insert user to database
-        var result = user_md.create({username: params.username,
+        //Insert user to database
+        var result = user_md.create({
+          username: params.username,
           email: params.email,
           password: password,
           first_name: params.firstname,
           last_name: params.lastname,
           dob: params.dateofbirth,
           phone_num: params.phone_num,
-          role_id: params.role_id});
+          role_id: params.role_id
+        });
         result
           .then(function(user) {
             var result = {
@@ -44,15 +40,14 @@ exports.Register = (req, res, next) => {
               .json(new ReturnResult(null, result, 'User Created', null));
           })
           .catch(function(err) {
-            res
-              .json(
-                new ReturnResult(
-                  'Error',
-                  null,
-                  null,
-                  Constants.messages.INVALID_INFORMATION
-                )
-              );
+            res.json(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.INVALID_INFORMATION
+              )
+            );
           });
       });
     }
@@ -65,10 +60,9 @@ exports.Login = (req, res, next) => {
   console.log(params);
   // Check if username is blank
   if (params.username.trim().length == 0) {
-    return res
-      .json(
-        new ReturnResult('Error', null, null, Constants.messages.INVALID_USER)
-      );
+    return res.json(
+      new ReturnResult('Error', null, null, Constants.messages.INVALID_USER)
+    );
   } else {
     // Compare password
     var fetchedUser;
@@ -102,22 +96,22 @@ exports.Login = (req, res, next) => {
           token: token,
           expiresIn: expiresIn,
           user: {
-            username:fetchedUser.username,
-            role_id:fetchedUser.role_id,
-            first_name:fetchedUser.first_name,
-            last_name:fetchedUser.last_name,
-            dob:fetchedUser.dob,
-            phone:fetchedUser.phone,
-            email:fetchedUser.email,
-            address:fetchedUser.address,
-            parent_name:fetchedUser.parent_name,
-            parent_phone:fetchedUser.parent_phone,
-            gender:fetchedUser.gender,
-            is_verified:fetchedUser.is_verified,
-            age:fetchedUser.age,
-            weight:fetchedUser.weight,
-            avatar:fetchedUser.avatar,
-            slug:fetchedUser.slug
+            username: fetchedUser.username,
+            role_id: fetchedUser.role_id,
+            first_name: fetchedUser.first_name,
+            last_name: fetchedUser.last_name,
+            dob: fetchedUser.dob,
+            phone: fetchedUser.phone,
+            email: fetchedUser.email,
+            address: fetchedUser.address,
+            parent_name: fetchedUser.parent_name,
+            parent_phone: fetchedUser.parent_phone,
+            gender: fetchedUser.gender,
+            is_verified: fetchedUser.is_verified,
+            age: fetchedUser.age,
+            weight: fetchedUser.weight,
+            avatar: fetchedUser.avatar,
+            slug: fetchedUser.slug
           }
         };
         return res
