@@ -26,8 +26,10 @@ var user = db.connect.define('user', {
   weight:{type:sequelize.FLOAT},
   avatar:{type:sequelize.TEXT},
   slug:{type:sequelize.TEXT},
+  created_at:{type:sequelize.DATE},
+  updated_at:{type:sequelize.DATE},
 },{
-  timestamps:false,
+  timestamps:true,
   freezeTableName:true,
   tableName:user
 });
