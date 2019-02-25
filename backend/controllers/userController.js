@@ -9,7 +9,7 @@ const config = require('config');
 // Register
 exports.Register = (req, res, next) => {
   var params = req.body;
-  var data = user_md.find({ where: { username: params.username } });
+  var data = user_md.findOne({ where: { username: params.username } });
   //check whether existing user
   data.then(function(data) {
     if (data) {
