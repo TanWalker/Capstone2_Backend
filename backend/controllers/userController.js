@@ -96,6 +96,7 @@ exports.Login = (req, res, next) => {
           token: token,
           expiresIn: expiresIn,
           user: {
+            id:fetchedUser.id,
             username:fetchedUser.username,
             role_id:fetchedUser.role_id,
             first_name:fetchedUser.first_name,
