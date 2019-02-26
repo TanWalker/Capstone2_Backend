@@ -110,6 +110,7 @@ exports.Login = (req, res, next) => {
             gender:fetchedUser.gender,
             is_verified:fetchedUser.is_verified,
             age:fetchedUser.age,
+            height:fetchedUser.height,
             weight:fetchedUser.weight,
             avatar:fetchedUser.avatar,
             slug:fetchedUser.slug,
