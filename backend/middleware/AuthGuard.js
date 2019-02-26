@@ -1,30 +1,36 @@
 const jwt = require('jsonwebtoken');
 const Constants = require('../libs/Constants');
 const config = require('config');
+const ReturnResult = require('../libs/ReturnResult');
 
 module.exports = (req, res, next) => {
-  var token = req.headers['authorization'];
-  if (!token)
-    return res.status(401).send({ auth: false, message: 'No token provided.' });
-
-  jwt.verify(token, config.get('token_key'), (err, decoded) => {
-    // check for error
-    if (!err) {
-      // get expired date
-      var dateNow = parseInt(new Date().getTime() / 1000);
-      var expiryDate = +decoded.iat + Constants.EXPIRES * 60 * 60;
-
-      // check expiration
-      if (dateNow < expiryDate) {
-        // set user
-        req.user = decoded;
-      }
-    } else {
-      console.log('Error in auth guard: ');
-      console.log(err);
-    }
-
-    // keep moving
+  try {
+    const token = req.headers.authorization.split('')[1];
+    const decodedToken = jwt.verify(token, config.get('token_key'));
+    req.userData = {
+      id: decodedToken.id,
+      role_id: decodedToken.role_id,
+      username: decodedToken.username,
+      first_name: decodedToken.first_name,
+      last_name: decodedToken.last_name,
+      dob: decodedToken.dob,
+      phone: decodedToken.phone,
+      email: decodedToken.email,
+      address: decodedToken.address,
+      parent_name: decodedToken.parent_name,
+      parent_phone: decodedToken.parent_phone,
+      gender: decodedToken.gender,
+      is_verified: decodedToken.is_verified,
+      age: decodedToken.age,
+      height: decodedToken.height,
+      weight: decodedToken.weight,
+      avatar: decodedToken.avatar,
+      slug: decodedToken.slug
+    };
     next();
-  });
+  } catch (error) {
+    res.json(
+      new ReturnResult('Error', null, null, Constants.messages.NO_TOKEN_FOUND)
+    );
+  }
 };
