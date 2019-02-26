@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const webRoutes = require('./routes/webRoutes');
+const authRoutes = require('./routes/authRoutes');
 const backendVersion = require('./routes/backendVersion');
 
 // allow override of environment variables
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use(webRoutes);
+app.use(authRoutes);
 
 app.use(backendVersion);
 
