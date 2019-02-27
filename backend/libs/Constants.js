@@ -48,6 +48,7 @@ module.exports = Object.freeze({
         INVALID_USER: "Invalid user",
         UNAUTHORIZED_USER: "Unauthorized user",
         EXISTING_USER: "Username already exists",
+        EXISTING_TEAM_NAME: "Team name already exists",
         AUTHORIZED: "Authorized",
         INVALID_TOKEN: "Invalid token",
         TOKEN_EXPIRED: "Token has expired",

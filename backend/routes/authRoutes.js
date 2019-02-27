@@ -8,4 +8,5 @@ router.post('/api/public/login', userControllers.Login);
 // signup route
 router.post('/api/public/register', userControllers.Register);
 
+
 module.exports = router;

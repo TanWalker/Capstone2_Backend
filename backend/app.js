@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const backendVersion = require('./routes/backendVersion');
+const teamRoutes = require('./routes/teamRoutes');
+
 
 // allow override of environment variables
 require('dotenv').config();
@@ -29,5 +31,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 
 app.use(backendVersion);
+
+app.use(teamRoutes);
 
 module.exports = app;
