@@ -82,7 +82,8 @@ module.exports = Object.freeze({
         CURRENT_PASSWORD_NOT_PROVIDED: "Current password not provided.",
         NEW_PASSWORD_NOT_PROVIDED: "New password not provided.",
         MISSING_INFORMATION: "Some field(s) is/are empty",
-        INVALID_INFORMATION: "Data entered is not valid. Please try again."
+        INVALID_INFORMATION: "Data entered is not valid. Please try again.",
+        EXISTING_TEAM: "This team is already exist"
     },
     mail: {
         PASSWORD_RESET_SUBJECT: "Password Reset",
