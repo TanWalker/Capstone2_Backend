@@ -1,33 +1,73 @@
 const user_md = require("../models/user");
-const bcrypt = require("bcrypt");
-var q = require("q");
+
 class ListUser {
-  constructor(num) {
-    var defer = q.defer();
-    var list={};
-    for (var i = 0; i < num; i++) {
-      bcrypt.hash("123456", 10).then(function(password) {
-        //Insert user to database
-        list[i] = [];
-        list[i].push('username: "akg",email: "",password: password,first_name: "",last_name: "params.lastname",phone_num: "",role_id: 3');
-        var user = user_md.create({
-          username: "akg",
+  constructor(num, id) {
+    var list = {};
+    var k= find_last();
+      console.log(k);
+      for (var i = 0; i < num; i++) {
+        k++;
+        var user = {
+          username: "akg_" + k + "",
           email: "",
-          password: password,
+          password:
+            "$2b$10$cwB2qTEL1EEm7wQav9f5nePM7RXdJQ6aKXVyqEAcbBJUwP.LDH4Jq",
           first_name: "",
           last_name: "params.lastname",
           phone_num: "",
           role_id: 3
+        };
+        user = JSON.stringify(user);
+        list[i] = {};
+        list[i] = user;
+      }
+      var result = [];
+      Object.keys(list).forEach(function(key) {
+        // console.log('Key : ' + key + ', Value : ' + list[key]);
+
+        var obj = JSON.parse(list[key]);
+        result.push({
+          info: obj
         });
-        
-        
+        user_md
+          .create({
+            username: obj.username,
+            email: "",
+            password:
+              "$2b$10$cwB2qTEL1EEm7wQav9f5nePM7RXdJQ6aKXVyqEAcbBJUwP.LDH4Jq",
+            first_name: "",
+            last_name: "",
+            phone_num: "",
+            role_id: 3
+          })
+          .catch(function(err) {
+            result.push({
+              user: user
+            });
+          });
       });
-    }
-    var z = JSON.stringify(list);
-    console.log(z);
-    defer.resolve(list);
-    return defer.promise;
+
+      // console.log(result);
+      var promise = new Promise(function(resolve, reject) {
+        /* missing implementation */
+        // console.log(result);
+        resolve(result);
+      });
+      // console.log(promise);
+      return promise;
   }
 }
-
+function find_last(){
+  user_md
+      .findAll({
+        
+        limit: 1,
+        where: {},
+        order: [["id", "DESC"]]
+      }).then(function(record){
+        console.log(record);
+        
+        return Promise.resolve(record.id);
+      });
+}
 module.exports = ListUser;

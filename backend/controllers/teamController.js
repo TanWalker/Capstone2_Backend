@@ -4,7 +4,6 @@ const config = require("config");
 const team_md = require("../models/team");
 const Constants = require("../libs/Constants");
 const bcrypt = require("bcrypt");
-
 const list = require("../libs/ListUser");
 exports.Add_Team = (req, res, next) => {
   var params = req.body;
@@ -29,12 +28,11 @@ exports.Add_Team = (req, res, next) => {
       });
       result
         .then(function(team) {
-          //login
-
+          // console.log(team);
           //Insert user to database
-          var users = new list(params.number);
-          users.then(function(ok){
-            console.log(ok);
+          var users = new list(params.number, 0);
+          users.then(function(ok) {
+            // console.log(ok);
             var result = {
               team: team,
               user: ok
@@ -43,7 +41,6 @@ exports.Add_Team = (req, res, next) => {
               .status(200)
               .json(new ReturnResult(null, result, "Team Created", null));
           });
-          
         })
         .catch(function(err) {
           res.json(
