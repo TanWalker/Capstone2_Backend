@@ -5,7 +5,6 @@ const team_md = require('../models/team');
 const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
-const list = require('../libs/ListUser');
 
 exports.Add_Team = (req, res, next) => {
   var params = req.body;
@@ -41,7 +40,6 @@ exports.Add_Team = (req, res, next) => {
                 order: [['id', 'DESC']]
               })
               .then(function(record) {
-                console.log('a');
                 return resolve(record.id);
               });
           });
@@ -49,12 +47,11 @@ exports.Add_Team = (req, res, next) => {
           find_last
             .then(function(user_id) {
               var list = {};
-              var k = user_id;
-              console.log(k);
+              var last_id = user_id;
               for (var i = 0; i < params.number; i++) {
-                k++;
+                last_id++;
                 var user = {
-                  username: 'akg_' + k + '',
+                  username: 'QK5DN_' + last_id + '',
                   password:
                     '$2b$10$cwB2qTEL1EEm7wQav9f5nePM7RXdJQ6aKXVyqEAcbBJUwP.LDH4Jq'
                 };
@@ -72,7 +69,8 @@ exports.Add_Team = (req, res, next) => {
                   .create({
                     username: obj.username,
                     password: obj.password,
-                    role_id: 3
+                    role_id: 3,
+                    team_id:team.id
                   })
                   .catch(function(err) {
                     result.push({
@@ -80,7 +78,6 @@ exports.Add_Team = (req, res, next) => {
                     });
                   });
               });
-              console.log(result);
               return Promise.resolve(result);
             })
             .then(function(info) {
