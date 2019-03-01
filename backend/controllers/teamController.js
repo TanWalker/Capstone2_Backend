@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 exports.Add_Team = (req, res, next) => {
   var params = req.body;
   var data = team_md.find({ where: { name: params.name } });
-  //check whether existing team name
+  // check whether existing team name
   data.then(function(data) {
     if (data) {
       return res.json(
@@ -21,7 +21,7 @@ exports.Add_Team = (req, res, next) => {
         )
       );
     } else {
-      //Insert team info to database // req.userData.id
+      // Insert team info to database // req.userData.id
       var result = team_md.create({
         coach_id: params.coach_id,
         name: params.name,
@@ -29,8 +29,7 @@ exports.Add_Team = (req, res, next) => {
       });
       result
         .then(function(team) {
-          // console.log(team);
-          //Insert user to database
+          // Find the last id
           var result = [];
           var find_last = new Promise(function(resolve, reject) {
             user_md
@@ -43,7 +42,7 @@ exports.Add_Team = (req, res, next) => {
                 return resolve(record.id);
               });
           });
-
+          // After find the last id insert after username
           find_last
             .then(function(user_id) {
               var list = {};
@@ -55,14 +54,13 @@ exports.Add_Team = (req, res, next) => {
                   password:
                     '$2b$10$cwB2qTEL1EEm7wQav9f5nePM7RXdJQ6aKXVyqEAcbBJUwP.LDH4Jq'
                 };
+                // add user to a list
                 user = JSON.stringify(user);
                 list[i] = {};
                 list[i] = user;
               }
-
+              // loop the list and add to db
               Object.keys(list).forEach(function(key) {
-                // console.log('Key : ' + key + ', Value : ' + list[key]);
-
                 var obj = JSON.parse(list[key]);
                 result.push(obj);
                 user_md
@@ -78,6 +76,7 @@ exports.Add_Team = (req, res, next) => {
                     });
                   });
               });
+              // return the list user
               return Promise.resolve(result);
             })
             .then(function(info) {
@@ -86,6 +85,7 @@ exports.Add_Team = (req, res, next) => {
                 team: team,
                 list_user: info
               };
+              // response the team and the list user
               res
                 .status(200)
                 .json(new ReturnResult(null, result, 'Team Created', null));
@@ -94,7 +94,7 @@ exports.Add_Team = (req, res, next) => {
         .catch(function(err) {
           res.json(
             new ReturnResult(
-              err.message,
+              'Error',
               null,
               null,
               Constants.messages.INVALID_INFORMATION
