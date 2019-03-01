@@ -1,14 +1,14 @@
 const ReturnResult = require('../libs/ReturnResult');
 const jwt = require('jsonwebtoken');
-const config = require('config');
 const team_md = require('../models/team');
 const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
-const bcrypt = require('bcrypt');
+const auth = require('../middleware/AuthGuard');
 
 exports.Add_Team = (req, res, next) => {
   var params = req.body;
-  var data = team_md.find({ where: { name: params.name } });
+  var data = team_md.findOne({ where: { name: params.name } });
+  console.log(req.userData);
   // check whether existing team name
   data.then(function(data) {
     if (data) {
@@ -23,7 +23,7 @@ exports.Add_Team = (req, res, next) => {
     } else {
       // Insert team info to database // req.userData.id
       var result = team_md.create({
-        coach_id: params.coach_id,
+        coach_id: req.userData.id,
         name: params.name,
         age: params.age
       });
@@ -52,7 +52,7 @@ exports.Add_Team = (req, res, next) => {
                 var user = {
                   username: 'QK5DN_' + last_id + '',
                   password:
-                    '$2b$10$cwB2qTEL1EEm7wQav9f5nePM7RXdJQ6aKXVyqEAcbBJUwP.LDH4Jq'
+                    '123456'
                 };
                 // add user to a list
                 user = JSON.stringify(user);
@@ -66,9 +66,9 @@ exports.Add_Team = (req, res, next) => {
                 user_md
                   .create({
                     username: obj.username,
-                    password: obj.password,
+                    password: '$2b$12$cwB2qTEL1EEm7wQav9f5nePM7RXdJQ6aKXVyqEAcbBJUwP.LDH4Jq',
                     role_id: 3,
-                    team_id:team.id
+                    team_id: team.id
                   })
                   .catch(function(err) {
                     result.push({
@@ -94,7 +94,7 @@ exports.Add_Team = (req, res, next) => {
         .catch(function(err) {
           res.json(
             new ReturnResult(
-              'Error',
+              err.message,
               null,
               null,
               Constants.messages.INVALID_INFORMATION

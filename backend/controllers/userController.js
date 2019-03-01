@@ -57,7 +57,6 @@ exports.Register = (req, res, next) => {
 // Signin
 exports.Login = (req, res, next) => {
   var params = req.body;
-  console.log(params);
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res.json(
@@ -87,7 +86,28 @@ exports.Login = (req, res, next) => {
         }
         // json token to frontend
         const token = jwt.sign(
-          { username: fetchedUser.username },
+          {
+            id: fetchedUser.id,
+            username: fetchedUser.username,
+            role_id: fetchedUser.role_id,
+            first_name: fetchedUser.first_name,
+            last_name: fetchedUser.last_name,
+            dob: fetchedUser.dob,
+            phone: fetchedUser.phone,
+            email: fetchedUser.email,
+            address: fetchedUser.address,
+            parent_name: fetchedUser.parent_name,
+            parent_phone: fetchedUser.parent_phone,
+            gender: fetchedUser.gender,
+            is_verified: fetchedUser.is_verified,
+            age: fetchedUser.age,
+            height: fetchedUser.height,
+            weight: fetchedUser.weight,
+            avatar: fetchedUser.avatar,
+            slug: fetchedUser.slug,
+            created_at: fetchedUser.created_at,
+            updated_at: fetchedUser.updated_at
+          },
           config.get('token_key'),
           { expiresIn: '1h' }
         );
@@ -96,26 +116,26 @@ exports.Login = (req, res, next) => {
           token: token,
           expiresIn: expiresIn,
           user: {
-            id:fetchedUser.id,
-            username:fetchedUser.username,
-            role_id:fetchedUser.role_id,
-            first_name:fetchedUser.first_name,
-            last_name:fetchedUser.last_name,
-            dob:fetchedUser.dob,
-            phone:fetchedUser.phone,
-            email:fetchedUser.email,
-            address:fetchedUser.address,
-            parent_name:fetchedUser.parent_name,
-            parent_phone:fetchedUser.parent_phone,
-            gender:fetchedUser.gender,
-            is_verified:fetchedUser.is_verified,
-            age:fetchedUser.age,
-            height:fetchedUser.height,
-            weight:fetchedUser.weight,
-            avatar:fetchedUser.avatar,
-            slug:fetchedUser.slug,
-            created_at:fetchedUser.created_at,
-            updated_at:fetchedUser.updated_at,
+            id: fetchedUser.id,
+            username: fetchedUser.username,
+            role_id: fetchedUser.role_id,
+            first_name: fetchedUser.first_name,
+            last_name: fetchedUser.last_name,
+            dob: fetchedUser.dob,
+            phone: fetchedUser.phone,
+            email: fetchedUser.email,
+            address: fetchedUser.address,
+            parent_name: fetchedUser.parent_name,
+            parent_phone: fetchedUser.parent_phone,
+            gender: fetchedUser.gender,
+            is_verified: fetchedUser.is_verified,
+            age: fetchedUser.age,
+            height: fetchedUser.height,
+            weight: fetchedUser.weight,
+            avatar: fetchedUser.avatar,
+            slug: fetchedUser.slug,
+            created_at: fetchedUser.created_at,
+            updated_at: fetchedUser.updated_at
           }
         };
         return res
