@@ -10,7 +10,6 @@ const auth = require('../middleware/AuthGuard');
 exports.Get_Team = function (req, res ,next) {
 
   console.log("Getting all team");
-  console.log(req);
   // check for user
   if (!req.userData) {
       res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
@@ -22,6 +21,31 @@ exports.Get_Team = function (req, res ,next) {
 
          // get result
          var result = new ReturnResult(null, teams, "All teams", null);
+  
+         // return
+         res.jsonp(result);
+      })
+
+};
+
+// this function is delete team , Eddy will create a trigger to delete all member of this team when we delete team
+exports.Delete_Team = function (req, res ,next) {
+
+  console.log("Deleting team");
+  
+  // check for user
+  if (!req.userData) {
+      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
+      return;
+  }
+      var team_id = req.params.team_id;
+      // find all team 
+      team_md.findOne({ where : { id: team_id } }).then( function(teams) {
+
+        // delete teams
+        teams.destroy();
+         // get result
+         var result = new ReturnResult(null, null, "Delete team successfully", null);
   
          // return
          res.jsonp(result);
@@ -126,4 +150,16 @@ exports.Add_Team = (req, res, next) => {
         });
     }
   });
+};
+
+// this function is update team
+exports.Update_Team = function (req, res ,next) {
+
+  console.log("Updating team");
+  
+  // check for user
+  if (!req.userData) {
+      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
+      return;
+  }
 };
