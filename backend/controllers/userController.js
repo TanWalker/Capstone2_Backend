@@ -57,6 +57,7 @@ exports.Register = (req, res, next) => {
 // Signin
 exports.Login = (req, res, next) => {
   var params = req.body;
+  console.log(params);
   // Check if username is blank
   if (params.username.trim().length == 0) {
     return res.json(
@@ -140,7 +141,7 @@ exports.Login = (req, res, next) => {
         };
         return res
           .status(200)
-          .json(new ReturnResult(null, data, Constants.verification.ACCEPTED));
+          .json(new ReturnResult(null, data, Constants.messages.AUTHORIZED));
       })
       .catch(function(err) {
         return res.json(
