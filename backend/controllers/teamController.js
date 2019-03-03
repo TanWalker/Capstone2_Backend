@@ -5,6 +5,29 @@ const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const auth = require('../middleware/AuthGuard');
 
+
+// this function is used to test ( get all team )
+exports.Get_Team = function (req, res ,next) {
+
+  console.log("Getting all team");
+  console.log(req);
+  // check for user
+  if (!req.userData) {
+      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
+      return;
+  }
+
+      // find all team 
+      team_md.findAll().then(function(teams) {
+
+         // get result
+         var result = new ReturnResult(null, teams, "All teams", null);
+  
+         // return
+         res.jsonp(result);
+      })
+
+};
 exports.Add_Team = (req, res, next) => {
   var params = req.body;
   var data = team_md.findOne({ where: { name: params.name } });
