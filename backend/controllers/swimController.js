@@ -1,5 +1,5 @@
 const ReturnResult = require('../libs/ReturnResult');
-const swim_style = require('../models/swim');
+const style = require('../models/style');
 const Constants = require('../libs/Constants');
 
 
@@ -8,7 +8,7 @@ exports.getSwimStyle = function (req, res ,next) {
 
   console.log("Getting all style swim");
       // find all team 
-      swim_style.findAll().then(function(styles) {
+      style.findAll().then(function(styles) {
 
          // get result
          var result = new ReturnResult(null, styles, "All styles", null);
