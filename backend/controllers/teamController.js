@@ -3,53 +3,65 @@ const team_md = require('../models/team');
 const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
-
+const auth = require('../middleware/AuthGuard');
 
 // this function is used to test ( get all team )
-exports.Get_Team = function (req, res ,next) {
-
-  console.log("Getting all team");
+exports.Get_Team = function(req, res, next) {
+  console.log('Getting all team');
   // check for user
   if (!req.userData) {
-      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
-      return;
+    res
+      .status(401)
+      .jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
+    return;
   }
 
-      // find all team 
-      team_md.findAll().then(function(teams) {
+  // find all team
+  team_md.findAll().then(function(teams) {
+    // get result
+    var result = new ReturnResult(null, teams, 'All teams', null);
 
-         // get result
-         var result = new ReturnResult(null, teams, "All teams", null);
-  
-         // return
-         res.jsonp(result);
-      })
-
+    // return
+    res.jsonp(result);
+  });
 };
 
 // this function is delete team , Eddy will create a trigger to delete all member of this team when we delete team
-exports.Delete_Team = function (req, res ,next) {
+exports.Delete_Team = function(req, res, next) {
+  console.log('Deleting team');
 
-  console.log("Deleting team");
-  
   // check for user
   if (!req.userData) {
-      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
-      return;
+    res
+      .status(401)
+      .jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
+    return;
   }
-      var team_id = req.params.team_id;
-      // find all team 
-      team_md.findOne({ where : { id: team_id } }).then( function(teams) {
+  var team_id = req.params.team_id;
+  // find all team
+  team_md.findOne({ where: { id: team_id } }).then(function(teams) {
+    // delete teams
+    teams.destroy();
+    // get result
+    var result = new ReturnResult(null, null, 'Delete team successfully', null);
 
-        // delete teams
-        teams.destroy();
-         // get result
-         var result = new ReturnResult(null, null, "Delete team successfully", null);
-  
-         // return
-         res.jsonp(result);
-      })
-
+    // return
+    res.jsonp(result);
+  });
 };
 exports.Add_Team = (req, res, next) => {
   // check authorization if ==1 or ==2
@@ -165,13 +177,58 @@ exports.Add_Team = (req, res, next) => {
 };
 
 // this function is update team
-exports.Update_Team = function (req, res ,next) {
+exports.Update_Team = function(req, res, next) {
+  console.log('Updating team');
 
-  console.log("Updating team");
-  
   // check for user
   if (!req.userData) {
-      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
-      return;
+    res
+      .status(401)
+      .jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
+    return;
+  }
+};
+
+// Get team by coach
+exports.Get_Team_By_Coach = function(req, res, next) {
+  console.log('Updating team');
+  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+    // Select all team by coach id
+    team_md
+      .findAll({ where: { coach_id: req.userData.id } })
+      .then(function(results) {
+        var result = {
+          list_team: results
+        };
+        return res.json(
+          new ReturnResult(null, result, 'Get team information.', null)
+        );
+      })
+      .catch(function(err) {
+        return res.json(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_TEAM
+          )
+        );
+      });
+  } else {
+    return res.json(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
   }
 };
