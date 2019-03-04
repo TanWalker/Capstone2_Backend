@@ -3,6 +3,10 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const backendVersion = require('./routes/backendVersion');
 const teamRoutes = require('./routes/teamRoutes');
+const lessonRoutes = require('./routes/lessonRoutes');
+const styleRoutes = require('./routes/styleRoutes');
+const distanceRoutes = require('./routes/distanceRoutes');
+const exerciseRoutes = require('./routes/exerciseRoutes');
 
 
 // allow override of environment variables
@@ -33,5 +37,13 @@ app.use(authRoutes);
 app.use(backendVersion);
 
 app.use(teamRoutes);
+
+app.use(lessonRoutes);
+
+app.use(styleRoutes);
+
+app.use(distanceRoutes);
+
+app.use(exerciseRoutes);
 
 module.exports = app;
