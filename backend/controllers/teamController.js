@@ -4,6 +4,53 @@ const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 
+
+// this function is used to test ( get all team )
+exports.Get_Team = function (req, res ,next) {
+
+  console.log("Getting all team");
+  // check for user
+  if (!req.userData) {
+      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
+      return;
+  }
+
+      // find all team 
+      team_md.findAll().then(function(teams) {
+
+         // get result
+         var result = new ReturnResult(null, teams, "All teams", null);
+  
+         // return
+         res.jsonp(result);
+      })
+
+};
+
+// this function is delete team , Eddy will create a trigger to delete all member of this team when we delete team
+exports.Delete_Team = function (req, res ,next) {
+
+  console.log("Deleting team");
+  
+  // check for user
+  if (!req.userData) {
+      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
+      return;
+  }
+      var team_id = req.params.team_id;
+      // find all team 
+      team_md.findOne({ where : { id: team_id } }).then( function(teams) {
+
+        // delete teams
+        teams.destroy();
+         // get result
+         var result = new ReturnResult(null, null, "Delete team successfully", null);
+  
+         // return
+         res.jsonp(result);
+      })
+
+};
 exports.Add_Team = (req, res, next) => {
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     var params = req.body;
@@ -113,5 +160,17 @@ exports.Add_Team = (req, res, next) => {
         Constants.messages.UNAUTHORIZED_USER
       )
     );
+  }
+};
+
+// this function is update team
+exports.Update_Team = function (req, res ,next) {
+
+  console.log("Updating team");
+  
+  // check for user
+  if (!req.userData) {
+      res.status(401).jsonp(new ReturnResult("Error", null, null, Constants.messages.UNAUTHORIZED_USER));
+      return;
   }
 };
