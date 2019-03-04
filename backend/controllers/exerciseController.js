@@ -4,7 +4,7 @@ const exercise_time_md = require("../models/exercise_time");
 const Constants = require("../libs/Constants");
 
 // this function is used to test ( get all exercise )
-exports.Get_Exercise = function(req, res, next) {
+exports.getExercise = function(req, res, next) {
   console.log("Getting all Exercises");
   // check user
   if (!req.userData) {
@@ -31,8 +31,8 @@ exports.Get_Exercise = function(req, res, next) {
   });
 };
 
-// this function is delete exercise , Eddy will create a trigger to delete all member of this exercise when we delete exercise
-exports.Delete_Exercise = function(req, res, next) {
+// this function is delete exercise
+exports.deleteExercise = function(req, res, next) {
   console.log("Deleting exercise");
 
   // check for user
@@ -49,12 +49,23 @@ exports.Delete_Exercise = function(req, res, next) {
       );
     return;
   }
-  var id = req.body.id;
+  var id = req.params.exercise_id;
   // find all exercise
-  console.log(id);
+  
   exercise_md
     .findOne({ where: { id: id } })
     .then(function(exercises) {
+      if(exercises == null) {
+        res.status(400).json(
+          new ReturnResult(
+            "Error",
+            null,
+            null,
+            Constants.messages.EXERCISE_ID_INVILID
+          )
+        );
+        return;
+      }
       // delete exercises
       exercises.destroy();
       // get result
@@ -77,8 +88,11 @@ exports.Delete_Exercise = function(req, res, next) {
         )
       );
     });
+  
 };
-exports.Add_Exercise = (req, res, next) => {
+
+// this function is add new exercise
+exports.addExercise = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
@@ -150,7 +164,7 @@ exports.Add_Exercise = (req, res, next) => {
 };
 
 // this function is update exercise
-exports.Update_Exercise = function(req, res, next) {
+exports.updateExercise = function(req, res, next) {
   console.log("Updating Exercise");
 
   // check for user is logged in

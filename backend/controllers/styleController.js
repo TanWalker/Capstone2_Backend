@@ -2,8 +2,8 @@ const ReturnResult = require("../libs/ReturnResult");
 const style_md = require("../models/style");
 const Constants = require("../libs/Constants");
 
-// this function is used to test ( get all Style )
-exports.Get_Style = function(req, res, next) {
+// this function is get all style
+exports.getStyle = function(req, res, next) {
   console.log("Getting all Style");
   // check user are logged in
   if (!req.userData) {
@@ -30,11 +30,10 @@ exports.Get_Style = function(req, res, next) {
   });
 };
 
-// this function is delete Style , Eddy will create a trigger to delete all member of this Style when we delete Style
-exports.Delete_Style = function(req, res, next) {
+// this function is delete Style
+exports.deleteStyle = function(req, res, next) {
   console.log("Deleting Style");
-
-  // check for user
+  // check for user is logged in
   if (!req.userData) {
     res
       .status(401)
@@ -48,14 +47,13 @@ exports.Delete_Style = function(req, res, next) {
       );
     return;
   }
-  var id = req.body.id;
+  // var id = req.body.id;
+  var id = req.params.style_id;
   // find all Style
-  //   console.log(id);
   style_md
     .findOne({ where: { id: id } })
     .then(function(Styles) {
       // delete Styles
-
       Styles.destroy();
       // get result
       var result = new ReturnResult(
@@ -79,7 +77,7 @@ exports.Delete_Style = function(req, res, next) {
     });
 };
 // Add swim style
-exports.Add_Style = (req, res, next) => {
+exports.addStyle = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
@@ -137,7 +135,7 @@ exports.Add_Style = (req, res, next) => {
 };
 
 // this function is update Style
-exports.Update_Style = function(req, res, next) {
+exports.updateStyle = function(req, res, next) {
   console.log("Updating Style");
 
   // check for user is logged in
