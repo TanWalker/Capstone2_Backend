@@ -52,6 +52,7 @@ exports.Delete_Team = function (req, res ,next) {
 
 };
 exports.Add_Team = (req, res, next) => {
+  // check authorization if ==1 or ==2
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     var params = req.body;
     var data = team_md.findOne({ where: { name: params.name } });
