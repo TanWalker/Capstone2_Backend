@@ -1,7 +1,7 @@
 var db = require('../common/database');
 var sequelize = require('sequelize');
 
-var swim_style = db.connect.define('style', {
+var style = db.connect.define('style', {
   id: {
     type: sequelize.INTEGER,
     primaryKey: true,
@@ -13,7 +13,7 @@ var swim_style = db.connect.define('style', {
 },{
   timestamps:false,
   freezeTableName:true,
-  tableName:team
+  tableName:style
 });
 
-module.exports = swim_style;
+module.exports = style;
