@@ -53,6 +53,7 @@ module.exports = Object.freeze({
     MISSING_INFORMATION: 'Some field(s) is/are empty',
     INVALID_INFORMATION: 'Data entered is not valid. Please try again.',
     EXISTING_TEAM: 'This team is already exist.',
-    CAN_NOT_GET_TEAM: 'Can’t get team information.'
+    CAN_NOT_GET_TEAM: 'Can’t get team information.',
+    CAN_NOT_GET_MEMBER: 'Can’t get member information.'
   }
 });

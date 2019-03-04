@@ -198,11 +198,14 @@ exports.Update_Team = function(req, res, next) {
 
 // Get team by coach
 exports.Get_Team_By_Coach = function(req, res, next) {
-  console.log('Updating team');
+  console.log('Get Team By Coach');
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     // Select all team by coach id
     team_md
-      .findAll({ where: { coach_id: req.userData.id } })
+      .findAll({
+        attributes: ['name', 'age'],
+        where: { coach_id: req.userData.id }
+      })
       .then(function(results) {
         var result = {
           list_team: results
@@ -218,6 +221,48 @@ exports.Get_Team_By_Coach = function(req, res, next) {
             null,
             null,
             Constants.messages.CAN_NOT_GET_TEAM
+          )
+        );
+      });
+  } else {
+    return res.json(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
+// Get member by team
+exports.Get_Member_By_Team = function(req, res, next) {
+  console.log('Get Member By Team');
+  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+    // Select all team by coach id
+    var params = req.body;
+    user_md
+      .findAll({
+        attributes: ['username', 'dob', 'phone', 'gender', 'avatar'],
+        where: { team_id: params.team_id }
+      })
+      .then(function(results) {
+        var list;
+        var result = {
+          list_member: results
+        };
+        return res.json(
+          new ReturnResult(null, result, 'Get member by team.', null)
+        );
+      })
+      .catch(function(err) {
+        return res.json(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_MEMBER
           )
         );
       });
