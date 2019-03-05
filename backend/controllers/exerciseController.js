@@ -1,7 +1,7 @@
 const ReturnResult = require('../libs/ReturnResult');
 const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
-var sequelize = require("sequelize");
+var sequelize = require('sequelize');
 const Op = sequelize.Op;
 // this function is used to test ( get all exercise )
 exports.getExercise = function(req, res, next) {
@@ -96,8 +96,10 @@ exports.addExercise = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
-    var data = exercise_md.findOne({ where: { name: params.name , coach_id: req.userData.id } });
-    
+    var data = exercise_md.findOne({
+      where: { name: params.name, coach_id: req.userData.id }
+    });
+    //   console.log(req.userData);
     // check whether existing exercise name
     data.then(function(data) {
       if (data) {
@@ -141,16 +143,16 @@ exports.addExercise = (req, res, next) => {
             );
           });
       }
+    }).catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
     });
-  } else {
-    return res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
   }
 };
 
