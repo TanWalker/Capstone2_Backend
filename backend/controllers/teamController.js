@@ -66,8 +66,18 @@ exports.deleteTeam = function(req, res, next) {
 
 // this function add new team and generate new user
 exports.addTeam = (req, res, next) => {
-  // check authorization if ==1 or ==2
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  // check authorization if ==3 or null return unauthorized 
+  if (req.userData.role_id == 3 || !req.userData) {
+    return res.json(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    // else coach and admin can use this function below
+  } else {
     var params = req.body;
     var data = team_md.findOne({ where: { name: params.name } });
     console.log(req.userData);
@@ -166,15 +176,6 @@ exports.addTeam = (req, res, next) => {
           });
       }
     });
-  } else {
-    return res.json(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
   }
 };
 
