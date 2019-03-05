@@ -1,18 +1,19 @@
-const ReturnResult = require("../libs/ReturnResult");
-const exercise_md = require("../models/exercise");
-const exercise_time_md = require("../models/exercise_time");
-const Constants = require("../libs/Constants");
-
+const ReturnResult = require('../libs/ReturnResult');
+const exercise_md = require('../models/exercise');
+const exercise_time_md = require('../models/exercise_time');
+const Constants = require('../libs/Constants');
+var sequelize = require("sequelize");
+const Op = sequelize.Op;
 // this function is used to test ( get all exercise )
 exports.getExercise = function(req, res, next) {
-  console.log("Getting all Exercises");
-  // check user
+  console.log('Getting all Exercises');
+  // check user is log in.
   if (!req.userData) {
     res
       .status(401)
       .jsonp(
         new ReturnResult(
-          "Error",
+          'Error',
           null,
           null,
           Constants.messages.UNAUTHORIZED_USER
@@ -20,11 +21,10 @@ exports.getExercise = function(req, res, next) {
       );
     return;
   }
-
   // find all exercise
   exercise_md.findAll().then(function(exercises) {
     // get result
-    var result = new ReturnResult(null, exercises, "All exercises", null);
+    var result = new ReturnResult(null, exercises, 'All exercises', null);
 
     // return
     res.jsonp(result);
@@ -33,15 +33,15 @@ exports.getExercise = function(req, res, next) {
 
 // this function is delete exercise
 exports.deleteExercise = function(req, res, next) {
-  console.log("Deleting exercise");
+  console.log('Deleting exercise');
 
-  // check for user
-  if (!req.userData) {
+  // check for use. If role_id == 3 || null, then reject
+  if (req.userData.role_id == 3 || !req.userData) {
     res
       .status(401)
       .jsonp(
         new ReturnResult(
-          "Error",
+          'Error',
           null,
           null,
           Constants.messages.UNAUTHORIZED_USER
@@ -51,19 +51,21 @@ exports.deleteExercise = function(req, res, next) {
   }
   var id = req.params.exercise_id;
   // find all exercise
-  
+
   exercise_md
     .findOne({ where: { id: id } })
     .then(function(exercises) {
-      if(exercises == null) {
-        res.status(400).json(
-          new ReturnResult(
-            "Error",
-            null,
-            null,
-            Constants.messages.EXERCISE_ID_INVILID
-          )
-        );
+      if (exercises == null) {
+        res
+          .status(400)
+          .jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.EXERCISE_ID_INVALID
+            )
+          );
         return;
       }
       // delete exercises
@@ -72,14 +74,14 @@ exports.deleteExercise = function(req, res, next) {
       var result = new ReturnResult(
         null,
         null,
-        "Delete exercise successfully",
+        'Delete exercise successfully',
         null
       );
       // return
       res.jsonp(result);
     })
     .catch(function(err) {
-      res.json(
+      res.jsonp(
         new ReturnResult(
           err.message,
           null,
@@ -88,7 +90,6 @@ exports.deleteExercise = function(req, res, next) {
         )
       );
     });
-  
 };
 
 // this function is add new exercise
@@ -101,9 +102,9 @@ exports.addExercise = (req, res, next) => {
     // check whether existing exercise name
     data.then(function(data) {
       if (data) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.EXISTING_EXERCISE_NAME
@@ -113,12 +114,23 @@ exports.addExercise = (req, res, next) => {
         // Insert exercise info to database //
         var result = exercise_md.create({
           name: params.name,
-          style_id: params.style_id,
-          distance_id: params.distance_id,
+          style: params.style,
+          distance: params.distance,
           reps: params.reps
         });
         result
           .then(function(exercises) {
+            var time = exercise_time_md.findAll({ where: {start: {[Op.between]:[params.start, params.end] }}});
+            if(time){
+              return res.jsonp(
+                new ReturnResult(
+                  'Error',
+                  null,
+                  null,
+                  Constants.messages.EXISTING_TIME
+                )
+              );
+            }else{
             exercise_time_md
               .create({
                 start: params.start,
@@ -132,15 +144,15 @@ exports.addExercise = (req, res, next) => {
                 };
                 res
                   .status(200)
-                  .json(
-                    new ReturnResult(null, result, "Exercise Created", null)
+                  .jsonp(
+                    new ReturnResult(null, result, 'Exercise Created', null)
                   );
               });
-
+            }
             //add the created exercise for return
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
                 err.message,
                 null,
@@ -152,9 +164,9 @@ exports.addExercise = (req, res, next) => {
       }
     });
   } else {
-    return res.json(
+    return res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
@@ -165,15 +177,15 @@ exports.addExercise = (req, res, next) => {
 
 // this function is update exercise
 exports.updateExercise = function(req, res, next) {
-  console.log("Updating Exercise");
+  console.log('Updating Exercise');
 
-  // check for user is logged in
-  if (!req.userData) {
+  //  check for use. If role_id == 3 || null, then reject.
+  if (req.userData.role_id == 3 || !req.userData) {
     res
       .status(401)
       .jsonp(
         new ReturnResult(
-          "Error",
+          'Error',
           null,
           null,
           Constants.messages.UNAUTHORIZED_USER
@@ -186,9 +198,9 @@ exports.updateExercise = function(req, res, next) {
 
     exercise_md.findOne({ where: { id: id } }).then(function(exercises) {
       if (exercises == null) {
-        res.json(
+        res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.EXERCISE_ID_INVILID
@@ -214,9 +226,9 @@ exports.updateExercise = function(req, res, next) {
               .then(function(times) {
                 //if time is null
                 if (times == null) {
-                  res.json(
+                  res.jsonp(
                     new ReturnResult(
-                      "Error",
+                      'Error',
                       null,
                       null,
                       Constants.messages.EXERCISE_ID_INVILID
@@ -240,7 +252,7 @@ exports.updateExercise = function(req, res, next) {
                           new ReturnResult(
                             null,
                             result,
-                            "Update successful",
+                            'Update successful',
                             null
                           )
                         );
@@ -250,7 +262,7 @@ exports.updateExercise = function(req, res, next) {
               });
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
                 err.message,
                 null,

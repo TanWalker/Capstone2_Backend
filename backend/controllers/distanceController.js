@@ -35,7 +35,7 @@ exports.deleteDistance = function(req, res, next) {
   console.log("Deleting Distance");
 
   // check for user
-  if (!req.userData) {
+  if (req.userData.role_id != 1 || !req.userData) {
     res
       .status(401)
       .jsonp(
@@ -68,7 +68,7 @@ exports.deleteDistance = function(req, res, next) {
       res.jsonp(result);
     })
     .catch(function(err) {
-      res.json(
+      res.jsonp(
         new ReturnResult(
           err.message,
           null,
@@ -81,14 +81,14 @@ exports.deleteDistance = function(req, res, next) {
 // Add swim Distance
 exports.addDistance = (req, res, next) => {
   // check authorization if user is admin or coach
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  if (req.userData.role_id == 1 ) {
     const params = req.body;
     var data = distance_md.findOne({ where: { swim_distance: params.swim_distance } });
     //   console.log(req.userData);
     // check whether existing Distance name
     data.then(function(data) {
       if (data) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
             "Error",
             null,
@@ -109,10 +109,10 @@ exports.addDistance = (req, res, next) => {
             };
             res
               .status(200)
-              .json(new ReturnResult(null, result, "Distance Created", null));
+              .jsonp(new ReturnResult(null, result, "Distance Created", null));
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
                 err.message,
                 null,
@@ -124,7 +124,7 @@ exports.addDistance = (req, res, next) => {
       }
     });
   } else {
-    return res.json(
+    return res.jsonp(
       new ReturnResult(
         "Error",
         null,
@@ -140,7 +140,7 @@ exports.updateDistance = function(req, res, next) {
   console.log("Updating Distance");
 
   // check for user is logged in
-  if (!req.userData) {
+  if (req.userData.role_id != 1 || !req.userData) {
     res
       .status(401)
       .jsonp(
@@ -158,7 +158,7 @@ exports.updateDistance = function(req, res, next) {
 
     distance_md.findOne({ where: { id: id } }).then(function(Distances) {
       if (Distances == null) {
-        res.json(
+        res.jsonp(
           new ReturnResult(
             "Error",
             null,
@@ -180,7 +180,7 @@ exports.updateDistance = function(req, res, next) {
             return;
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
                 err.message,
                 null,
