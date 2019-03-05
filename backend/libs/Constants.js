@@ -61,7 +61,8 @@ module.exports = Object.freeze({
     EXISTING_STYLE_NAME: "Style name already exists",
     STYLE_ID_INVILID: "Style id isn't existing or it's was deleted.",
     EXISTING_EXERCISE_NAME: "Exercise name already exists",
-    EXERCISE_ID_INVILID : "Exercise id isn't existing or it's was deleted.",
+    EXERCISE_ID_INVALID : "Exercise id isn't existing or it's was deleted.",
+    EXISTING_TIME : "There is an excercise in this time already",
     EXISTING_DISTANCE: "Swim distance already exists",
     DISTANCE_ID_INVILID : "Distance id isn't existing or it's was deleted."
   }
