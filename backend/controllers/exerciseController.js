@@ -96,7 +96,7 @@ exports.addExercise = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
-    var data = exercise_md.findOne({ where: { name: params.name } });
+    var data = exercise_md.findOne({ where: { name: params.name , coach_id: req.userData.id } });
     
     // check whether existing exercise name
     data.then(function(data) {

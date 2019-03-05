@@ -1,11 +1,11 @@
-const lessonController = require('../controllers/lessonController');
+const scheduleController = require('../controllers/scheduleController');
 const express = require('express');
 const router = express.Router();
 const authCheck = require('../middleware/AuthGuard');
 
-router.post('/api/Lesson',authCheck, lessonController.addLesson);
-router.get('/api/getLesson',authCheck, lessonController.getLesson);
-router.delete('/api/deleteLesson', authCheck, lessonController.deleteLesson);
-router.put('/api/updateLesson', authCheck, lessonController.updateLesson);
+router.post('/api/Lesson',authCheck, scheduleController.addLesson);
+router.get('/api/getLesson',authCheck, scheduleController.getLesson);
+router.delete('/api/deleteLesson', authCheck, scheduleController.deleteLesson);
+router.put('/api/updateLesson', authCheck, scheduleController.updateLesson);
 
 module.exports = router;
