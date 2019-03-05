@@ -241,18 +241,10 @@ exports.getMemberByTeam = function(req, res, next) {
   console.log('Get Member By Team');
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     // Select all team by coach id
-<<<<<<< HEAD
     user_md
       .findAll({
         attributes: ['username', 'dob', 'phone', 'gender', 'avatar'],
         where: { team_id: req.params.team_id }
-=======
-    var team_id = req.params.team_id;
-    user_md
-      .findAll({
-        attributes: ['username', 'dob', 'phone', 'gender', 'avatar'],
-        where: { team_id: team_id}
->>>>>>> 89d67cdcceea24c5808f673b3671f9f402884e8f
       })
       .then(function(results) {
         return res.jsonp(
