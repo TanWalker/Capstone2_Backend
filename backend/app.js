@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const backendVersion = require('./routes/backendVersion');
 const teamRoutes = require('./routes/teamRoutes');
-const lessonRoutes = require('./routes/lessonRoutes');
+const scheduleRoutes = require('./routes/scheduleRoutes');
 const styleRoutes = require('./routes/styleRoutes');
 const distanceRoutes = require('./routes/distanceRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
@@ -38,7 +38,7 @@ app.use(backendVersion);
 
 app.use(teamRoutes);
 
-app.use(lessonRoutes);
+app.use(scheduleRoutes);
 
 app.use(styleRoutes);
 

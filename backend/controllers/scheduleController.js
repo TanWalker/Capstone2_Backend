@@ -1,5 +1,5 @@
 const ReturnResult = require('../libs/ReturnResult');
-const lesson_md = require('../models/lesson_plan');
+const schedule_md = require('../models/schedule');
 const Constants = require('../libs/Constants');
 
 // not finish yet.
@@ -21,7 +21,7 @@ exports.getLesson = function(req, res, next) {
   }
 
   // find all Lesson
-  lesson_md.findAll().then(function(Lessons) {
+  schedule_md.findAll().then(function(Lessons) {
     // get result
     var result = new ReturnResult(null, Lessons, 'All Lessons', null);
 
@@ -49,7 +49,7 @@ exports.deleteLesson = function(req, res, next) {
   var id = req.body.id;
   // find all Lesson
   console.log(id);
-  lesson_md
+  schedule_md
     .findOne({ where: { id: id } })
     .then(function(Lessons) {
       // delete Lessons
@@ -79,7 +79,7 @@ exports.addLesson = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
-    var data = lesson_md.findOne({ where: { name: params.name } });
+    var data = schedule_md.findOne({ where: { name: params.name } });
     //   console.log(req.userData);
     // check whether existing Lesson name
     data.then(function(data) {
@@ -94,7 +94,7 @@ exports.addLesson = (req, res, next) => {
         );
       } else {
         // Insert Lesson info to database //
-        var result = lesson_md.create({
+        var result = schedule_md.create({
           name: params.name,
           style_id: params.style_id,
           distance_id: params.distance_id,
@@ -155,7 +155,7 @@ exports.updateLesson = function(req, res, next) {
     const params = req.body;
     var id = params.id;
 
-    lesson_md.findOne({ where: { id: id } }).then(function(Lessons) {
+    schedule_md.findOne({ where: { id: id } }).then(function(Lessons) {
       if (Lessons == null) {
         res.jsonp(
           new ReturnResult(

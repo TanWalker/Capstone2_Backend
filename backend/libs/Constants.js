@@ -64,6 +64,8 @@ module.exports = Object.freeze({
     EXERCISE_ID_INVALID : "Exercise id isn't existing or it's was deleted.",
     EXISTING_TIME : "There is an excercise in this time already",
     EXISTING_DISTANCE: "Swim distance already exists",
-    DISTANCE_ID_INVILID : "Distance id isn't existing or it's was deleted."
+    DISTANCE_ID_INVILID : "Distance id isn't existing or it's was deleted.",
+    CAN_NOT_GET_EXERCISE: 'Can’t get team information.',
+    
   }
 });

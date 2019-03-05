@@ -1,8 +1,8 @@
-var db = require("../common/database");
-var sequelize = require("sequelize");
+var db = require('../common/database');
+var sequelize = require('sequelize');
 
 var exercise = db.connect.define(
-  "exercise",
+  'exercise',
   {
     id: {
       type: sequelize.INTEGER,
@@ -14,7 +14,7 @@ var exercise = db.connect.define(
     style: { type: sequelize.TEXT, allowNull: false },
     distance: { type: sequelize.TEXT, allowNull: false },
     reps: { type: sequelize.INTEGER, allowNull: false },
-    coach_id: { type: sequelize.INTEGER,allowNull: false }
+    coach_id: { type: sequelize.INTEGER, allowNull: false }
   },
   {
     timestamps: false,

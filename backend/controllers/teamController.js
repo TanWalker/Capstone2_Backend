@@ -33,7 +33,7 @@ exports.getTeam = function(req, res, next) {
   });
 };
 
-// this function is delete team 
+// this function is delete team
 exports.deleteTeam = function(req, res, next) {
   console.log('Deleting team');
 
@@ -66,7 +66,7 @@ exports.deleteTeam = function(req, res, next) {
 
 // this function add new team and generate new user
 exports.addTeam = (req, res, next) => {
-  // check authorization if ==3 or null return unauthorized 
+  // check authorization if ==3 or null return unauthorized
   if (req.userData.role_id == 3 || !req.userData) {
     return res.jsonp(
       new ReturnResult(
@@ -200,7 +200,7 @@ exports.updateTeam = function(req, res, next) {
 };
 
 // Get team by coach
-exports.Get_Team_By_Coach = function(req, res, next) {
+exports.getTeamByCoach = function(req, res, next) {
   console.log('Get Team By Coach');
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     // Select all team by coach id
@@ -210,11 +210,8 @@ exports.Get_Team_By_Coach = function(req, res, next) {
         where: { coach_id: req.userData.id }
       })
       .then(function(results) {
-        var result = {
-          list_team: results
-        };
         return res.jsonp(
-          new ReturnResult(null, result, 'Get team information.', null)
+          new ReturnResult(null, results, 'Get team information.', null)
         );
       })
       .catch(function(err) {
@@ -240,23 +237,18 @@ exports.Get_Team_By_Coach = function(req, res, next) {
 };
 
 // Get member by team
-exports.Get_Member_By_Team = function(req, res, next) {
+exports.getMemberByTeam = function(req, res, next) {
   console.log('Get Member By Team');
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     // Select all team by coach id
-    var params = req.body;
     user_md
       .findAll({
         attributes: ['username', 'dob', 'phone', 'gender', 'avatar'],
-        where: { team_id: params.team_id }
+        where: { team_id: req.params.team_id }
       })
       .then(function(results) {
-        var list;
-        var result = {
-          list_member: results
-        };
         return res.jsonp(
-          new ReturnResult(null, result, 'Get member by team.', null)
+          new ReturnResult(null, results, 'Get member by team.', null)
         );
       })
       .catch(function(err) {

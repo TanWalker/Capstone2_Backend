@@ -11,7 +11,11 @@ router.delete(
   teamControllers.deleteTeam
 );
 router.put('/api/updateTeam', authCheck, teamControllers.updateTeam);
-router.get('/api/getTeamByCoach', authCheck, teamControllers.Get_Team_By_Coach);
-router.get('/api/getMemberByTeam', authCheck, teamControllers.Get_Member_By_Team);
+router.get('/api/getTeamByCoach', authCheck, teamControllers.getTeamByCoach);
+router.get(
+  '/api/getMemberByTeam/:team_id',
+  authCheck,
+  teamControllers.getMemberByTeam
+);
 
 module.exports = router;
