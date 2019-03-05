@@ -1,34 +1,29 @@
-const ReturnResult = require("../libs/ReturnResult");
-const lesson_md = require("../models/lesson_plan");
-const Constants = require("../libs/Constants");
-
-
+const ReturnResult = require('../libs/ReturnResult');
+const lesson_md = require('../models/lesson_plan');
+const Constants = require('../libs/Constants');
 
 // not finish yet.
 
-
 // this function is used to test ( get all Lesson )
 exports.getLesson = function(req, res, next) {
-  console.log("Getting all Lesson");
+  console.log('Getting all Lesson');
   // check user
   if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
 
   // find all Lesson
   lesson_md.findAll().then(function(Lessons) {
     // get result
-    var result = new ReturnResult(null, Lessons, "All Lessons", null);
+    var result = new ReturnResult(null, Lessons, 'All Lessons', null);
 
     // return
     res.jsonp(result);
@@ -37,20 +32,18 @@ exports.getLesson = function(req, res, next) {
 
 // this function is delete Lesson , Eddy will create a trigger to delete all member of this Lesson when we delete Lesson
 exports.deleteLesson = function(req, res, next) {
-  console.log("Deleting Lesson");
+  console.log('Deleting Lesson');
 
   // check for user
   if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
   var id = req.body.id;
@@ -65,16 +58,16 @@ exports.deleteLesson = function(req, res, next) {
       var result = new ReturnResult(
         null,
         null,
-        "Delete lesson successfully",
+        'Delete lesson successfully',
         null
       );
       // return
       res.jsonp(result);
     })
     .catch(function(err) {
-      res.json(
+      res.jsonp(
         new ReturnResult(
-          err.message,
+          'Error',
           null,
           null,
           Constants.messages.INVALID_INFORMATION
@@ -91,9 +84,9 @@ exports.addLesson = (req, res, next) => {
     // check whether existing Lesson name
     data.then(function(data) {
       if (data) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.EXISTING_LESSON_NAME
@@ -117,12 +110,12 @@ exports.addLesson = (req, res, next) => {
             };
             res
               .status(200)
-              .json(new ReturnResult(null, result, "Lesson Created", null));
+              .jsonp(new ReturnResult(null, result, 'Lesson Created', null));
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
-                err.message,
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION
@@ -132,9 +125,9 @@ exports.addLesson = (req, res, next) => {
       }
     });
   } else {
-    return res.json(
+    return res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
@@ -145,20 +138,18 @@ exports.addLesson = (req, res, next) => {
 
 // this function is update Lesson
 exports.updateLesson = function(req, res, next) {
-  console.log("Updating Lesson");
+  console.log('Updating Lesson');
 
   // check for user is logged in
   if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   } else {
     const params = req.body;
@@ -166,9 +157,9 @@ exports.updateLesson = function(req, res, next) {
 
     lesson_md.findOne({ where: { id: id } }).then(function(Lessons) {
       if (Lessons == null) {
-        res.json(
+        res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.LESSON_ID_INVILID
@@ -194,14 +185,14 @@ exports.updateLesson = function(req, res, next) {
             res
               .status(200)
               .jsonp(
-                new ReturnResult(null, success, "Update successful", null)
+                new ReturnResult(null, success, 'Update successful', null)
               );
             return;
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
-                err.message,
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION

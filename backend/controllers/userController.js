@@ -13,7 +13,7 @@ exports.Register = (req, res, next) => {
   //check whether existing user
   data.then(function(data) {
     if (data) {
-      return res.json(
+      return res.jsonp(
         new ReturnResult('Error', null, null, Constants.messages.EXISTING_USER)
       );
     } else {
@@ -37,10 +37,10 @@ exports.Register = (req, res, next) => {
             };
             res
               .status(200)
-              .json(new ReturnResult(null, result, 'User Created', null));
+              .jsonp(new ReturnResult(null, result, 'User Created', null));
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
                 'Error',
                 null,
@@ -60,7 +60,7 @@ exports.Login = (req, res, next) => {
   console.log(params);
   // Check if username is blank
   if (params.username.trim().length == 0) {
-    return res.json(
+    return res.jsonp(
       new ReturnResult('Error', null, null, Constants.messages.INVALID_USER)
     );
   } else {
@@ -76,7 +76,7 @@ exports.Login = (req, res, next) => {
       .then(function(result) {
         // If wrong password
         if (!result) {
-          return res.json(
+          return res.jsonp(
             new ReturnResult(
               'Error',
               null,
@@ -141,10 +141,10 @@ exports.Login = (req, res, next) => {
         };
         return res
           .status(200)
-          .json(new ReturnResult(null, data, Constants.messages.AUTHORIZED));
+          .jsonp(new ReturnResult(null, data, Constants.messages.AUTHORIZED));
       })
       .catch(function(err) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
             'Error',
             null,

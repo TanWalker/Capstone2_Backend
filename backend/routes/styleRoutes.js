@@ -4,7 +4,7 @@ const router = express.Router();
 const authCheck = require('../middleware/AuthGuard');
 
 router.post('/api/Style',authCheck, styleController.addStyle);
-router.get('/api/getStyle',authCheck, styleController.getStyle);
+router.get('/api/public/getStyle', styleController.getStyle);
 router.delete('/api/deleteStyle/:style_id', authCheck, styleController.deleteStyle);
 router.put('/api/updateStyle', authCheck, styleController.updateStyle);
 

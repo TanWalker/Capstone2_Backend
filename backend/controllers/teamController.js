@@ -68,7 +68,7 @@ exports.deleteTeam = function(req, res, next) {
 exports.addTeam = (req, res, next) => {
   // check authorization if ==3 or null return unauthorized 
   if (req.userData.role_id == 3 || !req.userData) {
-    return res.json(
+    return res.jsonp(
       new ReturnResult(
         'Error',
         null,
@@ -84,7 +84,7 @@ exports.addTeam = (req, res, next) => {
     // check whether existing team name
     data.then(function(data) {
       if (data) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
             'Error',
             null,
@@ -161,11 +161,11 @@ exports.addTeam = (req, res, next) => {
                 // response the team and the list user
                 res
                   .status(200)
-                  .json(new ReturnResult(null, result, 'Team Created', null));
+                  .jsonp(new ReturnResult(null, result, 'Team Created', null));
               });
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
                 err.message,
                 null,
@@ -213,12 +213,12 @@ exports.Get_Team_By_Coach = function(req, res, next) {
         var result = {
           list_team: results
         };
-        return res.json(
+        return res.jsonp(
           new ReturnResult(null, result, 'Get team information.', null)
         );
       })
       .catch(function(err) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
             'Error',
             null,
@@ -228,7 +228,7 @@ exports.Get_Team_By_Coach = function(req, res, next) {
         );
       });
   } else {
-    return res.json(
+    return res.jsonp(
       new ReturnResult(
         'Error',
         null,
@@ -255,12 +255,12 @@ exports.Get_Member_By_Team = function(req, res, next) {
         var result = {
           list_member: results
         };
-        return res.json(
+        return res.jsonp(
           new ReturnResult(null, result, 'Get member by team.', null)
         );
       })
       .catch(function(err) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
             'Error',
             null,
@@ -270,7 +270,7 @@ exports.Get_Member_By_Team = function(req, res, next) {
         );
       });
   } else {
-    return res.json(
+    return res.jsonp(
       new ReturnResult(
         'Error',
         null,

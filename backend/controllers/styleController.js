@@ -1,29 +1,15 @@
-const ReturnResult = require("../libs/ReturnResult");
-const style_md = require("../models/style");
-const Constants = require("../libs/Constants");
+const ReturnResult = require('../libs/ReturnResult');
+const style_md = require('../models/style');
+const Constants = require('../libs/Constants');
 
 // this function is get all style
 exports.getStyle = function(req, res, next) {
-  console.log("Getting all Style");
-  // check user are logged in
-  if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
-    return;
-  }
+  console.log('Getting all Style');
 
   // find all Style
   style_md.findAll().then(function(Styles) {
     // get result
-    var result = new ReturnResult(null, Styles, "All Styles", null);
+    var result = new ReturnResult(null, Styles, 'All Styles', null);
 
     // return
     res.jsonp(result);
@@ -32,19 +18,17 @@ exports.getStyle = function(req, res, next) {
 
 // this function is delete Style
 exports.deleteStyle = function(req, res, next) {
-  console.log("Deleting Style");
+  console.log('Deleting Style');
   // check for user is logged in
-  if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+  if (!req.userData || req.userData.role_id == 3) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
   // var id = req.body.id;
@@ -59,36 +43,37 @@ exports.deleteStyle = function(req, res, next) {
       var result = new ReturnResult(
         null,
         null,
-        "Delete Style successfully",
+        'Delete Style successfully',
         null
       );
       // return
       res.jsonp(result);
     })
-    .catch(function(err) {
-      res.json(
-        new ReturnResult(
-          err.message,
-          null,
-          null,
-          Constants.messages.INVALID_INFORMATION
-        )
-      );
-    });
+    .catch(function(err) {});
 };
 // Add swim style
 exports.addStyle = (req, res, next) => {
-  // check authorization if user is admin or coach
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  // check authorization if ==3 or null return unauthorized
+  if (req.userData.role_id == 3 || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.INVALID_INFORMATION
+      )
+    );
+    // else coach and admin can use this function below
+  } else {
     const params = req.body;
     var data = style_md.findOne({ where: { swim_name: params.swim_name } });
     //   console.log(req.userData);
     // check whether existing Style name
     data.then(function(data) {
       if (data) {
-        return res.json(
+        return res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.EXISTING_STYLE_NAME
@@ -108,12 +93,12 @@ exports.addStyle = (req, res, next) => {
             };
             res
               .status(200)
-              .json(new ReturnResult(null, result, "Style Created", null));
+              .jsonp(new ReturnResult(null, result, 'Style Created', null));
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
-                err.message,
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION
@@ -122,44 +107,34 @@ exports.addStyle = (req, res, next) => {
           });
       }
     });
-  } else {
-    return res.json(
-      new ReturnResult(
-        "Error",
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
   }
 };
 
 // this function is update Style
 exports.updateStyle = function(req, res, next) {
-  console.log("Updating Style");
+  console.log('Updating Style');
 
-  // check for user is logged in
-  if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+  // check authorization if ==3 or null return unauthorized
+  if (!req.userData || req.userData.role_id == 3) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
+    // else coach and admin can use the function below
   } else {
     const params = req.body;
     var id = params.id;
 
     style_md.findOne({ where: { id: id } }).then(function(Styles) {
       if (Styles == null) {
-        res.json(
+        res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.STYLE_ID_INVILID
@@ -176,14 +151,14 @@ exports.updateStyle = function(req, res, next) {
             res
               .status(200)
               .jsonp(
-                new ReturnResult(null, success, "Update successful", null)
+                new ReturnResult(null, success, 'Update successful', null)
               );
             return;
           })
           .catch(function(err) {
-            res.json(
+            res.jsonp(
               new ReturnResult(
-                err.message,
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION
