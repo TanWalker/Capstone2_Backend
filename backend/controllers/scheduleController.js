@@ -87,7 +87,7 @@ exports.addSchedule = (req, res, next) => {
     //   console.log(req.userData);
     // check whether existing Schedule name
     data.then(function(data) {
-      if (data) {
+      if (data.start_hour) {
         return res.jsonp(
           new ReturnResult(
             'Error',
