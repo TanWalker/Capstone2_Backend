@@ -1,6 +1,5 @@
 const ReturnResult = require('../libs/ReturnResult');
 const exercise_md = require('../models/exercise');
-const exercise_time_md = require('../models/exercise_time');
 const Constants = require('../libs/Constants');
 var sequelize = require("sequelize");
 const Op = sequelize.Op;
@@ -98,7 +97,7 @@ exports.addExercise = (req, res, next) => {
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
     var data = exercise_md.findOne({ where: { name: params.name } });
-    //   console.log(req.userData);
+    
     // check whether existing exercise name
     data.then(function(data) {
       if (data) {
@@ -116,40 +115,20 @@ exports.addExercise = (req, res, next) => {
           name: params.name,
           style: params.style,
           distance: params.distance,
-          reps: params.reps
+          reps: params.reps,
+          coach_id: req.userData.id
         });
         result
           .then(function(exercises) {
-            var time = exercise_time_md.findAll({ where: {start: {[Op.between]:[params.start, params.end] }}});
-            if(time){
-              return res.jsonp(
-                new ReturnResult(
-                  'Error',
-                  null,
-                  null,
-                  Constants.messages.EXISTING_TIME
-                )
+            var result = {
+              exercises: exercises,
+            };
+            res
+              .status(200)
+              .jsonp(
+                new ReturnResult(null, result, 'Exercise Created', null)
               );
-            }else{
-            exercise_time_md
-              .create({
-                start: params.start,
-                end: params.end,
-                exercise_id: exercises.id
-              })
-              .then(function(times) {
-                var result = {
-                  exercises: exercises,
-                  time: times
-                };
-                res
-                  .status(200)
-                  .jsonp(
-                    new ReturnResult(null, result, 'Exercise Created', null)
-                  );
-              });
-            }
-            //add the created exercise for return
+           
           })
           .catch(function(err) {
             res.jsonp(
@@ -273,5 +252,45 @@ exports.updateExercise = function(req, res, next) {
           });
       }
     });
+  }
+};
+
+
+// Get team by coach
+exports.getExerciseByCoach = function(req, res, next) {
+  console.log('Get Exercise By Coach');
+  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+    // Select all team by coach id
+    exercise_md
+      .findAll({
+        where: { coach_id: req.userData.id }
+      })
+      .then(function(results) {
+        var result = {
+          list_exercise: results
+        };
+        return res.jsonp(
+          new ReturnResult(null, result, 'Get exercise by coach successful.', null)
+        );
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_EXERCISE
+          )
+        );
+      });
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
   }
 };
