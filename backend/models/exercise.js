@@ -13,7 +13,8 @@ var exercise = db.connect.define(
     name: { type: sequelize.TEXT, allowNull: false },
     style: { type: sequelize.TEXT, allowNull: false },
     distance: { type: sequelize.TEXT, allowNull: false },
-    reps: { type: sequelize.INTEGER, allowNull: false }
+    reps: { type: sequelize.INTEGER, allowNull: false },
+    coach_id: { type: sequelize.INTEGER,allowNull: false }
   },
   {
     timestamps: false,

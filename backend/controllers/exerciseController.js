@@ -2,7 +2,7 @@ const ReturnResult = require('../libs/ReturnResult');
 const exercise_md = require('../models/exercise');
 const exercise_time_md = require('../models/exercise_time');
 const Constants = require('../libs/Constants');
-var sequelize = require("sequelize");
+var sequelize = require('sequelize');
 const Op = sequelize.Op;
 // this function is used to test ( get all exercise )
 exports.getExercise = function(req, res, next) {
@@ -97,7 +97,9 @@ exports.addExercise = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
-    var data = exercise_md.findOne({ where: { name: params.name } });
+    var data = exercise_md.findOne({
+      where: { name: params.name, coach_id: req.userData.id }
+    });
     //   console.log(req.userData);
     // check whether existing exercise name
     data.then(function(data) {
@@ -116,62 +118,23 @@ exports.addExercise = (req, res, next) => {
           name: params.name,
           style: params.style,
           distance: params.distance,
-          reps: params.reps
+          reps: params.reps,
+          coach_id: req.userData.id
         });
-        result
-          .then(function(exercises) {
-            var time = exercise_time_md.findAll({ where: {start: {[Op.between]:[params.start, params.end] }}});
-            if(time){
-              return res.jsonp(
-                new ReturnResult(
-                  'Error',
-                  null,
-                  null,
-                  Constants.messages.EXISTING_TIME
-                )
-              );
-            }else{
-            exercise_time_md
-              .create({
-                start: params.start,
-                end: params.end,
-                exercise_id: exercises.id
-              })
-              .then(function(times) {
-                var result = {
-                  exercises: exercises,
-                  time: times
-                };
-                res
-                  .status(200)
-                  .jsonp(
-                    new ReturnResult(null, result, 'Exercise Created', null)
-                  );
-              });
-            }
-            //add the created exercise for return
-          })
-          .catch(function(err) {
-            res.jsonp(
-              new ReturnResult(
-                err.message,
-                null,
-                null,
-                Constants.messages.INVALID_INFORMATION
-              )
-            );
-          });
+        res
+          .status(200)
+          .jsonp(new ReturnResult(null, result, 'Exercise Created', null))
       }
+    }).catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
     });
-  } else {
-    return res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
   }
 };
 
