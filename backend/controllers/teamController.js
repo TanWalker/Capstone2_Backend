@@ -243,11 +243,11 @@ exports.Get_Member_By_Team = function(req, res, next) {
   console.log('Get Member By Team');
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     // Select all team by coach id
-    var params = req.body;
+    var team_id = req.params.team_id;
     user_md
       .findAll({
         attributes: ['username', 'dob', 'phone', 'gender', 'avatar'],
-        where: { team_id: params.team_id }
+        where: { team_id: team_id}
       })
       .then(function(results) {
         var list;
