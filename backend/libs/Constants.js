@@ -59,10 +59,10 @@ module.exports = Object.freeze({
     EXISTING_LESSON_NAME: "Lesson name already exists",
     LESSON_ID_INVILID: "Lesson id isn't existing or it's was deleted.",
     EXISTING_STYLE_NAME: "Style name already exists",
-    STYLE_ID_INVILID: "Lesson id isn't existing or it's was deleted.",
+    STYLE_ID_INVILID: "Style id isn't existing or it's was deleted.",
     EXISTING_EXERCISE_NAME: "Exercise name already exists",
     EXERCISE_ID_INVILID : "Exercise id isn't existing or it's was deleted.",
-    EXISTING_DISTANCE_NAME: "Distance name already exists",
+    EXISTING_DISTANCE: "Swim distance already exists",
     DISTANCE_ID_INVILID : "Distance id isn't existing or it's was deleted."
   }
 });

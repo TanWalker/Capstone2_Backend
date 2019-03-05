@@ -2,8 +2,13 @@ const ReturnResult = require("../libs/ReturnResult");
 const lesson_md = require("../models/lesson_plan");
 const Constants = require("../libs/Constants");
 
+
+
+// not finish yet.
+
+
 // this function is used to test ( get all Lesson )
-exports.Get_Lesson = function(req, res, next) {
+exports.getLesson = function(req, res, next) {
   console.log("Getting all Lesson");
   // check user
   if (!req.userData) {
@@ -31,7 +36,7 @@ exports.Get_Lesson = function(req, res, next) {
 };
 
 // this function is delete Lesson , Eddy will create a trigger to delete all member of this Lesson when we delete Lesson
-exports.Delete_Lesson = function(req, res, next) {
+exports.deleteLesson = function(req, res, next) {
   console.log("Deleting Lesson");
 
   // check for user
@@ -77,7 +82,7 @@ exports.Delete_Lesson = function(req, res, next) {
       );
     });
 };
-exports.Add_Lesson = (req, res, next) => {
+exports.addLesson = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
@@ -139,7 +144,7 @@ exports.Add_Lesson = (req, res, next) => {
 };
 
 // this function is update Lesson
-exports.Update_Lesson = function(req, res, next) {
+exports.updateLesson = function(req, res, next) {
   console.log("Updating Lesson");
 
   // check for user is logged in
