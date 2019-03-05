@@ -10,13 +10,15 @@ var schedule = db.connect.define(
       autoIncrement: true,
       allowNull: false
     },
-    START: { type: sequelize.TIME, allowNull: false },
-    END: { type: sequelize.TIME, allowNull: false },
+    start_hour: { type: sequelize.INTEGER, allowNull: false },
+    end_hour: { type: sequelize.INTEGER, allowNull: false },
     exercise_id: { type: sequelize.INTEGER, allowNull: false },
     coach_id: { type: sequelize.INTEGER, allowNull: false },
     day: { type: sequelize.INTEGER, allowNull: false },
     month: { type: sequelize.INTEGER, allowNull: false },
     year: { type: sequelize.INTEGER, allowNull: false },
+    start_minute: { type: sequelize.INTEGER, allowNull: false },
+    end_minute: { type: sequelize.INTEGER, allowNull: false }
   },
   {
     timestamps: false,

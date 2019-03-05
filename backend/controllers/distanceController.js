@@ -163,7 +163,7 @@ exports.updateDistance = function(req, res, next) {
             "Error",
             null,
             null,
-            Constants.messages.DISTANCE_ID_INVILID
+            Constants.messages.DISTANCE_ID_INVALID
           )
         );
       } else {

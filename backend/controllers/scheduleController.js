@@ -4,11 +4,11 @@ const Constants = require('../libs/Constants');
 
 // not finish yet.
 
-// this function is used to test ( get all Lesson )
-exports.getLesson = function(req, res, next) {
-  console.log('Getting all Lesson');
+// this function is used to test ( get all Schedule )
+exports.getSchedule = function(req, res, next) {
+  console.log('Getting all Schedule');
   // check user
-  if (!req.userData) {
+  if (req.userData.role_id == 3 || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -20,22 +20,22 @@ exports.getLesson = function(req, res, next) {
     return;
   }
 
-  // find all Lesson
-  schedule_md.findAll().then(function(Lessons) {
+  // find all Schedule
+  schedule_md.findAll().then(function(schedule) {
     // get result
-    var result = new ReturnResult(null, Lessons, 'All Lessons', null);
+    var result = new ReturnResult(null, schedule, 'All Schedules', null);
 
     // return
     res.jsonp(result);
   });
 };
 
-// this function is delete Lesson , Eddy will create a trigger to delete all member of this Lesson when we delete Lesson
-exports.deleteLesson = function(req, res, next) {
-  console.log('Deleting Lesson');
+// this function is delete Schedule , Eddy will create a trigger to delete all member of this Schedule when we delete Schedule
+exports.deleteSchedule = function(req, res, next) {
+  console.log('Deleting Schedule');
 
   // check for user
-  if (!req.userData) {
+  if (req.userData.role_id == 3 || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -47,18 +47,18 @@ exports.deleteLesson = function(req, res, next) {
     return;
   }
   var id = req.body.id;
-  // find all Lesson
+  // find all Schedule
   console.log(id);
   schedule_md
     .findOne({ where: { id: id } })
-    .then(function(Lessons) {
-      // delete Lessons
-      Lessons.destroy();
+    .then(function(schedule) {
+      // delete Schedules
+      schedule.destroy();
       // get result
       var result = new ReturnResult(
         null,
         null,
-        'Delete lesson successfully',
+        'Delete schedule successfully',
         null
       );
       // return
@@ -75,13 +75,17 @@ exports.deleteLesson = function(req, res, next) {
       );
     });
 };
-exports.addLesson = (req, res, next) => {
+
+//add Schedule
+exports.addSchedule = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
-    var data = schedule_md.findOne({ where: { name: params.name } });
+    var data = schedule_md.findOne({
+      where: { day: params.day, month: params.month, year: params.year }
+    });
     //   console.log(req.userData);
-    // check whether existing Lesson name
+    // check whether existing Schedule name
     data.then(function(data) {
       if (data) {
         return res.jsonp(
@@ -89,28 +93,32 @@ exports.addLesson = (req, res, next) => {
             'Error',
             null,
             null,
-            Constants.messages.EXISTING_LESSON_NAME
+            Constants.messages.EXISTING_SCHEDULE
           )
         );
       } else {
-        // Insert Lesson info to database //
+        // Insert Schedule info to database //
         var result = schedule_md.create({
-          name: params.name,
-          style_id: params.style_id,
-          distance_id: params.distance_id,
-          repetition: params.repetition,
-          description: params.description
+          start_hour: params.start_hour,
+          end_hour: params.end_hour,
+          exercise_id: params.exercise_id,
+          coach_id: params.coach_id,
+          day: params.day,
+          month: params.month,
+          year: params.year,
+          start_minute: params.start_minute,
+          end_minute: params.end_minute
         });
         result
-          .then(function(Lesson) {
-            // console.log(Lesson);
-            //add the created lesson plan for return
+          .then(function(schedule) {
+            // console.log(Schedule);
+            //add the created Schedule plan for return
             var result = {
-              lesson_plan: Lesson
+              Schedule_plan: schedule
             };
             res
               .status(200)
-              .jsonp(new ReturnResult(null, result, 'Lesson Created', null));
+              .jsonp(new ReturnResult(null, result, 'Schedule Created', null));
           })
           .catch(function(err) {
             res.jsonp(
@@ -124,6 +132,7 @@ exports.addLesson = (req, res, next) => {
           });
       }
     });
+
   } else {
     return res.jsonp(
       new ReturnResult(
@@ -136,9 +145,9 @@ exports.addLesson = (req, res, next) => {
   }
 };
 
-// this function is update Lesson
-exports.updateLesson = function(req, res, next) {
-  console.log('Updating Lesson');
+// this function is update Schedule
+exports.updateSchedule = function(req, res, next) {
+  console.log('Updating Schedule');
 
   // check for user is logged in
   if (!req.userData) {
@@ -155,32 +164,41 @@ exports.updateLesson = function(req, res, next) {
     const params = req.body;
     var id = params.id;
 
-    schedule_md.findOne({ where: { id: id } }).then(function(Lessons) {
-      if (Lessons == null) {
+    schedule_md.findOne({ where: { id: id } }).then(function(schedules) {
+      if (schedules == null) {
         res.jsonp(
           new ReturnResult(
             'Error',
             null,
             null,
-            Constants.messages.LESSON_ID_INVILID
+            Constants.messages.SCHEDULE_ID_INVALID
           )
         );
       } else {
-        Lessons.update({
-          name: params.name == null ? Lessons.name : params.name,
-          style_id:
-            params.style_id == null ? Lessons.style_id : params.style_id,
-          distance_id:
-            params.distance_id == null
-              ? Lessons.distance_id
-              : params.distance_id,
-          repetition:
-            params.repetition == null ? Lessons.repetition : params.repetition,
-          description:
-            params.description == null
-              ? Lessons.description
-              : params.description
-        })
+        schedules
+          .update({
+            start_hour:
+              params.start_hour == null
+                ? schedules.start_hour
+                : params.start_hour,
+            end_hour:
+              params.end_hour == null ? schedules.end_hour : params.end_hour,
+            exercise_id:
+              params.exercise_id == null
+                ? schedules.exercise_id
+                : params.exercise_id,
+            start_minute:
+              params.start_minute == null
+                ? schedules.start_minute
+                : params.start_minute,
+            end_minute:
+              params.end_minute == null
+                ? schedules.end_minute
+                : params.end_minute,
+            day: params.day == null ? schedules.day : params.day,
+            month: params.month == null ? schedules.month : params.month,
+            year: params.year == null ? schedules.year : params.year
+          })
           .then(success => {
             res
               .status(200)
