@@ -1,5 +1,5 @@
 const ReturnResult = require("../libs/ReturnResult");
-const style_md = require("../models/swim_style");
+const style_md = require("../models/style");
 const Constants = require("../libs/Constants");
 
 // this function is used to test ( get all Style )
