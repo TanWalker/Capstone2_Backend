@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
 
 // this function is used to test ( get all team )
-exports.Get_Team = function(req, res, next) {
+exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
   // check for user
   if (!req.userData) {
@@ -33,8 +33,8 @@ exports.Get_Team = function(req, res, next) {
   });
 };
 
-// this function is delete team , Eddy will create a trigger to delete all member of this team when we delete team
-exports.Delete_Team = function(req, res, next) {
+// this function is delete team 
+exports.deleteTeam = function(req, res, next) {
   console.log('Deleting team');
 
   // check for user
@@ -63,7 +63,9 @@ exports.Delete_Team = function(req, res, next) {
     res.jsonp(result);
   });
 };
-exports.Add_Team = (req, res, next) => {
+
+// this function add new team and generate new user
+exports.addTeam = (req, res, next) => {
   // check authorization if ==1 or ==2
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     var params = req.body;
@@ -177,7 +179,7 @@ exports.Add_Team = (req, res, next) => {
 };
 
 // this function is update team
-exports.Update_Team = function(req, res, next) {
+exports.updateTeam = function(req, res, next) {
   console.log('Updating team');
 
   // check for user

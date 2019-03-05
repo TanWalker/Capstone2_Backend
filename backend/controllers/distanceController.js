@@ -3,7 +3,7 @@ const distance_md = require("../models/distance");
 const Constants = require("../libs/Constants");
 
 // this function is used to test ( get all Distance )
-exports.Get_Distance = function(req, res, next) {
+exports.getDistance = function(req, res, next) {
   console.log("Getting all Distance");
   // check user are logged in
   if (!req.userData) {
@@ -31,7 +31,7 @@ exports.Get_Distance = function(req, res, next) {
 };
 
 // this function is delete Distance
-exports.Delete_Distance = function(req, res, next) {
+exports.deleteDistance = function(req, res, next) {
   console.log("Deleting Distance");
 
   // check for user
@@ -48,9 +48,9 @@ exports.Delete_Distance = function(req, res, next) {
       );
     return;
   }
-  var id = req.body.id;
+  // var id = req.body.id;
   // find all Distance
-  //   console.log(id);
+  var id = req.params.distance_id;
   distance_md
     .findOne({ where: { id: id } })
     .then(function(Distances) {
@@ -79,7 +79,7 @@ exports.Delete_Distance = function(req, res, next) {
     });
 };
 // Add swim Distance
-exports.Add_Distance = (req, res, next) => {
+exports.addDistance = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     const params = req.body;
@@ -93,7 +93,7 @@ exports.Add_Distance = (req, res, next) => {
             "Error",
             null,
             null,
-            Constants.messages.EXISTING_DISTANCE_NAME
+            Constants.messages.EXISTING_DISTANCE
           )
         );
       } else {
@@ -136,7 +136,7 @@ exports.Add_Distance = (req, res, next) => {
 };
 
 // this function is update Distance
-exports.Update_Distance = function(req, res, next) {
+exports.updateDistance = function(req, res, next) {
   console.log("Updating Distance");
 
   // check for user is logged in
