@@ -93,69 +93,39 @@ exports.addSchedule = (req, res, next) => {
     // else the user can add
   } else {
     const params = req.body;
-    var data = schedule_md.findOne({
-      where: { day: params.day, month: params.month, year: params.year }
+    // Insert Schedule info to database //
+    var result = schedule_md.create({
+      start_hour: params.start_hour,
+      end_hour: params.end_hour,
+      exercise_id: params.exercise_id,
+      coach_id: req.userData.id,
+      day: params.day,
+      month: params.month,
+      year: params.year,
+      start_minute: params.start_minute,
+      end_minute: params.end_minute
     });
-    // check whether existing Schedule time
-    data.then(function(data) {
-      // convert time to float
-      var start_new = parseFloat(params.start_hour) + params.start_minute / 60;
-      var end_new = parseFloat(params.end_hour) + params.end_minute / 60;
-      var start_old = parseFloat(data.start_hour) + data.start_minute / 60;
-      var end_old = parseFloat(data.end_hour) + data.end_minute / 60;
-      if (
-        // check valid time
-        (start_new >= start_old && start_new < end_old) ||
-        (end_new > start_old && end_new <= end_old) ||
-        (start_old >= start_new &&
-          start_old < end_new &&
-          end_old > start_new &&
-          end_old <= end_new)
-      ) {
-        return res.jsonp(
+    result
+      .then(function(schedule) {
+        // console.log(Schedule);
+        //add the created Schedule plan for return
+        var result = {
+          Schedule_plan: schedule
+        };
+        res
+          .status(200)
+          .jsonp(new ReturnResult(null, result, 'Schedule Created', null));
+      })
+      .catch(function(err) {
+        res.jsonp(
           new ReturnResult(
-            'Error',
+            err.message,
             null,
             null,
-            Constants.messages.EXISTING_SCHEDULE
+            Constants.messages.INVALID_INFORMATION
           )
         );
-      } else {
-        // Insert Schedule info to database //
-        var result = schedule_md.create({
-          start_hour: params.start_hour,
-          end_hour: params.end_hour,
-          exercise_id: params.exercise_id,
-          coach_id: req.userData.id,
-          day: params.day,
-          month: params.month,
-          year: params.year,
-          start_minute: params.start_minute,
-          end_minute: params.end_minute
-        });
-        result
-          .then(function(schedule) {
-            // console.log(Schedule);
-            //add the created Schedule plan for return
-            var result = {
-              Schedule_plan: schedule
-            };
-            res
-              .status(200)
-              .jsonp(new ReturnResult(null, result, 'Schedule Created', null));
-          })
-          .catch(function(err) {
-            res.jsonp(
-              new ReturnResult(
-                err.message,
-                null,
-                null,
-                Constants.messages.INVALID_INFORMATION
-              )
-            );
-          });
-      }
-    });
+      });
   }
 };
 
