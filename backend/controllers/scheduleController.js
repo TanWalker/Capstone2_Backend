@@ -99,6 +99,7 @@ exports.addSchedule = (req, res, next) => {
       end_hour: params.end_hour,
       exercise_id: params.exercise_id,
       coach_id: req.userData.id,
+      team_name: params.team_name,
       day: params.day,
       month: params.month,
       year: params.year,
@@ -179,6 +180,8 @@ exports.updateSchedule = function(req, res, next) {
               params.end_minute == null
                 ? schedules.end_minute
                 : params.end_minute,
+            team_name:
+              params.team_name == null ? schedules.team_name : params.team_name,
             day: params.day == null ? schedules.day : params.day,
             month: params.month == null ? schedules.month : params.month,
             year: params.year == null ? schedules.year : params.year
