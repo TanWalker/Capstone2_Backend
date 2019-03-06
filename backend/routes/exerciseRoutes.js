@@ -7,6 +7,9 @@ router.post('/api/Exercise',authCheck, exerciseController.addExercise);
 router.get('/api/getExercise',authCheck, exerciseController.getExercise);
 router.delete('/api/deleteExercise/:exercise_id', authCheck, exerciseController.deleteExercise);
 router.put('/api/updateExercise', authCheck, exerciseController.updateExercise);
-//get coach
+//get by coach
 router.get('/api/getExerciseByCoach', authCheck, exerciseController.getExerciseByCoach);
+
+//get by ID
+router.get('/api/getExerciseByID/:exercise_id', authCheck, exerciseController.getExerciseByID);
 module.exports = router;

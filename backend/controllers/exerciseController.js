@@ -269,3 +269,48 @@ exports.getExerciseByCoach = function(req, res, next) {
     );
   }
 };
+
+// Get exercise by id
+exports.getExerciseByID = function(req, res, next) {
+  // console.log("Get Exercise By ID");
+  // console.log(req.params);
+  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+    // Select all team by  id
+    exercise_md
+      .findOne({
+        where: { id: req.params.exercise_id }
+      })
+      .then(function(results) {
+        var result = {
+          exercise : results
+        };
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            result,
+            'Get exercise by ID successful.',
+            null
+          )
+        );
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            "Error",
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_EXERCISE
+          )
+        );
+      });
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        "Error",
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
