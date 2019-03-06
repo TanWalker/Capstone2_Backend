@@ -190,15 +190,16 @@ exports.updateExercise = function(req, res, next) {
       } else {
         exercises
           .update({
-            name: params.name == null ? exercises.name : params.name,
+            name:
+              params.name == null ? exercises.name : params.name,
             style_id:
               params.style_id == null ? exercises.style_id : params.style_id,
             distance_id:
-              params.distance_id == null
-                ? exercises.distance_id
-                : params.distance_id,
-            reps: params.reps == null ? exercises.reps : params.reps,
-            date: params.date == null ? exercises.date : params.date
+              params.distance_id == null ? exercises.distance_id : params.distance_id,
+            reps:
+              params.reps == null ? exercises.reps : params.reps,
+            date:
+              params.date == null ? exercises.date : params.date
           })
           .then(success => {
             //find time of this exercise.

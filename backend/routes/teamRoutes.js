@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const authCheck = require('../middleware/AuthGuard');
 
-router.post('/api/team', authCheck, teamControllers.addTeam);
+router.post('/api/Team', authCheck, teamControllers.addTeam);
 router.get('/api/getTeam', authCheck, teamControllers.getTeam);
 router.delete(
   '/api/deleteTeam/:team_id',

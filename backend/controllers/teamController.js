@@ -123,7 +123,8 @@ exports.addTeam = (req, res, next) => {
                   last_id++;
                   var user = {
                     username: 'QK5DN_' + last_id + '',
-                    password: '123456'
+                    password: '123456',
+                    is_verified: "0"
                   };
                   // add user to a list
                   user = JSON.stringify(user);
@@ -140,7 +141,8 @@ exports.addTeam = (req, res, next) => {
                         username: obj.username,
                         password: password,
                         role_id: 3,
-                        team_id: team.id
+                        team_id: team.id,
+                        is_verified: 0
                       })
                       .catch(function(err) {
                         result.push({
