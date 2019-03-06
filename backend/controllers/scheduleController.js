@@ -21,13 +21,15 @@ exports.getSchedule = function(req, res, next) {
   }
 
   // find all Schedule
-  schedule_md.findAll().then(function(schedule) {
-    // get result
-    var result = new ReturnResult(null, schedule, 'All Schedules', null);
+  schedule_md
+    .findAll({ where: { coach_id: req.userData.id } })
+    .then(function(schedule) {
+      // get result
+      var result = new ReturnResult(null, schedule, 'All Schedules', null);
 
-    // return
-    res.jsonp(result);
-  });
+      // return
+      res.jsonp(result);
+    });
 };
 
 // this function is delete Schedule , Eddy will create a trigger to delete all member of this Schedule when we delete Schedule
@@ -78,16 +80,38 @@ exports.deleteSchedule = function(req, res, next) {
 
 //add Schedule
 exports.addSchedule = (req, res, next) => {
-  // check authorization if user is admin or coach
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  // check authorization
+  if (req.userData.role_id == 3 || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    // else the user can add
+  } else {
     const params = req.body;
     var data = schedule_md.findOne({
       where: { day: params.day, month: params.month, year: params.year }
     });
-    //   console.log(req.userData);
-    // check whether existing Schedule name
+    // check whether existing Schedule time
     data.then(function(data) {
-      if (data.start_hour) {
+      // convert time to float
+      var start_new = parseFloat(params.start_hour) + params.start_minute / 60;
+      var end_new = parseFloat(params.end_hour) + params.end_minute / 60;
+      var start_old = parseFloat(data.start_hour) + data.start_minute / 60;
+      var end_old = parseFloat(data.end_hour) + data.end_minute / 60;
+      if (
+        // check valid time
+        (start_new >= start_old && start_new < end_old) ||
+        (end_new > start_old && end_new <= end_old) ||
+        (start_old >= start_new &&
+          start_old < end_new &&
+          end_old > start_new &&
+          end_old <= end_new)
+      ) {
         return res.jsonp(
           new ReturnResult(
             'Error',
@@ -102,7 +126,7 @@ exports.addSchedule = (req, res, next) => {
           start_hour: params.start_hour,
           end_hour: params.end_hour,
           exercise_id: params.exercise_id,
-          coach_id: params.coach_id,
+          coach_id: req.userData.id,
           day: params.day,
           month: params.month,
           year: params.year,
@@ -123,7 +147,7 @@ exports.addSchedule = (req, res, next) => {
           .catch(function(err) {
             res.jsonp(
               new ReturnResult(
-                'Error',
+                err.message,
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION
@@ -132,16 +156,6 @@ exports.addSchedule = (req, res, next) => {
           });
       }
     });
-
-  } else {
-    return res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
   }
 };
 
@@ -150,7 +164,7 @@ exports.updateSchedule = function(req, res, next) {
   console.log('Updating Schedule');
 
   // check for user is logged in
-  if (!req.userData) {
+  if (!req.userData || req.userData.role_id == 3) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -163,8 +177,8 @@ exports.updateSchedule = function(req, res, next) {
   } else {
     const params = req.body;
     var id = params.id;
-
     schedule_md.findOne({ where: { id: id } }).then(function(schedules) {
+      // if no schedule found
       if (schedules == null) {
         res.jsonp(
           new ReturnResult(
