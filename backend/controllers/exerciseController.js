@@ -1,18 +1,18 @@
-const ReturnResult = require('../libs/ReturnResult');
-const exercise_md = require('../models/exercise');
-const Constants = require('../libs/Constants');
-var sequelize = require('sequelize');
+const ReturnResult = require("../libs/ReturnResult");
+const exercise_md = require("../models/exercise");
+const Constants = require("../libs/Constants");
+var sequelize = require("sequelize");
 const Op = sequelize.Op;
 // this function is used to test ( get all exercise )
 exports.getExercise = function(req, res, next) {
-  console.log('Getting all Exercises');
+  console.log("Getting all Exercises");
   // check user is log in.
   if (!req.userData) {
     res
       .status(401)
       .jsonp(
         new ReturnResult(
-          'Error',
+          "Error",
           null,
           null,
           Constants.messages.UNAUTHORIZED_USER
@@ -23,7 +23,7 @@ exports.getExercise = function(req, res, next) {
   // find all exercise
   exercise_md.findAll().then(function(exercises) {
     // get result
-    var result = new ReturnResult(null, exercises, 'All exercises', null);
+    var result = new ReturnResult(null, exercises, "All exercises", null);
 
     // return
     res.jsonp(result);
@@ -32,7 +32,7 @@ exports.getExercise = function(req, res, next) {
 
 // this function is delete exercise
 exports.deleteExercise = function(req, res, next) {
-  console.log('Deleting exercise');
+  console.log("Deleting exercise");
 
   // check for use. If role_id == 3 || null, then reject
   if (req.userData.role_id == 3 || !req.userData) {
@@ -40,7 +40,7 @@ exports.deleteExercise = function(req, res, next) {
       .status(401)
       .jsonp(
         new ReturnResult(
-          'Error',
+          "Error",
           null,
           null,
           Constants.messages.UNAUTHORIZED_USER
@@ -59,7 +59,7 @@ exports.deleteExercise = function(req, res, next) {
           .status(400)
           .jsonp(
             new ReturnResult(
-              'Error',
+              "Error",
               null,
               null,
               Constants.messages.EXERCISE_ID_INVALID
@@ -73,7 +73,7 @@ exports.deleteExercise = function(req, res, next) {
       var result = new ReturnResult(
         null,
         null,
-        'Delete exercise successfully',
+        "Delete exercise successfully",
         null
       );
       // return
@@ -101,64 +101,65 @@ exports.addExercise = (req, res, next) => {
     });
     //   console.log(req.userData);
     // check whether existing exercise name
-    data.then(function(data) {
-      if (data) {
-        return res.jsonp(
+    data
+      .then(function(data) {
+        if (data) {
+          return res.jsonp(
+            new ReturnResult(
+              "Error",
+              null,
+              null,
+              Constants.messages.EXISTING_EXERCISE_NAME
+            )
+          );
+        } else {
+          // Insert exercise info to database //
+          var result = exercise_md.create({
+            name: params.name,
+            style: params.style,
+            distance: params.distance,
+            reps: params.reps,
+            coach_id: req.userData.id
+          });
+          result
+            .then(function(exercises) {
+              var result = {
+                exercises: exercises
+              };
+              res
+                .status(200)
+                .jsonp(
+                  new ReturnResult(null, result, "Exercise Created", null)
+                );
+            })
+            .catch(function(err) {
+              res.jsonp(
+                new ReturnResult(
+                  err.message,
+                  null,
+                  null,
+                  Constants.messages.INVALID_INFORMATION
+                )
+              );
+            });
+        }
+      })
+      .catch(function(err) {
+        res.jsonp(
           new ReturnResult(
-            'Error',
+            err.message,
             null,
             null,
-            Constants.messages.EXISTING_EXERCISE_NAME
+            Constants.messages.UNAUTHORIZED_USER
           )
         );
-      } else {
-        // Insert exercise info to database //
-        var result = exercise_md.create({
-          name: params.name,
-          style: params.style,
-          distance: params.distance,
-          reps: params.reps,
-          coach_id: req.userData.id
-        });
-        result
-          .then(function(exercises) {
-            var result = {
-              exercises: exercises,
-            };
-            res
-              .status(200)
-              .jsonp(
-                new ReturnResult(null, result, 'Exercise Created', null)
-              );
-           
-          })
-          .catch(function(err) {
-            res.jsonp(
-              new ReturnResult(
-                err.message,
-                null,
-                null,
-                Constants.messages.INVALID_INFORMATION
-              )
-            );
-          });
-      }
-    }).catch(function(err) {
-      res.jsonp(
-        new ReturnResult(
-          err.message,
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
-    });
+      });
   }
 };
 
 // this function is update exercise
 exports.updateExercise = function(req, res, next) {
-  console.log('Updating Exercise');
+  console.log("Updating Exercise");
 
   //  check for use. If role_id == 3 || null, then reject.
   if (req.userData.role_id == 3 || !req.userData) {
@@ -166,7 +167,7 @@ exports.updateExercise = function(req, res, next) {
       .status(401)
       .jsonp(
         new ReturnResult(
-          'Error',
+          "Error",
           null,
           null,
           Constants.messages.UNAUTHORIZED_USER
@@ -181,7 +182,7 @@ exports.updateExercise = function(req, res, next) {
       if (exercises == null) {
         res.jsonp(
           new ReturnResult(
-            'Error',
+            "Error",
             null,
             null,
             Constants.messages.EXERCISE_ID_INVILID
@@ -190,58 +191,25 @@ exports.updateExercise = function(req, res, next) {
       } else {
         exercises
           .update({
-            name:
-              params.name == null ? exercises.name : params.name,
+            name: params.name == null ? exercises.name : params.name,
             style_id:
               params.style_id == null ? exercises.style_id : params.style_id,
             distance_id:
-              params.distance_id == null ? exercises.distance_id : params.distance_id,
-            reps:
-              params.reps == null ? exercises.reps : params.reps,
-            date:
-              params.date == null ? exercises.date : params.date
+              params.distance_id == null
+                ? exercises.distance_id
+                : params.distance_id,
+            reps: params.reps == null ? exercises.reps : params.reps,
+            date: params.date == null ? exercises.date : params.date
           })
           .then(success => {
-            //find time of this exercise.
-            exercise_time_md
-              .findOne({ where: { exercise_id: success.id } })
-              .then(function(times) {
-                //if time is null
-                if (times == null) {
-                  res.jsonp(
-                    new ReturnResult(
-                      'Error',
-                      null,
-                      null,
-                      Constants.messages.EXERCISE_ID_INVILID
-                    )
-                  );
-                } else {
-                  //update times.
-                  times
-                    .update({
-                      start: params.start == null ? times.start : params.start,
-                      style_id: params.end == null ? times.end : params.end
-                    })
-                    .then(time => {
-                      var result = {
-                        exercises: success,
-                        time: time
-                      };
-                      res
-                        .status(200)
-                        .jsonp(
-                          new ReturnResult(
-                            null,
-                            result,
-                            'Update successful',
-                            null
-                          )
-                        );
-                      return;
-                    });
-                }
-              });
+
+            var result = {
+              exercises: success
+            };
+            res
+              .status(200)
+              .jsonp(new ReturnResult(null, result, "Update successful", null));
+            return;
           })
           .catch(function(err) {
             res.jsonp(
@@ -258,10 +226,9 @@ exports.updateExercise = function(req, res, next) {
   }
 };
 
-
 // Get team by coach
 exports.getExerciseByCoach = function(req, res, next) {
-  console.log('Get Exercise By Coach');
+  console.log("Get Exercise By Coach");
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
     // Select all team by coach id
     exercise_md
@@ -273,13 +240,18 @@ exports.getExerciseByCoach = function(req, res, next) {
           list_exercise: results
         };
         return res.jsonp(
-          new ReturnResult(null, result, 'Get exercise by coach successful.', null)
+          new ReturnResult(
+            null,
+            result,
+            "Get exercise by coach successful.",
+            null
+          )
         );
       })
       .catch(function(err) {
         return res.jsonp(
           new ReturnResult(
-            'Error',
+            "Error",
             null,
             null,
             Constants.messages.CAN_NOT_GET_EXERCISE
@@ -289,7 +261,7 @@ exports.getExerciseByCoach = function(req, res, next) {
   } else {
     return res.jsonp(
       new ReturnResult(
-        'Error',
+        "Error",
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
