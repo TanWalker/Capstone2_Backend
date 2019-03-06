@@ -106,7 +106,7 @@ exports.addExercise = (req, res, next) => {
         if (data) {
           return res.jsonp(
             new ReturnResult(
-              "Error",
+              'Error',
               null,
               null,
               Constants.messages.EXISTING_EXERCISE_NAME
@@ -129,7 +129,7 @@ exports.addExercise = (req, res, next) => {
               res
                 .status(200)
                 .jsonp(
-                  new ReturnResult(null, result, "Exercise Created", null)
+                  new ReturnResult(null, result, 'Exercise Created', null)
                 );
             })
             .catch(function(err) {
@@ -185,7 +185,7 @@ exports.updateExercise = function(req, res, next) {
             "Error",
             null,
             null,
-            Constants.messages.EXERCISE_ID_INVILID
+            Constants.messages.EXERCISE_ID_INVALID
           )
         );
       } else {
@@ -243,7 +243,7 @@ exports.getExerciseByCoach = function(req, res, next) {
           new ReturnResult(
             null,
             result,
-            "Get exercise by coach successful.",
+            'Get exercise by coach successful.',
             null
           )
         );

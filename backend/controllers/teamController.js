@@ -245,7 +245,7 @@ exports.getMemberByTeam = function(req, res, next) {
     // Select all team by coach id
     user_md
       .findAll({
-        attributes: ['username', 'dob', 'phone', 'gender', 'avatar'],
+        attributes: ['username', 'dob', 'phone', 'gender', 'avatar', 'is_verified'],
         where: { team_id: req.params.team_id }
       })
       .then(function(results) {

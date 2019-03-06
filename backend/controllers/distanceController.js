@@ -5,20 +5,6 @@ const Constants = require("../libs/Constants");
 // this function is used to test ( get all Distance )
 exports.getDistance = function(req, res, next) {
   console.log("Getting all Distance");
-  // check user are logged in
-  if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
-    return;
-  }
 
   // find all Distance
   distance_md.findAll().then(function(Distances) {
@@ -163,7 +149,7 @@ exports.updateDistance = function(req, res, next) {
             "Error",
             null,
             null,
-            Constants.messages.DISTANCE_ID_INVILID
+            Constants.messages.DISTANCE_ID_INVALID
           )
         );
       } else {
