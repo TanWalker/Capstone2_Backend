@@ -226,7 +226,7 @@ exports.updateExercise = function(req, res, next) {
   }
 };
 
-// Get team by coach
+// Get exercise by coach
 exports.getExerciseByCoach = function(req, res, next) {
   console.log("Get Exercise By Coach");
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {

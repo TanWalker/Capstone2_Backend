@@ -9,7 +9,8 @@ var style = db.connect.define('style', {
     allowNull: false
   },
   swim_name: { type: sequelize.TEXT, allowNull: false },
-  description: { type: sequelize.INTEGER, allowNull: false },
+  description: { type: sequelize.TEXT, allowNull: false },
+  coach_id: { type: sequelize.INTEGER, allowNull: false },
 },{
   timestamps:false,
   freezeTableName:true,
