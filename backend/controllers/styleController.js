@@ -9,10 +9,20 @@ exports.getStyle = function(req, res, next) {
   // find all Style
   style_md.findAll().then(function(Styles) {
     // get result
-    var result = new ReturnResult(null, Styles, "All Styles", null);
-
+    
+    
+    if (Object.keys(Styles).length == 1){
+      return res.jsonp(
+        new ReturnResult(Styles, null, "Get all style successful.", null)
+      );
+    }
+    else{
+      return res.jsonp(
+        new ReturnResult(null, Styles, "Get all styles successful.", null)
+      );
+    }
     // return
-    res.jsonp(result);
+    
   });
 };
 
@@ -78,9 +88,10 @@ exports.addStyle = (req, res, next) => {
         var result = {
           style: Style
         };
+        
         res
           .status(200)
-          .jsonp(new ReturnResult(null, result, "Style Created", null));
+          .jsonp(new ReturnResult(result, null, "Style Created", null));
       })
       .catch(function(err) {
         res.jsonp(
@@ -139,7 +150,7 @@ exports.updateStyle = function(req, res, next) {
             res
               .status(200)
               .jsonp(
-                new ReturnResult(null, success, "Update successful", null)
+                new ReturnResult(null, null, "Update successful", null)
               );
             return;
           })
@@ -169,11 +180,20 @@ exports.getStyleByCoach = function(req, res, next) {
       })
       .then(function(results) {
         var result = {
-          list_exercise: results
+          list_style: results
         };
-        return res.jsonp(
-          new ReturnResult(null, result, "Get Style by coach successful.", null)
-        );
+        
+        if (Object.keys(results).length == 1){
+          return res.jsonp(
+            new ReturnResult(result, null, "Get style by coach successful.", null)
+          );
+        }
+        else{
+          return res.jsonp(
+            new ReturnResult(null, result, "Get styles by coach successful.", null)
+          );
+        }
+        
       })
       .catch(function(err) {
         return res.jsonp(

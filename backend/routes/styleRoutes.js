@@ -8,4 +8,7 @@ router.get('/api/public/getStyle', styleController.getStyle);
 router.delete('/api/deleteStyle/:style_id', authCheck, styleController.deleteStyle);
 router.put('/api/updateStyle', authCheck, styleController.updateStyle);
 
+//Get Style By Coach.
+router.get('/api/getStyleByCoach',authCheck, styleController.getStyleByCoach);
+
 module.exports = router;
