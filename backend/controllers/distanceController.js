@@ -9,12 +9,11 @@ exports.getDistance = function(req, res, next) {
   // find all Distance
   distance_md.findAll().then(function(Distances) {
     // get result
-    if (Object.keys(Distances).length == 1){
+    if (Object.keys(Distances).length == 1) {
       return res.jsonp(
         new ReturnResult(Distances, null, "Get all distances successful.", null)
       );
-    }
-    else{
+    } else {
       return res.jsonp(
         new ReturnResult(null, Distances, "Get all distances successful.", null)
       );
@@ -75,7 +74,9 @@ exports.addDistance = (req, res, next) => {
   // check authorization if user is admin or coach
   if (req.userData.role_id == 1) {
     const params = req.body;
-    var data = distance_md.findOne({ where: { swim_distance: params.swim_distance } });
+    var data = distance_md.findOne({
+      where: { swim_distance: params.swim_distance }
+    });
     //   console.log(req.userData);
     // check whether existing Distance name
     data.then(function(data) {
@@ -91,7 +92,7 @@ exports.addDistance = (req, res, next) => {
       } else {
         // Insert Distance info to database //
         var result = distance_md.create({
-          swim_distance: params.swim_distance,
+          swim_distance: params.swim_distance
         });
         result
           .then(function(Distance) {
@@ -132,7 +133,7 @@ exports.updateDistance = function(req, res, next) {
   console.log("Updating Distance");
 
   // check for user is logged in
-  if (req.userData.role_id !=1 || !req.userData) {
+  if (req.userData.role_id != 1 || !req.userData) {
     res
       .status(401)
       .jsonp(
@@ -161,14 +162,14 @@ exports.updateDistance = function(req, res, next) {
       } else {
         Distances.update({
           swim_distance:
-            params.swim_distance == null ? Distances.swim_distance : params.swim_distance,
+            params.swim_distance == null
+              ? Distances.swim_distance
+              : params.swim_distance
         })
           .then(success => {
             res
               .status(200)
-              .jsonp(
-                new ReturnResult(null, null, "Update successful", null)
-              );
+              .jsonp(new ReturnResult(null, null, "Update successful", null));
             return;
           })
           .catch(function(err) {

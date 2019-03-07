@@ -25,21 +25,11 @@ exports.getExercise = function(req, res, next) {
     // get result
     if (Object.keys(exercises).length == 1) {
       return res.jsonp(
-        new ReturnResult(
-          exercises,
-          null,
-          "Get exercise successful.",
-          null
-        )
+        new ReturnResult(exercises, null, "Get exercise successful.", null)
       );
     } else {
       return res.jsonp(
-        new ReturnResult(
-          null,
-          exercises,
-          "Get exercises successful.",
-          null
-        )
+        new ReturnResult(null, exercises, "Get exercises successful.", null)
       );
     }
   });
@@ -253,25 +243,14 @@ exports.getExerciseByCoach = function(req, res, next) {
         var result = {
           list_exercise: results
         };
-        if (Object.keys(results).length == 1) {
-          return res.jsonp(
-            new ReturnResult(
-              result,
-              null,
-              "Get exercise by coach successful.",
-              null
-            )
-          );
-        } else {
-          return res.jsonp(
-            new ReturnResult(
-              null,
-              result,
-              "Get exercises by coach successful.",
-              null
-            )
-          );
-        }
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            result,
+            "Get exercises by coach successful.",
+            null
+          )
+        );
       })
       .catch(function(err) {
         return res.jsonp(
