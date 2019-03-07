@@ -53,9 +53,9 @@ module.exports = Object.freeze({
     MISSING_INFORMATION: 'Some field(s) is/are empty',
     INVALID_INFORMATION: 'Data entered is not valid. Please try again.',
     EXISTING_TEAM: 'This team is already exist.',
+    INVILID_TEAM_ID: "This team ID is not exist or it's was deleted.",
     CAN_NOT_GET_TEAM: 'Can’t get team information.',
     CAN_NOT_GET_MEMBER: 'Can’t get member information.',
-    EXISTING_TEAM: "This team is already exist",
     SCHEDULE_ID_INVALID: "Schedule id isn't existing or it's was deleted.",
     EXISTING_STYLE_NAME: "Style name already exists",
     STYLE_ID_INVALID: "Style id isn't existing or it's was deleted.",
@@ -64,7 +64,7 @@ module.exports = Object.freeze({
     EXISTING_TIME : "There is an excercise in this time already",
     EXISTING_DISTANCE: "Swim distance already exists",
     DISTANCE_ID_INVALID : "Distance id isn't existing or it's was deleted.",
-    CAN_NOT_GET_EXERCISE: 'Can’t get team information.',
+    CAN_NOT_GET_EXERCISE: 'Can’t get exercise information.',
     EXISTING_SCHEDULE:'Schedule already exists.'
   }
 });
