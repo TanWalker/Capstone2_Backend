@@ -9,10 +9,16 @@ exports.getDistance = function(req, res, next) {
   // find all Distance
   distance_md.findAll().then(function(Distances) {
     // get result
-    var result = new ReturnResult(null, Distances, "All Distances", null);
-
-    // return
-    res.jsonp(result);
+    if (Object.keys(Distances).length == 1){
+      return res.jsonp(
+        new ReturnResult(Distances, null, "Get all distances successful.", null)
+      );
+    }
+    else{
+      return res.jsonp(
+        new ReturnResult(null, Distances, "Get all distances successful.", null)
+      );
+    }
   });
 };
 
@@ -67,7 +73,7 @@ exports.deleteDistance = function(req, res, next) {
 // Add swim Distance
 exports.addDistance = (req, res, next) => {
   // check authorization if user is admin or coach
-  if (req.userData.role_id == 1 ) {
+  if (req.userData.role_id == 1) {
     const params = req.body;
     var data = distance_md.findOne({ where: { swim_distance: params.swim_distance } });
     //   console.log(req.userData);
@@ -95,7 +101,7 @@ exports.addDistance = (req, res, next) => {
             };
             res
               .status(200)
-              .jsonp(new ReturnResult(null, result, "Distance Created", null));
+              .jsonp(new ReturnResult(result, null, "Distance Created", null));
           })
           .catch(function(err) {
             res.jsonp(
@@ -126,7 +132,7 @@ exports.updateDistance = function(req, res, next) {
   console.log("Updating Distance");
 
   // check for user is logged in
-  if (req.userData.role_id != 1 || !req.userData) {
+  if (req.userData.role_id !=1 || !req.userData) {
     res
       .status(401)
       .jsonp(
@@ -161,7 +167,7 @@ exports.updateDistance = function(req, res, next) {
             res
               .status(200)
               .jsonp(
-                new ReturnResult(null, success, "Update successful", null)
+                new ReturnResult(null, null, "Update successful", null)
               );
             return;
           })

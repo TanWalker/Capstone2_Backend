@@ -23,10 +23,25 @@ exports.getExercise = function(req, res, next) {
   // find all exercise
   exercise_md.findAll().then(function(exercises) {
     // get result
-    var result = new ReturnResult(null, exercises, "All exercises", null);
-
-    // return
-    res.jsonp(result);
+    if (Object.keys(exercises).length == 1) {
+      return res.jsonp(
+        new ReturnResult(
+          exercises,
+          null,
+          "Get exercise successful.",
+          null
+        )
+      );
+    } else {
+      return res.jsonp(
+        new ReturnResult(
+          null,
+          exercises,
+          "Get exercises successful.",
+          null
+        )
+      );
+    }
   });
 };
 
@@ -106,7 +121,7 @@ exports.addExercise = (req, res, next) => {
         if (data) {
           return res.jsonp(
             new ReturnResult(
-              'Error',
+              "Error",
               null,
               null,
               Constants.messages.EXISTING_EXERCISE_NAME
@@ -129,7 +144,7 @@ exports.addExercise = (req, res, next) => {
               res
                 .status(200)
                 .jsonp(
-                  new ReturnResult(null, result, 'Exercise Created', null)
+                  new ReturnResult(result, null, "Exercise Created", null)
                 );
             })
             .catch(function(err) {
@@ -202,13 +217,12 @@ exports.updateExercise = function(req, res, next) {
             date: params.date == null ? exercises.date : params.date
           })
           .then(success => {
-
             var result = {
               exercises: success
             };
             res
               .status(200)
-              .jsonp(new ReturnResult(null, result, "Update successful", null));
+              .jsonp(new ReturnResult(null, null, "Update successful", null));
             return;
           })
           .catch(function(err) {
@@ -226,7 +240,7 @@ exports.updateExercise = function(req, res, next) {
   }
 };
 
-// Get team by coach
+// Get exercise by coach
 exports.getExerciseByCoach = function(req, res, next) {
   console.log("Get Exercise By Coach");
   if (req.userData.role_id == 1 || req.userData.role_id == 2) {
@@ -239,13 +253,64 @@ exports.getExerciseByCoach = function(req, res, next) {
         var result = {
           list_exercise: results
         };
+        if (Object.keys(results).length == 1) {
+          return res.jsonp(
+            new ReturnResult(
+              result,
+              null,
+              "Get exercise by coach successful.",
+              null
+            )
+          );
+        } else {
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              result,
+              "Get exercises by coach successful.",
+              null
+            )
+          );
+        }
+      })
+      .catch(function(err) {
         return res.jsonp(
           new ReturnResult(
+            "Error",
             null,
-            result,
-            'Get exercise by coach successful.',
-            null
+            null,
+            Constants.messages.CAN_NOT_GET_EXERCISE
           )
+        );
+      });
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        "Error",
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
+// Get exercise by id
+exports.getExerciseByID = function(req, res, next) {
+  // console.log("Get Exercise By ID");
+  // console.log(req.params);
+  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+    // Select all team by  id
+    exercise_md
+      .findOne({
+        where: { id: req.params.exercise_id }
+      })
+      .then(function(results) {
+        var result = {
+          exercise: results
+        };
+        return res.jsonp(
+          new ReturnResult(result, null, "Get exercise by ID successful.", null)
         );
       })
       .catch(function(err) {
