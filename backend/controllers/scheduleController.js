@@ -110,11 +110,11 @@ exports.addSchedule = (req, res, next) => {
         // console.log(Schedule);
         //add the created Schedule plan for return
         var result = {
-          Schedule_plan: schedule
+          schedule: schedule
         };
         res
           .status(200)
-          .jsonp(new ReturnResult(null, result, 'Schedule Created', null));
+          .jsonp(new ReturnResult(result, null, 'Schedule Created', null));
       })
       .catch(function(err) {
         res.jsonp(
@@ -187,7 +187,7 @@ exports.updateSchedule = function(req, res, next) {
             res
               .status(200)
               .jsonp(
-                new ReturnResult(null, success, 'Update successful', null)
+                new ReturnResult(success, null, 'Update successful', null)
               );
             return;
           })

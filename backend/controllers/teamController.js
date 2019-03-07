@@ -9,17 +9,15 @@ const auth = require('../middleware/AuthGuard');
 exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
   // check for user
-  if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          'Error',
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+  if (!req.userData || req.userData.role_id == 3) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
 
@@ -38,17 +36,15 @@ exports.deleteTeam = function(req, res, next) {
   console.log('Deleting team');
 
   // check for user
-  if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          'Error',
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+  if (!req.userData || req.userData.role_id == 3) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
   var team_id = req.params.team_id;
@@ -80,7 +76,6 @@ exports.addTeam = (req, res, next) => {
   } else {
     var params = req.body;
     var data = team_md.findOne({ where: { name: params.name } });
-    console.log(req.userData);
     // check whether existing team name
     data.then(function(data) {
       if (data) {
@@ -124,7 +119,7 @@ exports.addTeam = (req, res, next) => {
                   var user = {
                     username: 'QK5DN_' + last_id + '',
                     password: '123456',
-                    is_verified: "0"
+                    is_verified: '0'
                   };
                   // add user to a list
                   user = JSON.stringify(user);
@@ -143,11 +138,6 @@ exports.addTeam = (req, res, next) => {
                         role_id: 3,
                         team_id: team.id,
                         is_verified: 0
-                      })
-                      .catch(function(err) {
-                        result.push({
-                          user: user
-                        });
                       });
                   });
                 });
@@ -155,7 +145,6 @@ exports.addTeam = (req, res, next) => {
                 return Promise.resolve(result);
               })
               .then(function(info) {
-                console.log(info);
                 var result = {
                   team: team,
                   list_user: info
@@ -187,16 +176,14 @@ exports.updateTeam = function(req, res, next) {
 
   // check for user
   if (!req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          'Error',
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
 };
@@ -204,7 +191,16 @@ exports.updateTeam = function(req, res, next) {
 // Get team by coach
 exports.getTeamByCoach = function(req, res, next) {
   console.log('Get Team By Coach');
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  if (req.userData.role_id == 3 || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  } else {
     // Select all team by coach id
     team_md
       .findAll({
@@ -226,7 +222,13 @@ exports.getTeamByCoach = function(req, res, next) {
           )
         );
       });
-  } else {
+  }
+};
+
+// Get member by team
+exports.getMemberByTeam = function(req, res, next) {
+  console.log('Get Member By Team');
+  if (req.userData.role_id == 3 || !req.userData) {
     return res.jsonp(
       new ReturnResult(
         'Error',
@@ -235,17 +237,18 @@ exports.getTeamByCoach = function(req, res, next) {
         Constants.messages.UNAUTHORIZED_USER
       )
     );
-  }
-};
-
-// Get member by team
-exports.getMemberByTeam = function(req, res, next) {
-  console.log('Get Member By Team');
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  } else {
     // Select all team by coach id
     user_md
       .findAll({
-        attributes: ['username', 'dob', 'phone', 'gender', 'avatar', 'is_verified'],
+        attributes: [
+          'username',
+          'dob',
+          'phone',
+          'gender',
+          'avatar',
+          'is_verified'
+        ],
         where: { team_id: req.params.team_id }
       })
       .then(function(results) {
@@ -263,14 +266,5 @@ exports.getMemberByTeam = function(req, res, next) {
           )
         );
       });
-  } else {
-    return res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
   }
 };
