@@ -1,23 +1,31 @@
-var config = require("config");
-var mysql = require("mysql");
+var config = require('config');
+var mysql = require('mysql');
+var Sequelize = require('sequelize');
+require('dotenv').config();
 
-var connection = mysql.createConnection({
-  host: config.get("mysql.host"),
-  user: config.get("mysql.user"),
-  password: config.get("mysql.password"),
-  database: config.get("mysql.database"),
-  port: config.get("mysql.port")
-});
-
-connection.connect();
-
-function getConnection() {
-  if (!connection) {
-    connection.connect();
+var connect = new Sequelize(
+  process.env.DB_DATABASE || config.get('mysql.database'),
+  process.env.DB_USERNAME || config.get('mysql.user'),
+  process.env.DB_PASSWORD || config.get('mysql.password'),
+  {
+    host: process.env.DB_HOST || config.get('mysql.host'),
+    dialect: 'mysql',
+    freezeTableName: true,
+    operatorsAliases: false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
-  return connection;
-}
+);
+console.log(process.env.DB_DATABASE);
+connect
+  .authenticate()
+  .then(() => console.log('connected'))
+  .catch(() => console.log('error'));
 
 module.exports = {
-  getConnection: getConnection
+  connect: connect
 };

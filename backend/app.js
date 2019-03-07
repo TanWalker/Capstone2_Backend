@@ -1,10 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const exampleRoutes = require('./routes/example');
-
-const webRoutes = require('./routes/webRoutes');
+const authRoutes = require('./routes/authRoutes');
 const backendVersion = require('./routes/backendVersion');
+const teamRoutes = require('./routes/teamRoutes');
+const scheduleRoutes = require('./routes/scheduleRoutes');
+const styleRoutes = require('./routes/styleRoutes');
+const distanceRoutes = require('./routes/distanceRoutes');
+const exerciseRoutes = require('./routes/exerciseRoutes');
 
+
+// allow override of environment variables
+require('dotenv').config();
 const app = express();
 
 app.use(bodyParser.json());
@@ -13,9 +19,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // set header
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+
   res.setHeader(
-    'Access-Control-Allow-Header',
-    'Origin,X-Requested-With,Content-Type,Accept'
+    'Access-Control-Allow-Headers',
+    'Origin,X-Requested-With,Content-Type,Accept,Authorization'
   );
   res.setHeader(
     'Access-Control-Allow-Methods',
@@ -24,11 +31,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// use this url to call routes/example.js
-app.use('/api/posts', exampleRoutes);
 
-app.use(webRoutes);
+app.use(authRoutes);
 
 app.use(backendVersion);
+
+app.use(teamRoutes);
+
+app.use(scheduleRoutes);
+
+app.use(styleRoutes);
+
+app.use(distanceRoutes);
+
+app.use(exerciseRoutes);
 
 module.exports = app;
