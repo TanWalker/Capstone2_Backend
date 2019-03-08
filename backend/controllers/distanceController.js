@@ -1,42 +1,34 @@
-const ReturnResult = require("../libs/ReturnResult");
-const distance_md = require("../models/distance");
-const Constants = require("../libs/Constants");
+const ReturnResult = require('../libs/ReturnResult');
+const distance_md = require('../models/distance');
+const Constants = require('../libs/Constants');
 
 // this function is used to test ( get all Distance )
 exports.getDistance = function(req, res, next) {
-  console.log("Getting all Distance");
+  console.log('Getting all Distance');
 
   // find all Distance
-  distance_md.findAll().then(function(Distances) {
+  distance_md.findAll().then(function(distances) {
     // get result
-    if (Object.keys(Distances).length == 1) {
-      return res.jsonp(
-        new ReturnResult(Distances, null, "Get all distances successful.", null)
-      );
-    } else {
-      return res.jsonp(
-        new ReturnResult(null, Distances, "Get all distances successful.", null)
-      );
-    }
+    return res.jsonp(
+      new ReturnResult(null, distances, 'Get all distances successful.', null)
+    );
   });
 };
 
 // this function is delete Distance
 exports.deleteDistance = function(req, res, next) {
-  console.log("Deleting Distance");
+  console.log('Deleting Distance');
 
   // check for user
-  if (req.userData.role_id != 1 || !req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+  if (req.userData.role_id == 3 || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   }
   // var id = req.body.id;
@@ -52,7 +44,7 @@ exports.deleteDistance = function(req, res, next) {
       var result = new ReturnResult(
         null,
         null,
-        "Delete Distance successfully",
+        'Delete Distance successfully',
         null
       );
       // return
@@ -61,7 +53,7 @@ exports.deleteDistance = function(req, res, next) {
     .catch(function(err) {
       res.jsonp(
         new ReturnResult(
-          err.message,
+          'Error',
           null,
           null,
           Constants.messages.INVALID_INFORMATION
@@ -72,7 +64,7 @@ exports.deleteDistance = function(req, res, next) {
 // Add swim Distance
 exports.addDistance = (req, res, next) => {
   // check authorization if user is admin or coach
-  if (req.userData.role_id == 1) {
+  if (req.userData.role_id != 3) {
     const params = req.body;
     var data = distance_md.findOne({
       where: { swim_distance: params.swim_distance }
@@ -83,7 +75,7 @@ exports.addDistance = (req, res, next) => {
       if (data) {
         return res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.EXISTING_DISTANCE
@@ -95,19 +87,19 @@ exports.addDistance = (req, res, next) => {
           swim_distance: params.swim_distance
         });
         result
-          .then(function(Distance) {
+          .then(function(distance) {
             //add the created Distance  for return
-            var result = {
-              distance: Distance
-            };
+
             res
               .status(200)
-              .jsonp(new ReturnResult(result, null, "Distance Created", null));
+              .jsonp(
+                new ReturnResult(distance, null, 'Distance Created', null)
+              );
           })
           .catch(function(err) {
             res.jsonp(
               new ReturnResult(
-                err.message,
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION
@@ -119,7 +111,7 @@ exports.addDistance = (req, res, next) => {
   } else {
     return res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
@@ -130,52 +122,51 @@ exports.addDistance = (req, res, next) => {
 
 // this function is update Distance
 exports.updateDistance = function(req, res, next) {
-  console.log("Updating Distance");
+  console.log('Updating Distance');
 
   // check for user is logged in
-  if (req.userData.role_id != 1 || !req.userData) {
-    res
-      .status(401)
-      .jsonp(
-        new ReturnResult(
-          "Error",
-          null,
-          null,
-          Constants.messages.UNAUTHORIZED_USER
-        )
-      );
+  if (req.userData.role_id == 3 || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
     return;
   } else {
     const params = req.body;
     var id = params.id;
 
-    distance_md.findOne({ where: { id: id } }).then(function(Distances) {
-      if (Distances == null) {
+    distance_md.findOne({ where: { id: id } }).then(function(distance) {
+      if (distance == null) {
         res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.DISTANCE_ID_INVALID
           )
         );
       } else {
-        Distances.update({
-          swim_distance:
-            params.swim_distance == null
-              ? Distances.swim_distance
-              : params.swim_distance
-        })
+        distance
+          .update({
+            swim_distance:
+              params.swim_distance == null
+                ? distance.swim_distance
+                : params.swim_distance
+          })
           .then(success => {
             res
               .status(200)
-              .jsonp(new ReturnResult(null, null, "Update successful", null));
+              .jsonp(new ReturnResult(null, null, 'Update successful', null));
             return;
           })
           .catch(function(err) {
             res.jsonp(
               new ReturnResult(
-                err.message,
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION

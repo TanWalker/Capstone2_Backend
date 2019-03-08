@@ -7,11 +7,11 @@ exports.getStyle = function(req, res, next) {
   console.log("Getting all Style");
 
   // find all Style
-  style_md.findAll().then(function(Styles) {
+  style_md.findAll().then(function(styles) {
     // get result
 
     return res.jsonp(
-      new ReturnResult(null, Styles, "Get all styles successful.", null)
+      new ReturnResult(null, styles, "Get all styles successful.", null)
     );
 
     // return
@@ -38,9 +38,9 @@ exports.deleteStyle = function(req, res, next) {
   // find all Style
   style_md
     .findOne({ where: { id: id } })
-    .then(function(Styles) {
+    .then(function(style) {
       // delete Styles
-      Styles.destroy();
+      style.destroy();
       // get result
       var result = new ReturnResult(
         null,
@@ -75,14 +75,12 @@ exports.addStyle = (req, res, next) => {
       coach_id: req.userData.id
     });
     result
-      .then(function(Style) {
+      .then(function(style) {
         //add the created Style  for return
-        var result = {
-          style: Style
-        };
+        
         res
           .status(200)
-          .jsonp(new ReturnResult(result, null, "Style Created", null));
+          .jsonp(new ReturnResult(style, null, "Style Created", null));
       })
       .catch(function(err) {
         res.jsonp(
@@ -117,25 +115,25 @@ exports.updateStyle = function(req, res, next) {
     const params = req.body;
     var id = params.id;
 
-    style_md.findOne({ where: { id: id } }).then(function(Styles) {
-      if (Styles == null) {
+    style_md.findOne({ where: { id: id } }).then(function(style) {
+      if (style == null) {
         res.jsonp(
           new ReturnResult(
             "Error",
             null,
             null,
-            Constants.messages.STYLE_ID_INVILID
+            Constants.messages.STYLE_ID_INVALID
           )
         );
       } else {
-        Styles.update({
+        style.update({
           swim_name:
-            params.swim_name == null ? Styles.swim_name : params.swim_name,
+            params.swim_name == null ? style.swim_name : params.swim_name,
           description:
             params.description == null
-              ? Styles.description
+              ? style.description
               : params.description,
-          coach_id: params.coach_id == null ? Styles.coach_id : params.coach_id
+          coach_id: params.coach_id == null ? style.coach_id : params.coach_id
         })
           .then(success => {
             res
@@ -161,21 +159,19 @@ exports.updateStyle = function(req, res, next) {
 // Get Style by coach
 exports.getStyleByCoach = function(req, res, next) {
   console.log("Get Style By Coach");
-  if (req.userData.role_id == 1 || req.userData.role_id == 2) {
+  if (req.userData.role_id !=3) {
     // Select all team by coach id
     style_md
       .findAll({
         where: { coach_id: req.userData.id }
       })
       .then(function(results) {
-        var result = {
-          list_style: results
-        };
+       
 
         return res.jsonp(
           new ReturnResult(
             null,
-            result,
+            results,
             "Get styles by coach successful.",
             null
           )
