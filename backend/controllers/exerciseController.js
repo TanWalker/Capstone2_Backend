@@ -265,6 +265,17 @@ exports.getExerciseByID = function(req, res, next) {
         where: { id: req.params.exercise_id }
       })
       .then(function(result) {
+        if (result == null) {
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.EXERCISE_ID_INVALID
+            )
+          );
+          return;
+        }
         return res.jsonp(
           new ReturnResult(result, null, 'Get exercise by ID successful.', null)
         );

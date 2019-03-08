@@ -38,7 +38,17 @@ exports.deleteDistance = function(req, res, next) {
     .findOne({ where: { id: id } })
     .then(function(Distances) {
       // delete Distances
-
+      if (Distances == null) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.DISTANCE_ID_INVALID
+          )
+        );
+        return;
+      }
       Distances.destroy();
       // get result
       var result = new ReturnResult(
