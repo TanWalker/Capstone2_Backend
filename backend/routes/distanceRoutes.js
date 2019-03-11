@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const authCheck = require('../middleware/AuthGuard');
 
-router.post('/api/Distance', authCheck, distanceController.addDistance);
+router.post('/api/addDistance', authCheck, distanceController.addDistance);
 router.get('/api/public/getDistance', distanceController.getDistance);
 router.delete(
   '/api/deleteDistance/:distance_id',
