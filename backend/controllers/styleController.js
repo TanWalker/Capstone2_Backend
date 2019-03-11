@@ -39,6 +39,17 @@ exports.deleteStyle = function(req, res, next) {
   style_md
     .findOne({ where: { id: id } })
     .then(function(style) {
+      if (style == null) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.STYLE_ID_INVALID
+          )
+        );
+        return;
+      }
       // delete Styles
       style.destroy();
       // get result
@@ -68,6 +79,7 @@ exports.addStyle = (req, res, next) => {
     // else coach and admin can use this function below
   } else {
     const params = req.body;
+    // console.log(params)
     // Insert Style info to database //
     var result = style_md.create({
       swim_name: params.swim_name,
