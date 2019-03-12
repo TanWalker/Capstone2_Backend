@@ -13,3 +13,4 @@ router.delete(
 router.put('/api/updateDistance', authCheck, distanceController.updateDistance);
 
 module.exports = router;
+  

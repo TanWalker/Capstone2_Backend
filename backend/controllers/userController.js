@@ -152,3 +152,45 @@ exports.Login = (req, res, next) => {
       });
   }
 };
+
+// update user controller
+exports.updateUser = (req, res, next) => {
+  console.log('Updating User');
+  var params = req.body;
+  user_md.findOne({ where: { id: req.userData.id } }).then(function(user) {
+    if (user == null) {
+      res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.USER_NOT_FOUND)
+      );
+    } else {
+      user
+        .update({
+          avatar: params.avatar,
+          first_name: params.first_name,
+          last_name: params.last_name,
+          email: params.email,
+          phone: params.phone,
+          dob: params.dob,
+          gender: params.gender,
+          height: params.height,
+          weight: params.weight,
+          is_verified: 1
+        })
+        .then(function() {
+          return res.jsonp(
+            new ReturnResult(null, null, 'User update successfully.', null)
+          );
+        })
+        .catch(function() {
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
+    }
+  });
+};
