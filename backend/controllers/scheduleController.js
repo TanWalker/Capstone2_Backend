@@ -23,9 +23,9 @@ exports.getSchedule = function(req, res, next) {
   // find all Schedule
   schedule_md
     .findAll({ where: { coach_id: req.userData.id } })
-    .then(function(schedule) {
+    .then(function(schedules) {
       // get result
-      var result = new ReturnResult(null, schedule, 'All Schedules', null);
+      var result = new ReturnResult(null, schedules, 'All Schedules', null);
 
       // return
       res.jsonp(result);
@@ -110,12 +110,9 @@ exports.addSchedule = (req, res, next) => {
       .then(function(schedule) {
         // console.log(Schedule);
         //add the created Schedule plan for return
-        var result = {
-          schedule: schedule
-        };
         res
           .status(200)
-          .jsonp(new ReturnResult(result, null, 'Schedule Created', null));
+          .jsonp(new ReturnResult(schedule, null, 'Schedule Created', null));
       })
       .catch(function(err) {
         res.jsonp(

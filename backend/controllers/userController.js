@@ -32,12 +32,9 @@ exports.Register = (req, res, next) => {
         });
         result
           .then(function(user) {
-            var result = {
-              user: user
-            };
             res
               .status(200)
-              .jsonp(new ReturnResult(null, result, 'User Created', null));
+              .jsonp(new ReturnResult(user, null, 'User Created', null));
           })
           .catch(function(err) {
             res.jsonp(
