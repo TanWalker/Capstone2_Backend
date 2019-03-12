@@ -4,7 +4,6 @@ const Constants = require('../libs/Constants');
 
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
-
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
