@@ -1,19 +1,19 @@
-const teamControllers = require("../controllers/teamController");
-const express = require("express");
+const teamControllers = require('../controllers/teamController');
+const express = require('express');
 const router = express.Router();
-const authCheck = require("../middleware/AuthGuard");
+const authCheck = require('../middleware/AuthGuard');
 
-router.post("/api/addTeam", authCheck, teamControllers.addTeam);
-router.get("/api/getTeam", authCheck, teamControllers.getTeam);
+router.post('/api/addTeam', authCheck, teamControllers.addTeam);
+router.get('/api/getTeam', authCheck, teamControllers.getTeam);
 router.delete(
-  "/api/deleteTeam/:team_id",
+  '/api/deleteTeam/:team_id',
   authCheck,
   teamControllers.deleteTeam
 );
-router.put("/api/updateTeam", authCheck, teamControllers.updateTeam);
-router.get("/api/getTeamByCoach", authCheck, teamControllers.getTeamByCoach);
+router.put('/api/updateTeam', authCheck, teamControllers.updateTeam);
+router.get('/api/getTeamByCoach', authCheck, teamControllers.getTeamByCoach);
 router.get(
-  "/api/getMemberByTeam/:team_id",
+  '/api/getMemberByTeam/:team_id',
   authCheck,
   teamControllers.getMemberByTeam
 );
