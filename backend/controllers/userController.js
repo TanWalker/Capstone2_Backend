@@ -83,6 +83,18 @@ exports.Login = (req, res, next) => {
           );
         }
         // json token to frontend
+        if (fetchedUser.gender == 0) {
+          fetchedUser.gender = 'False';
+        }
+        if (fetchedUser.gender == 1) {
+          fetchedUser.gender = 'True';
+        }
+        if (fetchedUser.is_verified == 0) {
+          fetchedUser.is_verified = 'False';
+        }
+        if (fetchedUser.is_verified == 1) {
+          fetchedUser.is_verified = 'True';
+        }
         const token = jwt.sign(
           {
             id: fetchedUser.id,
