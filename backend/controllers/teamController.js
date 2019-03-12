@@ -9,7 +9,7 @@ const auth = require('../middleware/AuthGuard');
 exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
   // check for user
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -36,7 +36,7 @@ exports.deleteTeam = function(req, res, next) {
   console.log('Deleting team');
 
   // check for user
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -63,7 +63,7 @@ exports.deleteTeam = function(req, res, next) {
 // this function add new team and generate new user
 exports.addTeam = (req, res, next) => {
   // check authorization if ==3 or null return unauthorized
-  if (req.userData.role_id == 3 || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     return res.jsonp(
       new ReturnResult(
         'Error',
@@ -173,7 +173,7 @@ exports.addTeam = (req, res, next) => {
 exports.updateTeam = function(req, res, next) {
   console.log('Updating team');
   // check for user
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -226,7 +226,7 @@ exports.updateTeam = function(req, res, next) {
 // Get team by coach
 exports.getTeamByCoach = function(req, res, next) {
   console.log('Get Team By Coach');
-  if (req.userData.role_id == 3 || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     return res.jsonp(
       new ReturnResult(
         'Error',
@@ -263,7 +263,7 @@ exports.getTeamByCoach = function(req, res, next) {
 // Get member by team
 exports.getMemberByTeam = function(req, res, next) {
   console.log('Get Member By Team');
-  if (req.userData.role_id == 3 || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     return res.jsonp(
       new ReturnResult(
         'Error',
