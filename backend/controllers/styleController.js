@@ -22,7 +22,7 @@ exports.getStyle = function(req, res, next) {
 exports.deleteStyle = function(req, res, next) {
   console.log("Deleting Style");
   // check for user is logged in
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         "Error",
@@ -66,8 +66,8 @@ exports.deleteStyle = function(req, res, next) {
 };
 // Add swim style
 exports.addStyle = (req, res, next) => {
-  // check authorization if ==3 or null return unauthorized
-  if (req.userData.role_id == 3 || !req.userData) {
+  // check authorization if == trainee_id or null return unauthorized
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         "Error",
@@ -112,7 +112,7 @@ exports.updateStyle = function(req, res, next) {
   console.log("Updating Style");
 
   // check authorization if ==3 or null return unauthorized
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         "Error",
@@ -171,7 +171,7 @@ exports.updateStyle = function(req, res, next) {
 // Get Style by coach
 exports.getStyleByCoach = function(req, res, next) {
   console.log("Get Style By Coach");
-  if (req.userData.role_id !=3) {
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID ) {
     // Select all team by coach id
     style_md
       .findAll({

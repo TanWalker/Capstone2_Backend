@@ -8,7 +8,7 @@ const Constants = require('../libs/Constants');
 exports.getSchedule = function(req, res, next) {
   console.log('Getting all Schedule');
   // check user
-  if (req.userData.role_id == 3 || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -37,7 +37,7 @@ exports.deleteSchedule = function(req, res, next) {
   console.log('Deleting Schedule');
 
   // check for user
-  if (req.userData.role_id == 3 || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -81,7 +81,7 @@ exports.deleteSchedule = function(req, res, next) {
 //add Schedule
 exports.addSchedule = (req, res, next) => {
   // check authorization
-  if (req.userData.role_id == 3 || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     return res.jsonp(
       new ReturnResult(
         'Error',
@@ -132,7 +132,7 @@ exports.updateSchedule = function(req, res, next) {
   console.log('Updating Schedule');
 
   // check for user is logged in
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         'Error',
