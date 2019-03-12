@@ -7,6 +7,7 @@ const scheduleRoutes = require('./routes/scheduleRoutes');
 const styleRoutes = require('./routes/styleRoutes');
 const distanceRoutes = require('./routes/distanceRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
+const recordRoutes = require('./routes/recordRoutes');
 
 
 // allow override of environment variables
@@ -46,4 +47,5 @@ app.use(distanceRoutes);
 
 app.use(exerciseRoutes);
 
+app.use(recordRoutes);
 module.exports = app;
