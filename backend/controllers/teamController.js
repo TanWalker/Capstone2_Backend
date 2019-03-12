@@ -9,7 +9,7 @@ const auth = require('../middleware/AuthGuard');
 exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
   // check for user
-  if (!req.userData || req.userData.role_id == 3) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         'Error',
