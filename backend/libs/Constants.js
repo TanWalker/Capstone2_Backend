@@ -34,7 +34,7 @@ module.exports = Object.freeze({
     DEAL_EXPIRED: 'Deal has expired.',
     DEAL_MAXED: 'Deal max has been met.',
     LOCATION_NOT_FOUND: 'Location not found.',
-    USER_NOT_FOUND: 'Người dùng không tồn tài',
+    USER_NOT_FOUND: 'User not found.',
     AD_NOT_FOUND: 'Ad not found.',
     COMMENTS_NOT_FOUND: 'Comments not found.',
     REVIEWS_NOT_FOUND: 'Reviews not found.',
