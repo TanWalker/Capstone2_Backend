@@ -1,17 +1,17 @@
-const ReturnResult = require("../libs/ReturnResult");
-const style_md = require("../models/style");
-const Constants = require("../libs/Constants");
+const ReturnResult = require('../libs/ReturnResult');
+const style_md = require('../models/style');
+const Constants = require('../libs/Constants');
 
 // this function is get all style
 exports.getStyle = function(req, res, next) {
-  console.log("Getting all Style");
+  console.log('Getting all Style');
 
   // find all Style
   style_md.findAll().then(function(styles) {
     // get result
 
     return res.jsonp(
-      new ReturnResult(null, styles, "Get all styles successful.", null)
+      new ReturnResult(null, styles, 'Get all styles successful.', null)
     );
 
     // return
@@ -20,12 +20,12 @@ exports.getStyle = function(req, res, next) {
 
 // this function is delete Style
 exports.deleteStyle = function(req, res, next) {
-  console.log("Deleting Style");
+  console.log('Deleting Style');
   // check for user is logged in
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
@@ -56,7 +56,7 @@ exports.deleteStyle = function(req, res, next) {
       var result = new ReturnResult(
         null,
         null,
-        "Delete Style successfully",
+        'Delete Style successfully',
         null
       );
       // return
@@ -70,7 +70,7 @@ exports.addStyle = (req, res, next) => {
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.INVALID_INFORMATION
@@ -89,15 +89,15 @@ exports.addStyle = (req, res, next) => {
     result
       .then(function(style) {
         //add the created Style  for return
-        
+
         res
           .status(200)
-          .jsonp(new ReturnResult(style, null, "Style Created", null));
+          .jsonp(new ReturnResult(style, null, 'Style Created', null));
       })
       .catch(function(err) {
         res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.INVALID_INFORMATION
@@ -109,13 +109,13 @@ exports.addStyle = (req, res, next) => {
 
 // this function is update Style
 exports.updateStyle = function(req, res, next) {
-  console.log("Updating Style");
+  console.log('Updating Style');
 
   // check authorization if ==3 or null return unauthorized
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
@@ -131,32 +131,33 @@ exports.updateStyle = function(req, res, next) {
       if (style == null) {
         res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.STYLE_ID_INVALID
           )
         );
       } else {
-        style.update({
-          swim_name:
-            params.swim_name == null ? style.swim_name : params.swim_name,
-          description:
-            params.description == null
-              ? style.description
-              : params.description,
-          coach_id: params.coach_id == null ? style.coach_id : params.coach_id
-        })
+        style
+          .update({
+            swim_name:
+              params.swim_name == null ? style.swim_name : params.swim_name,
+            description:
+              params.description == null
+                ? style.description
+                : params.description,
+            coach_id: params.coach_id == null ? style.coach_id : params.coach_id
+          })
           .then(success => {
             res
               .status(200)
-              .jsonp(new ReturnResult(null, null, "Update successful", null));
+              .jsonp(new ReturnResult(null, null, 'Update successful', null));
             return;
           })
           .catch(function(err) {
             res.jsonp(
               new ReturnResult(
-                "Error",
+                'Error',
                 null,
                 null,
                 Constants.messages.INVALID_INFORMATION
@@ -170,21 +171,19 @@ exports.updateStyle = function(req, res, next) {
 
 // Get Style by coach
 exports.getStyleByCoach = function(req, res, next) {
-  console.log("Get Style By Coach");
-  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID ) {
+  console.log('Get Style By Coach');
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
     // Select all team by coach id
     style_md
       .findAll({
         where: { coach_id: req.userData.id }
       })
       .then(function(results) {
-       
-
         return res.jsonp(
           new ReturnResult(
             null,
             results,
-            "Get styles by coach successful.",
+            'Get styles by coach successful.',
             null
           )
         );
@@ -192,7 +191,7 @@ exports.getStyleByCoach = function(req, res, next) {
       .catch(function(err) {
         return res.jsonp(
           new ReturnResult(
-            "Error",
+            'Error',
             null,
             null,
             Constants.messages.CAN_NOT_GET_EXERCISE
@@ -202,7 +201,7 @@ exports.getStyleByCoach = function(req, res, next) {
   } else {
     return res.jsonp(
       new ReturnResult(
-        "Error",
+        'Error',
         null,
         null,
         Constants.messages.UNAUTHORIZED_USER
