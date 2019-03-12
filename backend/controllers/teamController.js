@@ -239,7 +239,7 @@ exports.getTeamByCoach = function(req, res, next) {
     // Select all team by coach id
     team_md
       .findAll({
-        attributes: ['name', 'age'],
+        attributes: ['id', 'name', 'age'],
         where: { coach_id: req.userData.id }
       })
       .then(function(results) {
