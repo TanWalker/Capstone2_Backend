@@ -97,61 +97,53 @@ exports.addExercise = (req, res, next) => {
     return;
   }
   const params = req.body;
+  // check whether exercise is existing by name and coach_id
   var data = exercise_md.findOne({
     where: { name: params.name, coach_id: req.userData.id }
   });
-  //   console.log(req.userData);
-  // check whether existing exercise name
-  data
-    .then(function(data) {
-      if (data) {
-        return res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.EXISTING_EXERCISE_NAME
-          )
-        );
-      } else {
-        // Insert exercise info to database //
-        var result = exercise_md.create({
-          name: params.name,
-          style: params.style,
-          distance: params.distance,
-          reps: params.reps,
-          coach_id: req.userData.id
-        });
-        result
-          .then(function(exercise) {
-            res
-              .status(200)
-              .jsonp(
-                new ReturnResult(exercise, null, 'Exercise Created', null)
-              );
-          })
-          .catch(function(err) {
-            res.jsonp(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.INVALID_INFORMATION
-              )
-            );
-          });
-      }
-    })
-    .catch(function(err) {
-      res.jsonp(
+
+  data.then(function(data) {
+    // check if the exercise was found or not
+    if (data) {
+      // not found
+      return res.jsonp(
         new ReturnResult(
           'Error',
           null,
           null,
-          Constants.messages.UNAUTHORIZED_USER
+          Constants.messages.EXISTING_EXERCISE_NAME
         )
       );
-    });
+    } else {
+      // found
+      // Insert exercise info to database
+      var result = exercise_md.create({
+        name: params.name,
+        style: params.style,
+        distance: params.distance,
+        reps: params.reps,
+        coach_id: req.userData.id
+      });
+      result
+        .then(function(exercise) {
+          // return success message and this exercise
+          res
+            .status(200)
+            .jsonp(new ReturnResult(exercise, null, 'Exercise Created', null));
+        })
+        .catch(function(err) {
+          //catch error
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
+    }
+  });
 };
 
 // this function is update exercise
