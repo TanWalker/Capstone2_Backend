@@ -7,7 +7,7 @@ var sequelize = require('sequelize');
 exports.getExercise = function(req, res, next) {
   console.log('Getting all Exercises');
   // check user is log in.
-  if (!req.userData || req.userData.role_id == Constants.messages.ROLE_TRAINEE_ID) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -32,7 +32,7 @@ exports.deleteExercise = function(req, res, next) {
   console.log('Deleting exercise');
 
   // check for use. If role_id == trainee || null, then reject
-  if (req.userData.role_id == Constants.messages.ROLE_TRAINEE_ID || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -87,7 +87,7 @@ exports.deleteExercise = function(req, res, next) {
 // this function is add new exercise
 exports.addExercise = (req, res, next) => {
   // check authorization if user is admin or coach
-  if (req.userData.role_id != Constants.messages.ROLE_TRAINEE_ID) {
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
     const params = req.body;
     var data = exercise_md.findOne({
       where: { name: params.name, coach_id: req.userData.id }
@@ -152,7 +152,7 @@ exports.updateExercise = function(req, res, next) {
   console.log('Updating Exercise');
 
   //  check for use. If role_id == 3 || null, then reject.
-  if (req.userData.role_id == Constants.messages.ROLE_TRAINEE_ID || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -216,7 +216,7 @@ exports.updateExercise = function(req, res, next) {
 // Get exercise by coach
 exports.getExerciseByCoach = function(req, res, next) {
   console.log('Get Exercise By Coach');
-  if (req.userData.role_id != Constants.messages.ROLE_TRAINEE_ID) {
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
     // Select all team by coach id
     exercise_md
       .findAll({
@@ -258,7 +258,7 @@ exports.getExerciseByCoach = function(req, res, next) {
 exports.getExerciseByID = function(req, res, next) {
   // console.log("Get Exercise By ID");
   // console.log(req.params);
-  if (req.userData.role_id != Constants.messages.ROLE_TRAINEE_ID) {
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
     // Select all team by  id
     exercise_md
       .findOne({

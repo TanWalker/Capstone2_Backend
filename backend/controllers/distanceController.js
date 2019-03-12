@@ -20,7 +20,7 @@ exports.deleteDistance = function(req, res, next) {
   console.log('Deleting Distance');
 
   // check for user
-  if (req.userData.role_id == Constants.messages.ROLE_TRAINEE_ID || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -74,7 +74,7 @@ exports.deleteDistance = function(req, res, next) {
 // Add swim Distance
 exports.addDistance = (req, res, next) => {
   // check authorization if user is admin or coach
-  if (req.userData.role_id != Constants.messages.ROLE_TRAINEE_ID) {
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
     const params = req.body;
     var data = distance_md.findOne({
       where: { swim_distance: params.swim_distance }
@@ -135,7 +135,7 @@ exports.updateDistance = function(req, res, next) {
   console.log('Updating Distance');
 
   // check for user is logged in
-  if (req.userData.role_id == Constants.messages.ROLE_TRAINEE_ID || !req.userData) {
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
