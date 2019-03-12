@@ -73,7 +73,7 @@ exports.addStyle = (req, res, next) => {
         'Error',
         null,
         null,
-        Constants.messages.INVALID_INFORMATION
+        Constants.messages.UNAUTHORIZED_USER
       )
     );
     // else coach and admin can use this function below

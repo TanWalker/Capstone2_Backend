@@ -277,6 +277,7 @@ exports.getMemberByTeam = function(req, res, next) {
     user_md
       .findAll({
         attributes: [
+          'id',
           'username',
           'dob',
           'phone',
