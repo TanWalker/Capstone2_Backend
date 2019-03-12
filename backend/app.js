@@ -47,5 +47,4 @@ app.use(distanceRoutes);
 app.use(exerciseRoutes);
 
 app.use(recordRoutes);
-
 module.exports = app;
