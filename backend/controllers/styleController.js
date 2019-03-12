@@ -5,24 +5,20 @@ const Constants = require('../libs/Constants');
 // this function is get all style
 exports.getStyle = function(req, res, next) {
   console.log('Getting all Style');
-
   // find all Style
   style_md.findAll().then(function(styles) {
-    // get result
-
+    // return result
     return res.jsonp(
       new ReturnResult(null, styles, 'Get all styles successful.', null)
     );
-
-    // return
   });
 };
 
 // this function is delete Style
 exports.deleteStyle = function(req, res, next) {
   console.log('Deleting Style');
-  // check for user is logged in
-  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -33,9 +29,8 @@ exports.deleteStyle = function(req, res, next) {
     );
     return;
   }
-  // var id = req.body.id;
   var id = req.params.style_id;
-  // find all Style
+  // check if style id is existing
   style_md
     .findOne({ where: { id: id } })
     .then(function(style) {
@@ -50,23 +45,23 @@ exports.deleteStyle = function(req, res, next) {
         );
         return;
       }
-      // delete Styles
+      // Delete this style
       style.destroy();
-      // get result
+      // generate result
       var result = new ReturnResult(
         null,
         null,
         'Delete Style successfully',
         null
       );
-      // return
+      // return it
       res.jsonp(result);
     })
     .catch(function(err) {});
 };
 // Add swim style
 exports.addStyle = (req, res, next) => {
-  // check authorization if == trainee_id or null return unauthorized
+  //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
@@ -76,43 +71,43 @@ exports.addStyle = (req, res, next) => {
         Constants.messages.UNAUTHORIZED_USER
       )
     );
-    // else coach and admin can use this function below
-  } else {
-    const params = req.body;
-    // console.log(params)
-    // Insert Style info to database //
-    var result = style_md.create({
-      swim_name: params.swim_name,
-      description: params.description,
-      coach_id: req.userData.id
-    });
-    result
-      .then(function(style) {
-        //add the created Style  for return
-
-        res
-          .status(200)
-          .jsonp(new ReturnResult(style, null, 'Style Created', null));
-      })
-      .catch(function(err) {
-        res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.INVALID_INFORMATION
-          )
-        );
-      });
+    return;
   }
+
+  const params = req.body;
+  // Insert style info to database
+  var result = style_md.create({
+    swim_name: params.swim_name,
+    description: params.description,
+    coach_id: req.userData.id
+  });
+  //then result
+  result
+    .then(function(style) {
+      //return successful message and created style.
+      res
+        .status(200)
+        .jsonp(new ReturnResult(style, null, 'Style Created', null));
+    })
+    .catch(function(err) {
+      //if fail return error messages
+      res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
 };
 
 // this function is update Style
 exports.updateStyle = function(req, res, next) {
   console.log('Updating Style');
 
-  // check authorization if ==3 or null return unauthorized
-  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -122,51 +117,47 @@ exports.updateStyle = function(req, res, next) {
       )
     );
     return;
-    // else coach and admin can use the function below
-  } else {
-    const params = req.body;
-    var id = params.id;
-
-    style_md.findOne({ where: { id: id } }).then(function(style) {
-      if (style == null) {
-        res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.STYLE_ID_INVALID
-          )
-        );
-      } else {
-        style
-          .update({
-            swim_name:
-              params.swim_name == null ? style.swim_name : params.swim_name,
-            description:
-              params.description == null
-                ? style.description
-                : params.description,
-            coach_id: params.coach_id == null ? style.coach_id : params.coach_id
-          })
-          .then(success => {
-            res
-              .status(200)
-              .jsonp(new ReturnResult(null, null, 'Update successful', null));
-            return;
-          })
-          .catch(function(err) {
-            res.jsonp(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.INVALID_INFORMATION
-              )
-            );
-          });
-      }
-    });
   }
+  const params = req.body;
+  //check if style id is existing
+  style_md.findOne({ where: { id: params.id } }).then(function(style) {
+    if (style == null) {
+      //if null return
+      res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.STYLE_ID_INVALID
+        )
+      );
+    } else {
+      style
+        .update({
+          swim_name:
+            params.swim_name == null ? style.swim_name : params.swim_name,
+          description:
+            params.description == null ? style.description : params.description,
+          coach_id: params.coach_id == null ? style.coach_id : params.coach_id
+        })
+        .then(success => {
+          res
+            .status(200)
+            .jsonp(new ReturnResult(null, null, 'Update successful', null));
+          return;
+        })
+        .catch(function(err) {
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
+    }
+  });
 };
 
 // Get Style by coach
