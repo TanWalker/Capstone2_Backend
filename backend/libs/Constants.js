@@ -4,6 +4,8 @@ module.exports = Object.freeze({
   ALGORITHM: 'aes-256-ctr',
   EXPIRES: 4320,
   VERIFICATION_EXPIRES: 24,
+  ROLE_COACH_ID: 2,
+  ROLE_TRAINEE_ID: 3,
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
@@ -57,14 +59,14 @@ module.exports = Object.freeze({
     CAN_NOT_GET_TEAM: 'Can’t get team information.',
     CAN_NOT_GET_MEMBER: 'Can’t get member information.',
     SCHEDULE_ID_INVALID: "Schedule id isn't existing or it's was deleted.",
-    EXISTING_STYLE_NAME: "Style name already exists",
+    EXISTING_STYLE_NAME: 'Style name already exists',
     STYLE_ID_INVALID: "Style id isn't existing or it's was deleted.",
-    EXISTING_EXERCISE_NAME: "Exercise name already exists",
-    EXERCISE_ID_INVALID : "Exercise id isn't existing or it's was deleted.",
-    EXISTING_TIME : "There is an excercise in this time already",
-    EXISTING_DISTANCE: "Swim distance already exists",
-    DISTANCE_ID_INVALID : "Distance id isn't existing or it's was deleted.",
+    EXISTING_EXERCISE_NAME: 'Exercise name already exists',
+    EXERCISE_ID_INVALID: "Exercise id isn't existing or it's was deleted.",
+    EXISTING_TIME: 'There is an excercise in this time already',
+    EXISTING_DISTANCE: 'Swim distance already exists',
+    DISTANCE_ID_INVALID: "Distance id isn't existing or it's was deleted.",
     CAN_NOT_GET_EXERCISE: 'Can’t get exercise information.',
-    EXISTING_SCHEDULE:'Schedule already exists.'
+    EXISTING_SCHEDULE: 'Schedule already exists.'
   }
 });
