@@ -5,6 +5,7 @@ const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const covertBoolean = require('../common/convertBoolean');
 
 // Register
 exports.Register = (req, res, next) => {
@@ -82,19 +83,10 @@ exports.Login = (req, res, next) => {
             )
           );
         }
+        // convert gender and is_verified to true or false
+        fetchedUser.gender=covertBoolean(fetchedUser.gender);
+        fetchedUser.is_verified=covertBoolean(fetchedUser.is_verified);
         // json token to frontend
-        if (fetchedUser.gender == 0) {
-          fetchedUser.gender = 'False';
-        }
-        if (fetchedUser.gender == 1) {
-          fetchedUser.gender = 'True';
-        }
-        if (fetchedUser.is_verified == 0) {
-          fetchedUser.is_verified = 'False';
-        }
-        if (fetchedUser.is_verified == 1) {
-          fetchedUser.is_verified = 'True';
-        }
         const token = jwt.sign(
           {
             id: fetchedUser.id,
