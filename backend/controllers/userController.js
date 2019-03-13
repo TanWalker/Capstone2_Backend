@@ -198,3 +198,36 @@ exports.updateUser = (req, res, next) => {
     }
   });
 };
+
+//get current user is logging in by ID
+exports.getCurrentUser = function(req, res, next) {
+  console.log('Getting user by ID');
+  if (req.userData) {
+    user_md
+      .findOne({ where: { id: req.userData.id } })
+      .then(function(user) {
+        res.jsonp(
+          new ReturnResult(user, null, 'Get user successful.', null)
+        );
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_USER
+          )
+        );
+      });
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};

@@ -19,4 +19,6 @@ router.get(
 );
 router.post('/api/getMemberById', authCheck, teamControllers.getMemberById);
 
+// remove member out of team
+router.delete('/api/removeTeamMember', authCheck, teamControllers.removeTeamMember);
 module.exports = router;
