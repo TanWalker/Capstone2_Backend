@@ -4,6 +4,7 @@ const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
+const common = require('../common/common');
 
 // this function is used to test ( get all team )
 exports.getTeam = function(req, res, next) {
@@ -283,11 +284,15 @@ exports.getMemberByTeam = function(req, res, next) {
           'phone',
           'gender',
           'avatar',
+          'height',
+          'weight',
           'is_verified'
         ],
         where: { team_id: req.params.team_id }
       })
       .then(function(results) {
+        results.is_verified = common.convertBoolean(results.is_verified);
+        results.gender = common.convertBoolean(results.gender);
         return res.jsonp(
           new ReturnResult(null, results, 'Get member by team.', null)
         );
@@ -318,6 +323,7 @@ exports.getMemberById = function(req, res, next) {
       )
     );
   } else {
+    // select a member with selected attribute
     user_md
       .findOne({
         attributes: [
@@ -343,11 +349,15 @@ exports.getMemberById = function(req, res, next) {
         where: { id: req.body.user_id }
       })
       .then(function(user) {
+        // return user
+        user.is_verified = common.convertBoolean(user.is_verified);
+        user.gender = common.convertBoolean(user.gender);
         return res.jsonp(
           new ReturnResult(user, null, 'Get member by Id.', null)
         );
       })
       .catch(function(err) {
+        // return if unexpected error happen
         return res.jsonp(
           new ReturnResult(
             'Error',

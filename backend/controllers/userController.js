@@ -206,6 +206,8 @@ exports.getCurrentUser = function(req, res, next) {
     user_md
       .findOne({ where: { id: req.userData.id } })
       .then(function(user) {
+        user.is_verified = common.convertBoolean(user.is_verified);
+        user.gender = common.convertBoolean(user.gender);
         res.jsonp(
           new ReturnResult(user, null, 'Get user successful.', null)
         );

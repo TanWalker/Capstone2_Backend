@@ -12,5 +12,7 @@ router.post('/api/public/register', userControllers.Register);
 // update user info route
 router.put('/api/updateUser', authCheck, userControllers.updateUser);
 
-router.get('/api/getCurrentUser',authCheck, userControllers.getCurrentUser);
+// get current user
+router.get('/api/getCurrentUser', authCheck, userControllers.getCurrentUser);
+
 module.exports = router;
