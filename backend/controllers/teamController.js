@@ -4,6 +4,7 @@ const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
+const common = require('../common/common');
 
 // this function is used to test ( get all team )
 exports.getTeam = function(req, res, next) {
@@ -290,6 +291,8 @@ exports.getMemberByTeam = function(req, res, next) {
         where: { team_id: req.params.team_id }
       })
       .then(function(results) {
+        results.is_verified = common.convertBoolean(results.is_verified);
+        results.gender = common.convertBoolean(results.gender);
         return res.jsonp(
           new ReturnResult(null, results, 'Get member by team.', null)
         );
@@ -347,6 +350,8 @@ exports.getMemberById = function(req, res, next) {
       })
       .then(function(user) {
         // return user
+        user.is_verified = common.convertBoolean(user.is_verified);
+        user.gender = common.convertBoolean(user.gender);
         return res.jsonp(
           new ReturnResult(user, null, 'Get member by Id.', null)
         );
