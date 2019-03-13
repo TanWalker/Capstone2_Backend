@@ -291,8 +291,12 @@ exports.getMemberByTeam = function(req, res, next) {
         where: { team_id: req.params.team_id }
       })
       .then(function(results) {
-        results.is_verified = common.convertBoolean(results.is_verified);
-        results.gender = common.convertBoolean(results.gender);
+        Object.keys(results).forEach(function(key) {
+          results[key].is_verified = common.convertBoolean(
+            results[key].is_verified
+          );
+          results[key].gender = common.convertBoolean(results[key].gender);
+        });
         return res.jsonp(
           new ReturnResult(null, results, 'Get member by team.', null)
         );
