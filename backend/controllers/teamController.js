@@ -283,6 +283,8 @@ exports.getMemberByTeam = function(req, res, next) {
           'phone',
           'gender',
           'avatar',
+          'height',
+          'weight',
           'is_verified'
         ],
         where: { team_id: req.params.team_id }
@@ -318,6 +320,7 @@ exports.getMemberById = function(req, res, next) {
       )
     );
   } else {
+    // select a member with selected attribute
     user_md
       .findOne({
         attributes: [
@@ -343,11 +346,13 @@ exports.getMemberById = function(req, res, next) {
         where: { id: req.body.user_id }
       })
       .then(function(user) {
+        // return user
         return res.jsonp(
           new ReturnResult(user, null, 'Get member by Id.', null)
         );
       })
       .catch(function(err) {
+        // return if unexpected error happen
         return res.jsonp(
           new ReturnResult(
             'Error',
