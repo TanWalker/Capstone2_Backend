@@ -304,3 +304,131 @@ exports.getMemberByTeam = function(req, res, next) {
       });
   }
 };
+
+// Get member by id
+exports.getMemberById = function(req, res, next) {
+  console.log('Get Member By Id');
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  } else {
+    user_md
+      .findOne({
+        attributes: [
+          'id',
+          'role_id',
+          'username',
+          'first_name',
+          'last_name',
+          'dob',
+          'phone',
+          'email',
+          'address',
+          'parent_name',
+          'parent_phone',
+          'gender',
+          'age',
+          'height',
+          'weight',
+          'team_id',
+          'avatar',
+          'is_verified'
+        ],
+        where: { id: req.body.user_id }
+      })
+      .then(function(user) {
+        return res.jsonp(
+          new ReturnResult(user, null, 'Get member by Id.', null)
+        );
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_MEMBER
+          )
+        );
+      });
+  }
+};
+
+// Remove a member out of team
+exports.removeTeamMember = function(req, res, next) {
+  console.log('Remove Member out of Team');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+
+  var params = req.body;
+  // find user by the user_id and team_id
+  var data = user_md.findOne({
+    where: { id: params.user_id, team_id: params.team_id }
+  });
+
+  data.then(function(user) {
+    if (user == null) {
+      // return invalid user_id or user not in that team and exit
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_USER_IN_TEAM
+        )
+      );
+    }
+    // found one and remove out of team
+    user
+      .update({
+        team_id: null
+      })
+      .then(function() {
+        // delete data in team_swimmer too.
+        var data = team_swimmer_md.findOne({
+          where: { user_id: params.user_id, team_id: params.team_id }
+        });
+        // if it was found
+        data.then(function(data) {
+          if (data != null) {
+            data.destroy();
+          }
+        });
+        //return success
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            null,
+            'Remove member out of team successful.',
+            null
+          )
+        );
+      })
+      .catch(function(err) {
+        // catch error
+        return res.jsonp(
+          new ReturnResult(
+            err.message,
+            null,
+            null,
+            Constants.messages.INVALID_INFORMATION
+          )
+        );
+      });
+  });
+};
