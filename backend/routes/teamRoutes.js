@@ -17,5 +17,6 @@ router.get(
   authCheck,
   teamControllers.getMemberByTeam
 );
+router.post('/api/getMemberById', authCheck, teamControllers.getMemberById);
 
 module.exports = router;

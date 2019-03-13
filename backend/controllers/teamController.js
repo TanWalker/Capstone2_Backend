@@ -304,3 +304,58 @@ exports.getMemberByTeam = function(req, res, next) {
       });
   }
 };
+
+// Get member by id
+exports.getMemberById = function(req, res, next) {
+  console.log('Get Member By Id');
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  } else {
+    user_md
+      .findOne({
+        attributes: [
+          'id',
+          'role_id',
+          'username',
+          'first_name',
+          'last_name',
+          'dob',
+          'phone',
+          'email',
+          'address',
+          'parent_name',
+          'parent_phone',
+          'gender',
+          'age',
+          'height',
+          'weight',
+          'team_id',
+          'avatar',
+          'is_verified'
+        ],
+        where: { id: req.body.user_id }
+      })
+      .then(function(user) {
+        return res.jsonp(
+          new ReturnResult(user, null, 'Get member by Id.', null)
+        );
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_MEMBER
+          )
+        );
+      });
+  }
+};
