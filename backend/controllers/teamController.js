@@ -280,6 +280,7 @@ exports.getMemberByTeam = function(req, res, next) {
         attributes: [
           'id',
           'username',
+          'display_name',
           'dob',
           'phone',
           'gender',

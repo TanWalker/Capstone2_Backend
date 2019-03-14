@@ -30,6 +30,7 @@ var user = db.connect.define('user', {
   updated_at:{type:sequelize.DATE},
   team_id:{type:sequelize.INTEGER},
   is_coach:{type:sequelize.TINYINT},
+  display_name:{type:sequelize.TEXT},
 },{
   timestamps:false,
   freezeTableName:true,
