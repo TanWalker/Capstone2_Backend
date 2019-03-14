@@ -85,7 +85,9 @@ exports.Login = (req, res, next) => {
         }
         // convert gender and is_verified to true or false
         fetchedUser.gender = common.convertBoolean(fetchedUser.gender);
-        fetchedUser.is_verified = common.convertBoolean(fetchedUser.is_verified);
+        fetchedUser.is_verified = common.convertBoolean(
+          fetchedUser.is_verified
+        );
         // json token to frontend
         const token = jwt.sign(
           {
@@ -203,25 +205,27 @@ exports.updateUser = (req, res, next) => {
 exports.getCurrentUser = function(req, res, next) {
   console.log('Getting user by ID');
   if (req.userData) {
-    user_md
-      .findOne({ where: { id: req.userData.id } })
-      .then(function(user) {
-        user.is_verified = common.convertBoolean(user.is_verified);
-        user.gender = common.convertBoolean(user.gender);
-        res.jsonp(
-          new ReturnResult(user, null, 'Get user successful.', null)
-        );
-      })
-      .catch(function(err) {
-        return res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.CAN_NOT_GET_USER
-          )
-        );
-      });
+    return res.jsonp(
+      new ReturnResult(req.userData, null, 'Get user successful.', null)
+    );
+    // user_md
+    //   .findOne({ where: { id: req.userData.id } })
+    //   .then(function(user) {
+    //     user.is_verified = common.convertBoolean(user.is_verified);
+    //     user.gender = common.convertBoolean(user.gender);
+    //     console.log(user);
+    //     res.jsonp(new ReturnResult(user, null, 'Get user successful.', null));
+    //   })
+    //   .catch(function(err) {
+    //     return res.jsonp(
+    //       new ReturnResult(
+    //         'Error',
+    //         null,
+    //         null,
+    //         Constants.messages.CAN_NOT_GET_USER
+    //       )
+    //     );
+    //   });
   } else {
     return res.jsonp(
       new ReturnResult(
