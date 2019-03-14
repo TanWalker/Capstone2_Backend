@@ -93,7 +93,15 @@ exports.addSchedule = (req, res, next) => {
     // else the user can add
   } else {
     const params = req.body;
-    // Insert Schedule info to database //
+    var time_start = new Date();
+    var time_end = new Date();
+    time_start.setFullYear(params.year, params.month-1, params.day);
+    time_start.setHours(params.start_hour,params.start_minute,0);
+    time_end.setFullYear(params.year, params.month-1, params.day);
+    time_end.setHours(params.end_hour,params.end_minute,0);
+    console.log('ngay nhap'+time_start);
+    console.log('ngay ket thuc'+time_end);
+    // Insert Schedule info to database
     var result = schedule_md.create({
       start_hour: params.start_hour,
       end_hour: params.end_hour,
@@ -104,7 +112,9 @@ exports.addSchedule = (req, res, next) => {
       month: params.month,
       year: params.year,
       start_minute: params.start_minute,
-      end_minute: params.end_minute
+      end_minute: params.end_minute,
+      time_start:time_start,
+      time_end:time_end
     });
     result
       .then(function(schedule) {

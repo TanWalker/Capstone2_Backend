@@ -14,12 +14,14 @@ var schedule = db.connect.define(
     end_hour: { type: sequelize.INTEGER, allowNull: false },
     exercise_id: { type: sequelize.INTEGER, allowNull: false },
     coach_id: { type: sequelize.INTEGER, allowNull: false },
-    team_name: { type: sequelize.STRING, allowNull: false},
+    team_name: { type: sequelize.STRING, allowNull: false },
     day: { type: sequelize.INTEGER, allowNull: false },
     month: { type: sequelize.INTEGER, allowNull: false },
     year: { type: sequelize.INTEGER, allowNull: false },
     start_minute: { type: sequelize.INTEGER, allowNull: false },
-    end_minute: { type: sequelize.INTEGER, allowNull: false }
+    end_minute: { type: sequelize.INTEGER, allowNull: false },
+    time_start: { type: sequelize.TIME },
+    time_end: { type: sequelize.TIME },
   },
   {
     timestamps: false,
