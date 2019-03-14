@@ -1,6 +1,7 @@
 const ReturnResult = require('../libs/ReturnResult');
 const schedule_md = require('../models/schedule');
 const Constants = require('../libs/Constants');
+const moment = require('moment-timezone');
 
 // not finish yet.
 
@@ -24,11 +25,17 @@ exports.getSchedule = function(req, res, next) {
   schedule_md
     .findAll({ where: { coach_id: req.userData.id } })
     .then(function(schedules) {
+      Object.keys(schedules).forEach(function(key) {
+        var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+        var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+        schedules[key].time_start = start.format();
+        schedules[key].time_end = end.format();
+      });
+
       // get result
       var result = new ReturnResult(null, schedules, 'All Schedules', null);
-
       // return
-      res.jsonp(result);
+      return res.jsonp(result);
     });
 };
 
@@ -93,7 +100,13 @@ exports.addSchedule = (req, res, next) => {
     // else the user can add
   } else {
     const params = req.body;
-    // Insert Schedule info to database //
+    var time_start = new Date();
+    var time_end = new Date();
+    time_start.setFullYear(params.year, params.month - 1, params.day);
+    time_start.setHours(params.start_hour, params.start_minute, 0);
+    time_end.setFullYear(params.year, params.month - 1, params.day);
+    time_end.setHours(params.end_hour, params.end_minute, 0);
+    // Insert Schedule info to database
     var result = schedule_md.create({
       start_hour: params.start_hour,
       end_hour: params.end_hour,
@@ -104,7 +117,9 @@ exports.addSchedule = (req, res, next) => {
       month: params.month,
       year: params.year,
       start_minute: params.start_minute,
-      end_minute: params.end_minute
+      end_minute: params.end_minute,
+      time_start: time_start,
+      time_end: time_end
     });
     result
       .then(function(schedule) {
@@ -157,6 +172,30 @@ exports.updateSchedule = function(req, res, next) {
           )
         );
       } else {
+        var time_start = new Date();
+        var time_end = new Date();
+        time_start.setFullYear(
+          params.year == null ? schedules.year : params.year,
+          params.month == null ? schedules.month - 1 : params.month - 1,
+          params.day == null ? schedules.day : params.day
+        );
+        time_start.setHours(
+          params.start_hour == null ? schedules.start_hour : params.start_hour,
+          params.start_minute == null
+            ? schedules.start_minute
+            : params.start_minute,
+          0
+        );
+        time_end.setFullYear(
+          params.year == null ? schedules.year : params.year,
+          params.month == null ? schedules.month - 1 : params.month - 1,
+          params.day == null ? schedules.day : params.day
+        );
+        time_end.setHours(
+          params.end_hour == null ? schedules.end_hour : params.end_hour,
+          params.end_minute == null ? schedules.end_minute : params.end_minute,
+          0
+        );
         schedules
           .update({
             start_hour:
@@ -181,7 +220,9 @@ exports.updateSchedule = function(req, res, next) {
               params.team_name == null ? schedules.team_name : params.team_name,
             day: params.day == null ? schedules.day : params.day,
             month: params.month == null ? schedules.month : params.month,
-            year: params.year == null ? schedules.year : params.year
+            year: params.year == null ? schedules.year : params.year,
+            time_start: time_start,
+            time_end: time_end
           })
           .then(success => {
             res
