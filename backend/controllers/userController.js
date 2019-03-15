@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const user_md = require('../models/user');
+const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
@@ -237,3 +238,42 @@ exports.getCurrentUser = function(req, res, next) {
     );
   }
 };
+
+// exports.getUserIndex = function(req, res, next){
+//   if (!req.userData) {
+//     res.jsonp(
+//       new ReturnResult(
+//         'Error',
+//         null,
+//         null,
+//         Constants.messages.UNAUTHORIZED_USER
+//       )
+//     );
+//     return;
+//   }else{
+//       function(user){
+//           .update({
+//             bmi: req.userData.height == null && req.userData.weight == null ? user.bmi : (req.userData.weight/Math.pow(req.userData.weight, 2)),
+            
+//           })
+//           console.log(typeof req.userData.height)
+//           .then(success => {
+//             res
+//               .status(200)
+//               .jsonp(
+//                 new ReturnResult(success, null, 'Successful', null)
+//               );
+//             return;
+//           })
+//           .catch(function(err) {
+//             res.jsonp(
+//               new ReturnResult(
+//                 'Error',
+//                 null,
+//                 null,
+//                 Constants.messages.INVALID_INFORMATION
+//               )
+//             );
+//           });
+//       }
+// }
