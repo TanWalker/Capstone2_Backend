@@ -2,6 +2,7 @@ const ReturnResult = require('../libs/ReturnResult');
 const schedule_md = require('../models/schedule');
 const Constants = require('../libs/Constants');
 const moment = require('moment-timezone');
+const sequelize = require('sequelize');
 
 // not finish yet.
 
@@ -120,11 +121,11 @@ exports.addSchedule = (req, res, next) => {
       end_minute: params.end_minute,
       time_start: time_start,
       time_end: time_end,
-      team_id: params.team_id
+      team_id: params.team_id,
+      exercise_name: params.exercise_name
     });
     result
       .then(function(schedule) {
-        // console.log(Schedule);
         //add the created Schedule plan for return
         res
           .status(200)
@@ -248,43 +249,69 @@ exports.updateSchedule = function(req, res, next) {
   }
 };
 
-// exports.CopySchedule = function(req, res, next) {
-//   console.log('Copy Schedule for a week.');
-//   // check user
-//   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
-//     res.jsonp(
-//       new ReturnResult(
-//         'Error',
-//         null,
-//         null,
-//         Constants.messages.UNAUTHORIZED_USER
-//       )
-//     );
-//     return;
-//   }
-//   // define body request
-//   const params = req.body;
-//   // find all schedule need to copy.
-//   schedule_md.findAll({
-//     where: {
-//       [Op.between]: [{time_start: params.from_start}, {time_start: params.from_end}],
-//       [Op.between]: [{time_end: params.from_start}, {time_end: params.from_end}]
-//     }
-//   });
-//   // find all Schedule
-//   schedule_md
-//     .findAll({ where: { coach_id: req.userData.id } })
-//     .then(function(schedules) {
-//       Object.keys(schedules).forEach(function(key) {
-//         var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
-//         var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
-//         schedules[key].time_start = start.format();
-//         schedules[key].time_end = end.format();
-//       });
-
-//       // get result
-//       var result = new ReturnResult(null, schedules, 'All Schedules', null);
-//       // return
-//       return res.jsonp(result);
-//     });
-// };
+// get schedule record and pagination (3 weeks before current time)
+exports.getScheduleForRecord = (req, res, next) => {
+  console.log('Getting Schedule for Record');
+  // check user
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  if (req.params.page_num < 1 || req.params.page_num > 3) {
+    return res.jsonp(
+      new ReturnResult('Error', null, null, Constants.messages.REPLY_NOT_FOUND)
+    );
+  }
+  // set the range of the time
+  var before_time = new Date();
+  var after_time = new Date();
+  before_time.setDate(before_time.getDate() - 7 * (req.params.page_num - 1));
+  after_time.setFullYear(
+    before_time.getFullYear(),
+    before_time.getMonth(),
+    before_time.getDate() - 7 * req.params.page_num
+  );
+  // convert to UTC timezone to match with mysql
+  // Europe/London is GMT equal with UTC
+  var before = moment(before_time).tz('Europe/London');
+  var after = moment(after_time).tz('Europe/London');
+  // set hours to 0
+  before.hours(0);
+  before.minutes(0);
+  before.seconds(0);
+  after.hours(0);
+  after.minutes(0);
+  after.seconds(0);
+  before_time = before.format();
+  after_time = after.format();
+  // find schedule before current time depend on page_num
+  const op = sequelize.Op;
+  schedule_md
+    .findAll({
+      where: {
+        time_end: { [op.between]: [after_time, before_time] },
+        coach_id: req.userData.id
+      }
+    })
+    .then(function(results) {
+      return res.jsonp(
+        new ReturnResult(null, results, 'Get Schedule for Record.', null)
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
