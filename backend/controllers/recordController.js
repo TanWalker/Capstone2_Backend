@@ -149,7 +149,7 @@ exports.updateRecord = function(req, res, next) {
   // set params is request body.
   const params = req.body;
   // check if record id is exist or not.
-  record_md.findOne({ where: { id: params.record_id } }).then(function(record) {
+  record_md.findOne({ where: { id: params.id } }).then(function(record) {
     if (record == null) {
       res.jsonp(
         new ReturnResult(
