@@ -119,7 +119,8 @@ exports.addSchedule = (req, res, next) => {
       start_minute: params.start_minute,
       end_minute: params.end_minute,
       time_start: time_start,
-      time_end: time_end
+      time_end: time_end,
+      team_id: params.team_id
     });
     result
       .then(function(schedule) {

@@ -22,6 +22,7 @@ var schedule = db.connect.define(
     end_minute: { type: sequelize.INTEGER, allowNull: false },
     time_start: { type: sequelize.TIME },
     time_end: { type: sequelize.TIME },
+    team_id: {type: sequelize.INTEGER, allowNull: false}
   },
   {
     timestamps: false,

@@ -239,10 +239,41 @@ exports.getCurrentUser = function(req, res, next) {
   }
 };
 
-exports.getUserIndex() = function(req, res, next){
-  if (req.userData) {
-    return res.jsonp(
-      new ReturnResult(req.userData, null, 'Get user successful.', null)
-    );
-  }
-}
+// exports.getUserIndex = function(req, res, next){
+//   if (!req.userData) {
+//     res.jsonp(
+//       new ReturnResult(
+//         'Error',
+//         null,
+//         null,
+//         Constants.messages.UNAUTHORIZED_USER
+//       )
+//     );
+//     return;
+//   }else{
+//       function(user){
+//           .update({
+//             bmi: req.userData.height == null && req.userData.weight == null ? user.bmi : (req.userData.weight/Math.pow(req.userData.weight, 2)),
+            
+//           })
+//           console.log(typeof req.userData.height)
+//           .then(success => {
+//             res
+//               .status(200)
+//               .jsonp(
+//                 new ReturnResult(success, null, 'Successful', null)
+//               );
+//             return;
+//           })
+//           .catch(function(err) {
+//             res.jsonp(
+//               new ReturnResult(
+//                 'Error',
+//                 null,
+//                 null,
+//                 Constants.messages.INVALID_INFORMATION
+//               )
+//             );
+//           });
+//       }
+// }
