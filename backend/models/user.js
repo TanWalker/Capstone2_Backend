@@ -32,7 +32,10 @@ var user = db.connect.define(
     updated_at: { type: sequelize.DATE },
     team_id: { type: sequelize.INTEGER },
     is_coach: { type: sequelize.TINYINT },
-    display_name: { type: sequelize.TEXT }
+    display_name: { type: sequelize.TEXT },
+    bmi:{type: sequelize.FLOAT},
+    endurance:{type: sequelize.FLOAT},
+    speed:{type: sequelize.FLOAT},
   },
   {
     timestamps: false,
