@@ -19,4 +19,7 @@ router.delete(
 // update schedule
 router.put('/api/updateSchedule', authCheck, scheduleController.updateSchedule);
 
+// get schedule for record
+router.get('/api/getScheduleForRecord/:page_num', authCheck, scheduleController.getScheduleForRecord);
+
 module.exports = router;
