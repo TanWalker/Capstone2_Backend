@@ -247,3 +247,44 @@ exports.updateSchedule = function(req, res, next) {
     });
   }
 };
+
+// exports.CopySchedule = function(req, res, next) {
+//   console.log('Copy Schedule for a week.');
+//   // check user
+//   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+//     res.jsonp(
+//       new ReturnResult(
+//         'Error',
+//         null,
+//         null,
+//         Constants.messages.UNAUTHORIZED_USER
+//       )
+//     );
+//     return;
+//   }
+//   // define body request
+//   const params = req.body;
+//   // find all schedule need to copy.
+//   schedule_md.findAll({
+//     where: {
+//       [Op.between]: [{time_start: params.from_start}, {time_start: params.from_end}],
+//       [Op.between]: [{time_end: params.from_start}, {time_end: params.from_end}]
+//     }
+//   });
+//   // find all Schedule
+//   schedule_md
+//     .findAll({ where: { coach_id: req.userData.id } })
+//     .then(function(schedules) {
+//       Object.keys(schedules).forEach(function(key) {
+//         var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+//         var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+//         schedules[key].time_start = start.format();
+//         schedules[key].time_end = end.format();
+//       });
+
+//       // get result
+//       var result = new ReturnResult(null, schedules, 'All Schedules', null);
+//       // return
+//       return res.jsonp(result);
+//     });
+// };
