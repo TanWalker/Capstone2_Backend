@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const user_md = require('../models/user');
+const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
@@ -237,3 +238,11 @@ exports.getCurrentUser = function(req, res, next) {
     );
   }
 };
+
+exports.getUserIndex() = function(req, res, next){
+  if (req.userData) {
+    return res.jsonp(
+      new ReturnResult(req.userData, null, 'Get user successful.', null)
+    );
+  }
+}

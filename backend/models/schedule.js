@@ -20,8 +20,8 @@ var schedule = db.connect.define(
     year: { type: sequelize.INTEGER, allowNull: false },
     start_minute: { type: sequelize.INTEGER, allowNull: false },
     end_minute: { type: sequelize.INTEGER, allowNull: false },
-    time_start: { type: sequelize.TIME },
-    time_end: { type: sequelize.TIME },
+    time_start: { type: sequelize.DATE },
+    time_end: { type: sequelize.DATE},
   },
   {
     timestamps: false,
