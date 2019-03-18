@@ -70,6 +70,8 @@ module.exports = Object.freeze({
     CAN_NOT_GET_EXERCISE: 'Can’t get exercise information.',
     EXISTING_SCHEDULE: 'Schedule already exists.',
     RECORD_ID_INVALID: "Record id isn't existing or it's was deleted.",
-    INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team."
+    INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team.",
+    SEND_EMAIL_SUCCESSFUL: "The email was sent.",
+    SEND_EMAIL_FAIL: "Send email fail."
   }
 });
