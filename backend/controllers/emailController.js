@@ -2,8 +2,8 @@ const ReturnResult = require('../libs/ReturnResult');
 const Constants = require('../libs/Constants');
 const nodeMailer = require('nodemailer');
 
-const sender = 'feedback.swim.tracker@gmail.com'; // The email to be use in sending the email, it's default.
-const password = 'enclaveit'; // password of the email to use, it's default.
+const sender = process.env.FEEDBACK_EMAIL; // The email to be use in sending the email, it's default.
+const password = process.env.FEEDBACK_EMAIL_PASSWORD; // password of the email to use, it's default.
 
 //Before sending your email using gmail you have to allow non secure apps to access gmail you can do 
 //this by going to your gmail settings here. 
@@ -49,7 +49,7 @@ var sendMail = function(toAddress, subject, content, next) {
 // this function is send feedback
 exports.sendFeedBack = function(req, res, next) {
   console.log('Sending Feedback');
-  var to_email = 'phamanhkhoa0@gmail.com';
+  var to_email = process.env.FEEDBACK_ADMIN_EMAIL;
   var params = req.body;
   sendMail(
     to_email,

@@ -6,6 +6,7 @@ module.exports = Object.freeze({
   VERIFICATION_EXPIRES: 24,
   ROLE_COACH_ID: 2,
   ROLE_TRAINEE_ID: 3,
+ 
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
