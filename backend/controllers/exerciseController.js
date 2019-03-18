@@ -122,7 +122,10 @@ exports.addExercise = (req, res, next) => {
         style: params.style,
         distance: params.distance,
         reps: params.reps,
-        coach_id: req.userData.id
+        coach_id: req.userData.id,
+        description: params.description,
+        time: params.time,
+        type_id: params.type_id
       });
       result
         .then(function(exercise) {
@@ -187,7 +190,13 @@ exports.updateExercise = function(req, res, next) {
               ? exercises.distance_id
               : params.distance_id,
           reps: params.reps == null ? exercises.reps : params.reps,
-          date: params.date == null ? exercises.date : params.date
+          date: params.date == null ? exercises.date : params.date,
+          description:
+            params.description == null
+              ? exercises.description
+              : params.description,
+          time: params.time == null ? exercises.time : params.time,
+          type_id: params.type_id == null ? exercises.type_id : params.type_id
         })
         .then(success => {
           // if update successfully, return it.

@@ -15,4 +15,6 @@ router.put('/api/updateUser', authCheck, userControllers.updateUser);
 // get current user
 router.get('/api/getCurrentUser', authCheck, userControllers.getCurrentUser);
 
+//router.put('/api/getUserIndex', authCheck, userControllers.getUserIndex)
+
 module.exports = router;
