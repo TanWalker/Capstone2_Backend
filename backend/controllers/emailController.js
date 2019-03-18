@@ -18,7 +18,7 @@ var smtpTransport = nodeMailer.createTransport({
   }
 });
 //function for send email
-var sendMail = function(toAddress, subject, content, next) {
+var sendMail = function(toAddress, subject, content,res) {
   var mailOptions = {
     from: "Feedback Center of Quan Khu 5",
     to: toAddress,
@@ -33,10 +33,10 @@ var sendMail = function(toAddress, subject, content, next) {
         new ReturnResult(null, null, null, Constants.messages.SEND_EMAIL_FAIL)
       );
     } else {
-      // console.log(info); if email was sent, return message
+      console.log(info); //if email was sent, return message
       res.jsonp(
         new ReturnResult(
-          null,
+          info,
           null,
           null,
           Constants.messages.SEND_EMAIL_SUCCESSFUL
@@ -54,6 +54,7 @@ exports.sendFeedBack = function(req, res, next) {
   sendMail(
     to_email,
     params.title ,
-    params.content //html content
+    params.content,//html content
+    res 
   );
 };
