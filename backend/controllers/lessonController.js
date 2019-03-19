@@ -28,7 +28,7 @@ exports.getLesson = function(req, res, next) {
 
 // this function is delete lesson
 exports.deleteLesson = function(req, res, next) {
-  console.log('Deleting exercise');
+  console.log('Deleting lesson');
 
   // check for use. If role_id == trainee || null, then reject
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -43,7 +43,7 @@ exports.deleteLesson = function(req, res, next) {
     return;
   }
   var id = req.params.lesson_id;
-  // find all exercise
+  // find all lesson
   lesson_md
     .findOne({ where: { id: id } })
     .then(function(lessons) {
@@ -58,7 +58,7 @@ exports.deleteLesson = function(req, res, next) {
         );
         return;
       }
-      // delete exercises
+      // delete lesson
       lessons.destroy();
       // get result
       var result = new ReturnResult(
@@ -82,7 +82,7 @@ exports.deleteLesson = function(req, res, next) {
     });
 };
 
-// this function is add new exercise
+// this function is add new lesson
 exports.addLesson = (req, res, next) => {
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -103,7 +103,7 @@ exports.addLesson = (req, res, next) => {
   });
 
   data.then(function(data) {
-    // check if the exercise was found or not
+    // check if the lesson was found or not
     if (data) {
       // not found
       return res.jsonp(
@@ -115,17 +115,17 @@ exports.addLesson = (req, res, next) => {
         )
       );
     } else {
-      // found
-      // Insert exercise info to database
-      var result = exercise_md.create({
+      // Insert lesson info to database
+      var result = lesson_md.create({
         name: params.name,
+        coach_id: req.userData.id
       });
       result
-        .then(function(exercise) {
-          // return success message and this exercise
+        .then(function(lesson) {
+          // return success message and this lesson
           res
             .status(200)
-            .jsonp(new ReturnResult(exercise, null, 'Exercise Created', null));
+            .jsonp(new ReturnResult(lesson, null, 'Exercise Created', null));
         })
         .catch(function(err) {
           //catch error
@@ -142,8 +142,8 @@ exports.addLesson = (req, res, next) => {
   });
 };
 
-// this function is update exercise
-exports.updateExercise = function(req, res, next) {
+// this function is update lesson
+exports.updateLesson = function(req, res, next) {
   console.log('Updating Exercise');
 
   //check if user is trainee, return and exit;
@@ -160,36 +160,23 @@ exports.updateExercise = function(req, res, next) {
   }
   // set params is request body.
   const params = req.body;
-  // check if exercise id is exist or not.
-  exercise_md.findOne({ where: { id: params.id } }).then(function(exercises) {
-    if (exercises == null) {
+  // check if lesson id is exist or not.
+  lesson_md
+  .findOne({ where: { id: params.id } }).then(function(lesson) {
+    if (lesson == null) {
       res.jsonp(
         new ReturnResult(
           'Error',
           null,
           null,
-          Constants.messages.EXERCISE_ID_INVALID
+          Constants.messages.LESSON_ID_INVALID
         )
       );
     } else {
       // if execise id is exist so we update it.
-      exercises
+      lesson
         .update({
-          name: params.name == null ? exercises.name : params.name,
-          style_id:
-            params.style_id == null ? exercises.style_id : params.style_id,
-          distance_id:
-            params.distance_id == null
-              ? exercises.distance_id
-              : params.distance_id,
-          reps: params.reps == null ? exercises.reps : params.reps,
-          date: params.date == null ? exercises.date : params.date,
-          description:
-            params.description == null
-              ? exercises.description
-              : params.description,
-          time: params.time == null ? exercises.time : params.time,
-          type_id: params.type_id == null ? exercises.type_id : params.type_id
+          name: params.name == null ? lesson.name : params.name,
         })
         .then(success => {
           // if update successfully, return it.
@@ -272,7 +259,7 @@ exports.getLessonByID = function(req, res, next) {
   // Select all lessons by  id
   lesson_md
     .findOne({
-      where: { id: req.params.exercise_id }
+      where: { id: req.params.lesson_id }
     })
     .then(function(result) {
       if (result == null) {

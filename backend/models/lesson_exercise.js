@@ -20,8 +20,8 @@ var lesson_exercise = db.connect.define(
   {
     timestamps: false,
     freezeTableName: true,
-    tableName: record
+    tableName: lesson_exercise
   }
 );
 
-module.exports = record;
+module.exports = lesson_exercise;
