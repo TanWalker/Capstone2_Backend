@@ -11,7 +11,7 @@ var record = db.connect.define(
       allowNull: false
     },
     user_id: { type: sequelize.INTEGER, allowNull: false },
-    date_id: { type: sequelize.INTEGER, allowNull: false },
+    createdAt: { type: sequelize.DATE, allowNull: false },
     schedule_id: { type: sequelize.INTEGER, allowNull: false },
     min_time: { type: sequelize.INTEGER, allowNull: false },
     max_time: { type: sequelize.INTEGER, allowNull: false },
@@ -20,10 +20,16 @@ var record = db.connect.define(
     heart_rate: { type: sequelize.INTEGER, allowNull: false },
     time_swim: { type: sequelize.FLOAT, allowNull: false },
     attitude: { type: sequelize.TEXT, allowNull: true },
-    result: { type: sequelize.TEXT, allowNull: false }
+    result: { type: sequelize.TEXT, allowNull: false },
+    note: { type: sequelize.TEXT, allowNull: true },
+    best_result: { type: sequelize.TEXT, allowNull: true },
+    errors: { type: sequelize.TEXT, allowNull: true },
+    coach_id: { type: sequelize.INTEGER, allowNull: false },
+    date_id: { type: sequelize.INTEGER, allowNull: true },
+    exercise_id: { type: sequelize.INTEGER, allowNull: false }
   },
   {
-    timestamps: false,
+    timestamps: true,
     freezeTableName: true,
     tableName: record
   }
