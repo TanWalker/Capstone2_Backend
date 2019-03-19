@@ -398,3 +398,46 @@ exports.getDefaultSchedule = (req, res, next) => {
       );
     });
 };
+
+exports.getScheduleByID = function(req, res, next) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  schedule_md
+    .findOne({
+      where: { id: req.params.schedule_id}
+    })
+    .then(function(result) {
+      if (result == null) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.SCHEDULE_ID_INVALID
+          )
+        );
+        return;
+      }
+      return res.jsonp(
+        new ReturnResult(result, null, 'Get schedule by ID successful.', null)
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_SCHEDULE
+        )
+      );
+    });
+};
