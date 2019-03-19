@@ -2,7 +2,7 @@ const ReturnResult = require('../libs/ReturnResult');
 const lesson_md = require('../models/lesson');
 const Constants = require('../libs/Constants');
 
-// this function is used to test ( get all exercise )
+// this function is used to test ( get all lesson )
 exports.getLesson = function(req, res, next) {
   console.log('Getting all lessons');
   // check user is log in.
@@ -17,7 +17,7 @@ exports.getLesson = function(req, res, next) {
     );
     return;
   }
-  // find all exercise
+  // find all lesson
   lesson_md.findAll().then(function(lessons) {
     // get result
     return res.jsonp(
@@ -26,7 +26,7 @@ exports.getLesson = function(req, res, next) {
   });
 };
 
-// this function is delete exercise
+// this function is delete lesson
 exports.deleteLesson = function(req, res, next) {
   console.log('Deleting exercise');
 
@@ -44,7 +44,7 @@ exports.deleteLesson = function(req, res, next) {
   }
   var id = req.params.lesson_id;
   // find all exercise
-  exercise_md
+  lesson_md
     .findOne({ where: { id: id } })
     .then(function(lessons) {
       if (lessons == null) {
@@ -59,12 +59,12 @@ exports.deleteLesson = function(req, res, next) {
         return;
       }
       // delete exercises
-      exercises.destroy();
+      lessons.destroy();
       // get result
       var result = new ReturnResult(
         null,
         null,
-        'Delete exercise successfully',
+        'Delete lesson successfully',
         null
       );
       // return
@@ -83,7 +83,7 @@ exports.deleteLesson = function(req, res, next) {
 };
 
 // this function is add new exercise
-exports.addExercise = (req, res, next) => {
+exports.addLesson = (req, res, next) => {
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -98,7 +98,7 @@ exports.addExercise = (req, res, next) => {
   }
   const params = req.body;
   // check whether exercise is existing by name and coach_id
-  var data = exercise_md.findOne({
+  var data = lesson_md.findOne({
     where: { name: params.name, coach_id: req.userData.id }
   });
 
@@ -111,7 +111,7 @@ exports.addExercise = (req, res, next) => {
           'Error',
           null,
           null,
-          Constants.messages.EXISTING_EXERCISE_NAME
+          Constants.messages.EXISTING_LESSON_NAME
         )
       );
     } else {
@@ -119,13 +119,6 @@ exports.addExercise = (req, res, next) => {
       // Insert exercise info to database
       var result = exercise_md.create({
         name: params.name,
-        style: params.style,
-        distance: params.distance,
-        reps: params.reps,
-        coach_id: req.userData.id,
-        description: params.description,
-        time: params.time,
-        type_id: params.type_id
       });
       result
         .then(function(exercise) {
@@ -220,7 +213,7 @@ exports.updateExercise = function(req, res, next) {
 };
 
 // Get exercise by coach
-exports.getExerciseByCoach = function(req, res, next) {
+exports.getLessonByCoach = function(req, res, next) {
   console.log('Get Exercise By Coach');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -235,7 +228,7 @@ exports.getExerciseByCoach = function(req, res, next) {
     return;
   }
   // Select all exercise by coach id
-  exercise_md
+  lesson_md
     .findAll({
       where: { coach_id: req.userData.id }
     })
@@ -244,7 +237,7 @@ exports.getExerciseByCoach = function(req, res, next) {
         new ReturnResult(
           null,
           results,
-          'Get exercises by coach successful.',
+          'Get lesson by coach successful.',
           null
         )
       );
@@ -255,14 +248,14 @@ exports.getExerciseByCoach = function(req, res, next) {
           'Error',
           null,
           null,
-          Constants.messages.CAN_NOT_GET_EXERCISE
+          Constants.messages.CAN_NOT_GET_LESSON
         )
       );
     });
 };
 
-// Get exercise by id
-exports.getExerciseByID = function(req, res, next) {
+// Get lessons by id
+exports.getLessonByID = function(req, res, next) {
   console.log('Get Exercise By ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -276,8 +269,8 @@ exports.getExerciseByID = function(req, res, next) {
     );
     return;
   }
-  // Select all team by  id
-  exercise_md
+  // Select all lessons by  id
+  lesson_md
     .findOne({
       where: { id: req.params.exercise_id }
     })
@@ -288,13 +281,13 @@ exports.getExerciseByID = function(req, res, next) {
             'Error',
             null,
             null,
-            Constants.messages.EXERCISE_ID_INVALID
+            Constants.messages.LESSON_ID_INVALID
           )
         );
         return;
       }
       return res.jsonp(
-        new ReturnResult(result, null, 'Get exercise by ID successful.', null)
+        new ReturnResult(result, null, 'Get lesson by ID successful.', null)
       );
     })
     .catch(function(err) {
@@ -303,7 +296,7 @@ exports.getExerciseByID = function(req, res, next) {
           'Error',
           null,
           null,
-          Constants.messages.CAN_NOT_GET_EXERCISE
+          Constants.messages.CAN_NOT_GET_LESSON
         )
       );
     });

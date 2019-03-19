@@ -1,6 +1,6 @@
 {
   "name": "swim_tracker",
-  "version": "1.0.7",
+  "version": "0.1.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "moment-timezone": "^0.5.23",
     "mysql": "^2.16.0",
     "mysql2": "^1.6.5",
+    "nodemailer": "^5.1.1",
     "pkginfo": "^0.4.1",
     "q": "^1.5.1",
     "sequelize": "^4.42.0"

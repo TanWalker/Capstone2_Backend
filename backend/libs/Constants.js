@@ -6,6 +6,7 @@ module.exports = Object.freeze({
   VERIFICATION_EXPIRES: 24,
   ROLE_COACH_ID: 2,
   ROLE_TRAINEE_ID: 3,
+  FEEDBACK_ADMIN_EMAIL: 'phamanhkhoa0@gmail.com',
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
@@ -63,14 +64,21 @@ module.exports = Object.freeze({
     EXISTING_STYLE_NAME: 'Style name already exists',
     STYLE_ID_INVALID: "Style id isn't existing or it's was deleted.",
     EXISTING_EXERCISE_NAME: 'Exercise name already exists',
+    EXISTING_LESSON_NAME: 'Lesson name already exists',
     EXERCISE_ID_INVALID: "Exercise id isn't existing or it's was deleted.",
+    SCHEDULE_ID_INVALID: "Schedule id isn't existing or it's was deleted.",
+    LESSON_ID_INVALID: "Lesson id isn't existing or it's was deleted.",
     EXISTING_TIME: 'There is an exercise in this time already',
     EXISTING_DISTANCE: 'Swim distance already exists',
     DISTANCE_ID_INVALID: "Distance id isn't existing or it's was deleted.",
     CAN_NOT_GET_EXERCISE: 'Can’t get exercise information.',
+    CAN_NOT_GET_LESSON: 'Can’t get lesson information.',
     EXISTING_SCHEDULE: 'Schedule already exists.',
     RECORD_ID_INVALID: "Record id isn't existing or it's was deleted.",
     INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team.",
-    LESSON_ID_INVALID: "Lesson id isn't existing or it's was deleted."
+    LESSON_ID_INVALID: "Lesson id isn't existing or it's was deleted.",
+    SEND_EMAIL_SUCCESSFUL: 'The email was sent.',
+    SEND_EMAIL_FAIL: 'Send email fail.',
+    CAN_NOT_GET_SCHEDULE: 'Can’t get schedule information.'
   }
 });

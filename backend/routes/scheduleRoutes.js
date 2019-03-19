@@ -20,6 +20,17 @@ router.delete(
 router.put('/api/updateSchedule', authCheck, scheduleController.updateSchedule);
 
 // get schedule for record
-router.get('/api/getScheduleForRecord/:page_num', authCheck, scheduleController.getScheduleForRecord);
+router.get(
+  '/api/getScheduleForRecord/:page_num',
+  authCheck,
+  scheduleController.getScheduleForRecord
+);
+
+//get schedule by id
+router.get(
+  '/api/getScheduleByID/:schedule_id',
+  authCheck,
+  scheduleController.getScheduleByID
+);
 
 module.exports = router;
