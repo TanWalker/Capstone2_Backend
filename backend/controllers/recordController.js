@@ -24,7 +24,7 @@ exports.getRecord = function(req, res, next) {
 };
 
 //add record
-exports.addRecord = function(req, res, next) {
+exports.addDailyRecord = function(req, res, next) {
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -51,7 +51,11 @@ exports.addRecord = function(req, res, next) {
     attitude: params.attitude,
     schedule_id: params.schedule_id,
     result: params.result,
-    date_id: params.date_id
+    note: params.note,
+    best_result: params.best_result,
+    errors: params.errors,
+    coach_id: req.userData.id,
+    exercise_id: params.exercise_id
   });
   result
     .then(function(record) {
@@ -166,20 +170,28 @@ exports.updateRecord = function(req, res, next) {
           user_id: params.user_id == null ? record.user_id : params.user_id,
           min_time: params.min_time == null ? record.min_time : params.min_time,
           max_time: params.max_time == null ? record.max_time : params.max_time,
-          time_swim: params.time_swim == null ? record.time_swim : params.time_swim,
+          time_swim:
+            params.time_swim == null ? record.time_swim : params.time_swim,
           min_hr: params.min_hr == null ? record.min_hr : params.min_hr,
           max_hr: params.max_hr == null ? record.max_hr : params.max_hr,
-          heart_rate: params.heart_rate == null ? record.heart_rate : params.heart_rate,
+          heart_rate:
+            params.heart_rate == null ? record.heart_rate : params.heart_rate,
           attitude: params.attitude == null ? record.attitude : params.attitude,
-          schedule_id: params.schedule_id == null ? record.schedule_id : params.schedule_id,
+          schedule_id:
+            params.schedule_id == null
+              ? record.schedule_id
+              : params.schedule_id,
           result: params.result == null ? record.result : params.result,
-          date_id: params.date_id == null ? record.date_id : params.date_id
+          date_id: params.date_id == null ? record.date_id : params.date_id,
+          note: params.note == null ? record.note:params.note,
+          best_result: params.best_result == null ? record.best_result:params.best_result,
+          errors: params.errors == null ? record.errors:params.errors,         
         })
         .then(success => {
           // if update successfully, return it.
           res
             .status(200)
-            .jsonp(new ReturnResult(null, null, 'Update successful', null));
+            .jsonp(new ReturnResult(success, null, 'Update successful', null));
           return;
         })
         .catch(function(err) {
