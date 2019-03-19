@@ -5,6 +5,7 @@ const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
 const common = require('../common/common');
+const emailController = require('../controllers/emailController');
 
 // this function is used to test ( get all team )
 exports.getTeam = function(req, res, next) {
@@ -127,6 +128,7 @@ exports.addTeam = (req, res, next) => {
                   list[i] = {};
                   list[i] = user;
                 }
+                emailController.sendNewTeam(list, team.name);
                 // loop the list and add to db
                 Object.keys(list).forEach(function(key) {
                   var obj = JSON.parse(list[key]);
