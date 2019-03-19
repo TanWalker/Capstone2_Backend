@@ -128,7 +128,7 @@ exports.addTeam = (req, res, next) => {
                   list[i] = {};
                   list[i] = user;
                 }
-                emailController.sendNewTeam(list, team.name, req.userData.email);
+                emailController.sendNewTeam(list, team, req.userData.email, params.number);
                 // loop the list and add to db
                 Object.keys(list).forEach(function(key) {
                   var obj = JSON.parse(list[key]);
