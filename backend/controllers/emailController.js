@@ -49,7 +49,7 @@ var sendMail = function(toAddress, subject, content,res) {
 // this function is send feedback
 exports.sendFeedBack = function(req, res, next) {
   console.log('Sending Feedback');
-  var to_email = process.env.FEEDBACK_ADMIN_EMAIL;
+  var to_email = process.env.FEEDBACK_ADMIN_EMAIL || Constants.FEEDBACK_ADMIN_EMAIL;
   var params = req.body;
   sendMail(
     to_email,
