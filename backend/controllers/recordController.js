@@ -51,7 +51,11 @@ exports.addRecord = function(req, res, next) {
     attitude: params.attitude,
     schedule_id: params.schedule_id,
     result: params.result,
-    date_id: params.date_id
+    date_id: params.date_id,
+    date_id: params.date_id == null ? record.date_id : params.date_id,
+    note: params.note ,
+    best_result: params.best_result ,
+    errors: params.errors,
   });
   result
     .then(function(record) {
@@ -173,13 +177,16 @@ exports.updateRecord = function(req, res, next) {
           attitude: params.attitude == null ? record.attitude : params.attitude,
           schedule_id: params.schedule_id == null ? record.schedule_id : params.schedule_id,
           result: params.result == null ? record.result : params.result,
-          date_id: params.date_id == null ? record.date_id : params.date_id
+          date_id: params.date_id == null ? record.date_id : params.date_id,
+          note: params.note == null ? record.note:params.note,
+          best_result: params.best_result == null ? record.best_result:params.best_result,
+          errors: params.errors == null ? record.errors:params.errors,         
         })
         .then(success => {
           // if update successfully, return it.
           res
             .status(200)
-            .jsonp(new ReturnResult(null, null, 'Update successful', null));
+            .jsonp(new ReturnResult(success, null, 'Update successful', null));
           return;
         })
         .catch(function(err) {

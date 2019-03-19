@@ -20,7 +20,10 @@ var record = db.connect.define(
     heart_rate: { type: sequelize.INTEGER, allowNull: false },
     time_swim: { type: sequelize.FLOAT, allowNull: false },
     attitude: { type: sequelize.TEXT, allowNull: true },
-    result: { type: sequelize.TEXT, allowNull: false }
+    result: { type: sequelize.TEXT, allowNull: false },
+    note: { type: sequelize.TEXT, allowNull: false },
+    best_result: { type: sequelize.FLOAT, allowNull: false },
+    errors: { type: sequelize.TEXT, allowNull: false }
   },
   {
     timestamps: false,
