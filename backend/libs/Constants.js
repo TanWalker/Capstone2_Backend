@@ -6,6 +6,7 @@ module.exports = Object.freeze({
   VERIFICATION_EXPIRES: 24,
   ROLE_COACH_ID: 2,
   ROLE_TRAINEE_ID: 3,
+  FEEDBACK_ADMIN_EMAIL: 'phamanhkhoa0@gmail.com',
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
@@ -71,7 +72,7 @@ module.exports = Object.freeze({
     EXISTING_SCHEDULE: 'Schedule already exists.',
     RECORD_ID_INVALID: "Record id isn't existing or it's was deleted.",
     INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team.",
-    SEND_EMAIL_SUCCESSFUL: "The email was sent.",
-    SEND_EMAIL_FAIL: "Send email fail."
+    SEND_EMAIL_SUCCESSFUL: 'The email was sent.',
+    SEND_EMAIL_FAIL: 'Send email fail.'
   }
 });

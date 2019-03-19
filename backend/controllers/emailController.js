@@ -2,8 +2,8 @@ const ReturnResult = require('../libs/ReturnResult');
 const Constants = require('../libs/Constants');
 const nodeMailer = require('nodemailer');
 
-const sender = 'xxx@gmail.com'; // The email to be use in sending the email, it's default.
-const password = 'xxx'; // password of the email to use, it's default.
+const sender = process.env.FEEDBACK_EMAIL; // The email to be use in sending the email, it's default.
+const password = process.env.FEEDBACK_EMAIL_PASSWORD; // password of the email to use, it's default.
 
 //Before sending your email using gmail you have to allow non secure apps to access gmail you can do 
 //this by going to your gmail settings here. 
@@ -18,9 +18,9 @@ var smtpTransport = nodeMailer.createTransport({
   }
 });
 //function for send email
-var sendMail = function(toAddress, subject, content, next) {
+var sendMail = function(toAddress, subject, content,res) {
   var mailOptions = {
-    from: sender,
+    from: "Feedback Center of Quan Khu 5",
     to: toAddress,
     subject: subject,
     html: content
@@ -33,10 +33,10 @@ var sendMail = function(toAddress, subject, content, next) {
         new ReturnResult(null, null, null, Constants.messages.SEND_EMAIL_FAIL)
       );
     } else {
-      // console.log(info); if email was sent, return message
+      console.log(info); //if email was sent, return message
       res.jsonp(
         new ReturnResult(
-          null,
+          info,
           null,
           null,
           Constants.messages.SEND_EMAIL_SUCCESSFUL
@@ -49,11 +49,12 @@ var sendMail = function(toAddress, subject, content, next) {
 // this function is send feedback
 exports.sendFeedBack = function(req, res, next) {
   console.log('Sending Feedback');
-  var to_email = 'xyz@gmail.com';
+  var to_email = process.env.FEEDBACK_ADMIN_EMAIL || Constants.FEEDBACK_ADMIN_EMAIL;
   var params = req.body;
   sendMail(
     to_email,
     params.title ,
-    params.content //html content
+    params.content,//html content
+    res 
   );
 };
