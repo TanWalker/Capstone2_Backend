@@ -10,6 +10,7 @@ var type_of_exercise = db.connect.define('type_of_exercise', {
   },
   name: { type: sequelize.TEXT, allowNull: false },
   description: { type: sequelize.TEXT, allowNull: false },
+  logo: { type: sequelize.TEXT, allowNull: false}
 },{
   timestamps:false,
   freezeTableName:true,
