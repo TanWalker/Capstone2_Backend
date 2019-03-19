@@ -1,4 +1,6 @@
 const pkginfo = require('pkginfo')(module);
+const version = require('../models/version');
+const ReturnResult = require('../libs/ReturnResult');
 
 exports.getVersion = function(req, res) {
   console.log('get version');
@@ -9,3 +11,14 @@ exports.getVersion = function(req, res) {
     t: -1
   });
 };
+
+exports.getAppVersion = function(req, res) {
+  console.log('get app version');
+ 
+  version.findOne().then(function(version){
+    // get result
+    return res.jsonp(
+      new ReturnResult(version, null, 'Get version of app successful.', null)
+    );
+  });
+}
