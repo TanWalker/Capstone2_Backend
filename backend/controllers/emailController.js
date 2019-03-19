@@ -26,16 +26,28 @@ var sendMail = function(toAddress, subject, content, res) {
     html: content
   };
   // send action by transporter
-  smtpTransport.sendMail(mailOptions).then(function(success) {
-    res.jsonp(
-      new ReturnResult(
-        null,
-        null,
-        null,
-        Constants.messages.SEND_EMAIL_SUCCESSFUL
-      )
-    );
-  });
+  smtpTransport
+    .sendMail(mailOptions)
+    .then(function(success) {
+      res.jsonp(
+        new ReturnResult(
+          null,
+          null,
+          Constants.messages.SEND_EMAIL_SUCCESSFUL,
+          null
+        )
+      );
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.SEND_EMAIL_FAIL
+        )
+      );
+    });
 };
 
 // this function is send feedback
