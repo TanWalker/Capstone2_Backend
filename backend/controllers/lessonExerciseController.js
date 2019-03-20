@@ -194,7 +194,7 @@ exports.updateLessonExercise = function(req, res, next) {
             // if update successfully, return it.
             res
               .status(200)
-              .jsonp(new ReturnResult(null, null, 'Update successful', null));
+              .jsonp(new ReturnResult(success, null, 'Update successful', null));
             return;
           })
           .catch(function(err) {
@@ -208,43 +208,6 @@ exports.updateLessonExercise = function(req, res, next) {
             );
           });
       }
-    });
-};
-
-// Get lesson exercise by coach
-exports.getLessonExerciseByCoach = function(req, res, next) {
-  console.log('Get Lesson Exercise By Coach');
-  //check if user is trainee, return and exit;
-  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
-    res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
-    return;
-  }
-  // Select all lesson exercise by coach id
-  lessonExercise_md
-    .findAll({
-      where: { coach_id: req.userData.id }
-    })
-    .then(function(results) {
-      return res.jsonp(
-        new ReturnResult(null, results, 'Get lesson by coach successful.', null)
-      );
-    })
-    .catch(function(err) {
-      return res.jsonp(
-        new ReturnResult(
-          'Error',
-          null,
-          null,
-          Constants.messages.CAN_NOT_GET_LESSON_EXERCISE
-        )
-      );
     });
 };
 
@@ -275,7 +238,7 @@ exports.getLessonExerciseByID = function(req, res, next) {
             'Error',
             null,
             null,
-            Constants.messages.LESSON_ID_INVALID
+            Constants.messages.LESSON_EXERCISE_ID_INVALID
           )
         );
         return;
@@ -300,3 +263,58 @@ exports.getLessonExerciseByID = function(req, res, next) {
       );
     });
 };
+
+exports.getLessonExerciseByLessonID = function(req, res, next){
+  console.log('Get Lesson Exercise By Lesson ID');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select lesson exercises by lesson_id
+  lessonExercise_md
+    .findAll({
+      where: { lesson_id: req.params.lesson_id}
+    })
+    .then(function(result) {
+      if (result == null) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.LESSON_ID_INVALID
+          )
+        );
+        return;
+      }
+      Object.keys(result).forEach(function(key) {
+        result[key].is_important=common.convertBoolean(result[key].is_important);
+      });
+      return res.jsonp(
+        new ReturnResult(
+          null,
+          result,
+          'Get lesson excercise by lesson_ID successful.',
+          null
+        )
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_LESSON_EXERCISE
+        )
+      );
+    });
+}
