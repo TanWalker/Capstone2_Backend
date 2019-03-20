@@ -4,7 +4,7 @@ const router = express.Router();
 const authCheck = require('../middleware/AuthGuard');
 
 // add record
-router.post('/api/addRecord', authCheck, recordController.addRecord);
+router.post('/api/addDailyRecord', authCheck, recordController.addDailyRecord);
 
 // get record
 router.get('/api/getRecord', authCheck, recordController.getRecord);

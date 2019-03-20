@@ -81,6 +81,8 @@ module.exports = Object.freeze({
     SEND_EMAIL_SUCCESSFUL: 'The email was sent.',
     SEND_EMAIL_FAIL: 'Send email fail.',
     CAN_NOT_GET_SCHEDULE: 'Can’t get schedule information.',
-    CAN_NOT_GET_LESSON_EXERCISE: 'Can’t get lesson excercise information.'
+    CAN_NOT_GET_LESSON_EXERCISE: 'Can’t get lesson excercise information.',
+    UNEXPECTED_ERROR: 'Unexpected error.',
+
   }
 });

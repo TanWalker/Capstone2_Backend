@@ -33,4 +33,7 @@ router.get(
   scheduleController.getScheduleByID
 );
 
+// get schedule for record
+router.get('/api/getDefaultSchedule', authCheck, scheduleController.getDefaultSchedule);
+
 module.exports = router;

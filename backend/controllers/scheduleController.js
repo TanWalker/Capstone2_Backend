@@ -300,9 +300,11 @@ exports.getScheduleForRecord = (req, res, next) => {
       }
     })
     .then(function(results) {
-      return res.jsonp(
-        new ReturnResult(null, results, 'Get Schedule for Record.', null)
-      );
+      return res
+        .status(200)
+        .jsonp(
+          new ReturnResult(null, results, 'Get Schedule for Record.', null)
+        );
     })
     .catch(function(err) {
       return res.jsonp(
@@ -315,6 +317,88 @@ exports.getScheduleForRecord = (req, res, next) => {
       );
     });
 };
+
+// get schedule at current time as default
+exports.getDefaultSchedule = (req, res, next) => {
+  console.log('Getting Default Schedule');
+  // check user
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  // set time
+  var current_time = new Date();
+  var hour = current_time.getHours();
+  var minute = current_time.getMinutes();
+  var current_hour = hour + minute / 60;
+  var day = current_time.getDate();
+  var month = current_time.getMonth() + 1;
+  var year = current_time.getFullYear();
+  // select all schedule in current day and order increasing
+  schedule_md
+    .findAll({
+      where: { day: day, month: month, year: year },
+      order: [['time_end', 'ASC']]
+    })
+    .then(function(results) {
+      // this use to compare current_hour with the time between 2 schedule 
+      // if it's not between the time start and end of a schedule
+      // define var time of the end of a schedule
+      var end_before = 0;
+      // define var time of the start of a next schedule
+      var start_after = 0;
+      for (var i = 0; i < results.length; i++) {
+        var result = results[i];
+        var start_time = result.start_hour + result.start_minute / 60;
+        var end_time = result.end_hour + result.end_minute / 60;
+        // if current_hour inside a schedule
+        if (current_hour >= start_time && current_hour <= end_time) {
+          return res
+            .status(200)
+            .jsonp(
+              new ReturnResult(result, null, 'Get Default Schedule.', null)
+            );
+        } else {
+          // if it is the last schedule in the day
+          if (i == results.length - 1) {
+            return res
+              .status(200)
+              .jsonp(
+                new ReturnResult(result, null, 'Get Default Schedule.', null)
+              );
+          }
+          // time of the end of a schedule
+          end_before = end_time;
+          // time of the start of a next schedule
+          start_after =
+            results[i + 1].start_hour + results[i + 1].start_minute / 60;
+          // if current_hour is inside the time between 2 schedule, get the previous schedule
+          if (current_hour > end_before && current_hour < start_after) {
+            return res.jsonp(
+              new ReturnResult(result, null, 'Get Default Schedule.', null)
+            );
+          }
+        }
+      }
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.UNEXPECTED_ERROR
+        )
+      );
+    });
+};
+
 exports.getScheduleByID = function(req, res, next) {
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
