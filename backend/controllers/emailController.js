@@ -68,7 +68,7 @@ exports.sendNewTeam = function(users, team, coach_email, number) {
       dom.window.document.getElementById('age_number').innerHTML =
         'Team age: ' + team.age;
       dom.window.document.getElementById('team_number').innerHTML =
-        'Team member number: ' + number;
+        'Team number: ' + number;
       // set list new user.
       Object.keys(users).forEach(function(key) {
         var obj = JSON.parse(users[key]);
