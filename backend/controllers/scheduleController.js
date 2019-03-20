@@ -111,7 +111,7 @@ exports.addSchedule = (req, res, next) => {
     var result = schedule_md.create({
       start_hour: params.start_hour,
       end_hour: params.end_hour,
-      exercise_id: params.exercise_id,
+      lesson_id: params.lesson_id,
       coach_id: req.userData.id,
       team_name: params.team_name,
       day: params.day,
@@ -122,7 +122,7 @@ exports.addSchedule = (req, res, next) => {
       time_start: time_start,
       time_end: time_end,
       team_id: params.team_id,
-      exercise_name: params.exercise_name
+      lesson_name: params.lesson_name
     });
     result
       .then(function(schedule) {
@@ -206,10 +206,8 @@ exports.updateSchedule = function(req, res, next) {
                 : params.start_hour,
             end_hour:
               params.end_hour == null ? schedules.end_hour : params.end_hour,
-            exercise_id:
-              params.exercise_id == null
-                ? schedules.exercise_id
-                : params.exercise_id,
+            lesson_id:
+              params.lesson_id == null ? schedules.lesson_id : params.lesson_id,
             start_minute:
               params.start_minute == null
                 ? schedules.start_minute
@@ -224,7 +222,9 @@ exports.updateSchedule = function(req, res, next) {
             month: params.month == null ? schedules.month : params.month,
             year: params.year == null ? schedules.year : params.year,
             time_start: time_start,
-            time_end: time_end
+            time_end: time_end,
+            lesson_name:
+              params.lesson_name == null ? schedules.lesson_name : params.lesson_name
           })
           .then(success => {
             res
@@ -347,7 +347,7 @@ exports.getDefaultSchedule = (req, res, next) => {
       order: [['time_end', 'ASC']]
     })
     .then(function(results) {
-      // this use to compare current_hour with the time between 2 schedule 
+      // this use to compare current_hour with the time between 2 schedule
       // if it's not between the time start and end of a schedule
       // define var time of the end of a schedule
       var end_before = 0;
@@ -412,7 +412,7 @@ exports.getScheduleByID = function(req, res, next) {
   }
   schedule_md
     .findOne({
-      where: { id: req.params.schedule_id}
+      where: { id: req.params.schedule_id }
     })
     .then(function(result) {
       if (result == null) {
@@ -441,3 +441,9 @@ exports.getScheduleByID = function(req, res, next) {
       );
     });
 };
+// exports.getScheduleByDate = function(req, res, next){
+//   if(!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID){
+//     return  res.jsonp(new ReturnResult('Error', null ,null, Constant.message.UNAUTHORIZED_USER));
+//   }
+//   schedule_md.findOne({where:{}})
+// }
