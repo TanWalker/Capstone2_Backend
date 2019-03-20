@@ -77,7 +77,7 @@ module.exports = Object.freeze({
     EXISTING_SCHEDULE: 'Schedule already exists.',
     RECORD_ID_INVALID: "Record id isn't existing or it's was deleted.",
     INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team.",
-    LESSON_ID_INVALID: "Lesson id isn't existing or it's was deleted.",
+    LESSON_EXERCISE_ID_INVALID: "Lesson exercise id isn't existing or it's was deleted.",
     SEND_EMAIL_SUCCESSFUL: 'The email was sent.',
     SEND_EMAIL_FAIL: 'Send email fail.',
     CAN_NOT_GET_SCHEDULE: 'Can’t get schedule information.',

@@ -19,18 +19,17 @@ router.delete(
 // update lesson exercise
 router.put('/api/updateLessonExercise', authCheck, lessonExerciseController.updateLessonExercise);
 
-// get by coach
-router.get(
-  '/api/getLessonExerciseByCoach',
-  authCheck,
-  lessonExerciseController.getLessonExerciseByCoach
-);
-
 // get by ID
 router.get(
   '/api/getLessonExerciseByID/:lesson_exercise_id',
   authCheck,
   lessonExerciseController.getLessonExerciseByID
+);
+
+router.get(
+  '/api/getLessonExerciseByLessonID/:lesson_id',
+  authCheck,
+  lessonExerciseController.getLessonExerciseByLessonID
 );
 
 module.exports = router;
