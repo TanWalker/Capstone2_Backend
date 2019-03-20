@@ -144,7 +144,7 @@ exports.addLesson = (req, res, next) => {
 
 // this function is update lesson
 exports.updateLesson = function(req, res, next) {
-  console.log('Updating Exercise');
+  console.log('Updating Lesson');
 
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -161,8 +161,7 @@ exports.updateLesson = function(req, res, next) {
   // set params is request body.
   const params = req.body;
   // check if lesson id is exist or not.
-  lesson_md
-  .findOne({ where: { id: params.id } }).then(function(lesson) {
+  lesson_md.findOne({ where: { id: params.id } }).then(function(lesson) {
     if (lesson == null) {
       res.jsonp(
         new ReturnResult(
@@ -176,13 +175,13 @@ exports.updateLesson = function(req, res, next) {
       // if execise id is exist so we update it.
       lesson
         .update({
-          name: params.name == null ? lesson.name : params.name,
+          name: params.name == null ? lesson.name : params.name
         })
         .then(success => {
           // if update successfully, return it.
           res
             .status(200)
-            .jsonp(new ReturnResult(null, null, 'Update successful', null));
+            .jsonp(new ReturnResult(lesson, null, 'Update successful', null));
           return;
         })
         .catch(function(err) {
@@ -221,12 +220,7 @@ exports.getLessonByCoach = function(req, res, next) {
     })
     .then(function(results) {
       return res.jsonp(
-        new ReturnResult(
-          null,
-          results,
-          'Get lesson by coach successful.',
-          null
-        )
+        new ReturnResult(null, results, 'Get lesson by coach successful.', null)
       );
     })
     .catch(function(err) {
@@ -256,7 +250,7 @@ exports.getLessonByID = function(req, res, next) {
     );
     return;
   }
-  // Select all lessons by  id
+  // Select all lessons by id
   lesson_md
     .findOne({
       where: { id: req.params.lesson_id }
