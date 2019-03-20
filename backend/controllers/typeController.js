@@ -1,5 +1,6 @@
 const ReturnResult = require('../libs/ReturnResult');
 const type_md = require('../models/type_of_exercise');
+const Constants = require('../libs/Constants');
 
 // this function is get all type of exercise
 exports.getType = function(req, res, next) {
@@ -12,4 +13,3 @@ exports.getType = function(req, res, next) {
     );
   });
 };
-

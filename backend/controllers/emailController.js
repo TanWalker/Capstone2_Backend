@@ -1,11 +1,12 @@
 const ReturnResult = require('../libs/ReturnResult');
 const Constants = require('../libs/Constants');
 const nodeMailer = require('nodemailer');
+
 const sender = process.env.FEEDBACK_EMAIL; // The email to be use in sending the email, it's default.
 const password = process.env.FEEDBACK_EMAIL_PASSWORD; // password of the email to use, it's default.
-const jsdom = require('jsdom'); // JsDOM
-const { JSDOM } = jsdom;
 const fs = require('fs');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 //Before sending your email using gmail you have to allow non secure apps to access gmail you can do
 //this by going to your gmail settings here.
 //https://myaccount.google.com/lesssecureapps
@@ -50,7 +51,6 @@ var sendMail = function(toAddress, subject, content, res) {
       );
     });
 };
-//css of template
 
 // send new team to admin email
 exports.sendNewTeam = function(users, team, coach_email, number) {
