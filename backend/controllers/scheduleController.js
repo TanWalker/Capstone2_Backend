@@ -441,3 +441,9 @@ exports.getScheduleByID = function(req, res, next) {
       );
     });
 };
+// exports.getScheduleByDate = function(req, res, next){
+//   if(!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID){
+//     return  res.jsonp(new ReturnResult('Error', null ,null, Constant.message.UNAUTHORIZED_USER));
+//   }
+//   schedule_md.findOne({where:{}})
+// }

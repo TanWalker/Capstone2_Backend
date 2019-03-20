@@ -16,8 +16,8 @@ var lesson = db.connect.define(
   {
     timestamps: false,
     freezeTableName: true,
-    tableName: exercise
+    tableName: lesson
   }
 );
 
-module.exports = exercise;
+module.exports = lesson;
