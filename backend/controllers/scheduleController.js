@@ -347,7 +347,7 @@ exports.getDefaultSchedule = (req, res, next) => {
       order: [['time_end', 'ASC']]
     })
     .then(function(results) {
-      // this use to compare current_hour with the time between 2 schedule 
+      // this use to compare current_hour with the time between 2 schedule
       // if it's not between the time start and end of a schedule
       // define var time of the end of a schedule
       var end_before = 0;
@@ -412,7 +412,7 @@ exports.getScheduleByID = function(req, res, next) {
   }
   schedule_md
     .findOne({
-      where: { id: req.params.schedule_id}
+      where: { id: req.params.schedule_id }
     })
     .then(function(result) {
       if (result == null) {
@@ -441,9 +441,41 @@ exports.getScheduleByID = function(req, res, next) {
       );
     });
 };
-// exports.getScheduleByDate = function(req, res, next){
-//   if(!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID){
-//     return  res.jsonp(new ReturnResult('Error', null ,null, Constant.message.UNAUTHORIZED_USER));
-//   }
-//   schedule_md.findOne({where:{}})
-// }
+exports.getScheduleByDate = function(req, res, next) {
+  console.log('Get Schedule By Date.');
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    return res.jsonp(
+      new ReturnResult('Error', null, null, Constant.message.UNAUTHORIZED_USER)
+    );
+  }
+  schedule_md
+    .findAll({
+      where: {
+        coach_id: req.userData.id,
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year
+      }
+    })
+    .then(function(schedules) {
+      Object.keys(schedules).forEach(function(key) {
+        var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+        var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+        schedules[key].time_start = start.format();
+        schedules[key].time_end = end.format();
+      });
+      var result = new ReturnResult(null, schedules, 'All Schedules', null);
+      // return
+      return res.jsonp(result);
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
