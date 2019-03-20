@@ -36,4 +36,7 @@ router.get(
 // get schedule for record
 router.get('/api/getDefaultSchedule', authCheck, scheduleController.getDefaultSchedule);
 
+//get schedule by date
+router.get('/api/getScheduleByDate', authCheck, scheduleController.getScheduleByDate);
+
 module.exports = router;
