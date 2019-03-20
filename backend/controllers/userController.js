@@ -1,10 +1,12 @@
 const bodyParser = require('body-parser');
 const user_md = require('../models/user');
+const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const ReturnResult = require('../libs/ReturnResult');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const common = require('../common/common');
 
 // Register
 exports.Register = (req, res, next) => {
@@ -32,12 +34,9 @@ exports.Register = (req, res, next) => {
         });
         result
           .then(function(user) {
-            var result = {
-              user: user
-            };
             res
               .status(200)
-              .jsonp(new ReturnResult(null, result, 'User Created', null));
+              .jsonp(new ReturnResult(user, null, 'User Created', null));
           })
           .catch(function(err) {
             res.jsonp(
@@ -85,6 +84,11 @@ exports.Login = (req, res, next) => {
             )
           );
         }
+        // convert gender and is_verified to true or false
+        fetchedUser.gender = common.convertBoolean(fetchedUser.gender);
+        fetchedUser.is_verified = common.convertBoolean(
+          fetchedUser.is_verified
+        );
         // json token to frontend
         const token = jwt.sign(
           {
@@ -155,3 +159,123 @@ exports.Login = (req, res, next) => {
       });
   }
 };
+
+// update user controller
+exports.updateUser = (req, res, next) => {
+  console.log('Updating User');
+  var params = req.body;
+  user_md.findOne({ where: { id: req.userData.id } }).then(function(user) {
+    if (user == null) {
+      res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.USER_NOT_FOUND)
+      );
+    } else {
+      user
+        .update({
+          avatar: params.avatar,
+          first_name: params.first_name,
+          last_name: params.last_name,
+          email: params.email,
+          phone: params.phone,
+          dob: params.dob,
+          gender: params.gender,
+          height: params.height,
+          weight: params.weight,
+          is_verified: 1
+        })
+        .then(function() {
+          return res.jsonp(
+            new ReturnResult(null, null, 'User update successfully.', null)
+          );
+        })
+        .catch(function() {
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
+    }
+  });
+};
+
+//get current user is logging in by ID
+exports.getCurrentUser = function(req, res, next) {
+  console.log('Getting user by ID');
+  if (req.userData) {
+    return res.jsonp(
+      new ReturnResult(req.userData, null, 'Get user successful.', null)
+    );
+    // user_md
+    //   .findOne({ where: { id: req.userData.id } })
+    //   .then(function(user) {
+    //     user.is_verified = common.convertBoolean(user.is_verified);
+    //     user.gender = common.convertBoolean(user.gender);
+    //     console.log(user);
+    //     res.jsonp(new ReturnResult(user, null, 'Get user successful.', null));
+    //   })
+    //   .catch(function(err) {
+    //     return res.jsonp(
+    //       new ReturnResult(
+    //         'Error',
+    //         null,
+    //         null,
+    //         Constants.messages.CAN_NOT_GET_USER
+    //       )
+    //     );
+    //   });
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
+exports.getUserIndex = function(req, res, next){
+
+  record_md.findOne({where:{id : req.userData.id}}).then(function(user){
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }else{
+      user.update({
+        bmi: req.userData.height == null && req.userData.weight == null ? req.userData.bmi : (req.userData.weight/Math.pow(req.userData.weight, 2)),
+        speed: user.time_swim
+      })
+      console.log(typeof req.userData.height)
+      .then(success => {
+        res
+          .status(200)
+          .jsonp(
+            new ReturnResult(success, null, 'Successful', null)
+          );
+        return;
+      })
+      .catch(function(err) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.INVALID_INFORMATION
+          )
+        );
+      });
+    }
+  });
+}

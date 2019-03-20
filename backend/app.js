@@ -7,7 +7,11 @@ const scheduleRoutes = require('./routes/scheduleRoutes');
 const styleRoutes = require('./routes/styleRoutes');
 const distanceRoutes = require('./routes/distanceRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
-
+const recordRoutes = require('./routes/recordRoutes');
+const typeRoutes = require('./routes/typeRoutes');
+const emailRoutes = require('./routes/emailRoutes');
+const lessonRoutes = require('./routes/lessonRoutes');
+const lessonExerciseRoutes =require('./routes/lessonExerciseRoutes');
 
 // allow override of environment variables
 require('dotenv').config();
@@ -45,5 +49,15 @@ app.use(styleRoutes);
 app.use(distanceRoutes);
 
 app.use(exerciseRoutes);
+
+app.use(recordRoutes);
+
+app.use(typeRoutes);
+
+app.use(emailRoutes);
+
+app.use(lessonRoutes);
+
+app.use(lessonExerciseRoutes);
 
 module.exports = app;
