@@ -224,7 +224,9 @@ exports.updateSchedule = function(req, res, next) {
             time_start: time_start,
             time_end: time_end,
             lesson_name:
-              params.lesson_name == null ? schedules.lesson_name : params.lesson_name
+              params.lesson_name == null
+                ? schedules.lesson_name
+                : params.lesson_name
           })
           .then(success => {
             res
@@ -271,11 +273,27 @@ exports.getScheduleForRecord = (req, res, next) => {
   // set the range of the time
   var before_time = new Date();
   var after_time = new Date();
-  before_time.setDate(before_time.getDate() - 7 * (req.params.page_num - 1));
-  after_time.setFullYear(
+  // get the day of the week
+  var day_week = before_time.getDay();
+  // if it is sunday
+  var day_left = 0;
+  // calculate the days left of the week
+  if (day_week != 0) {
+    day_left = 7 - day_week;
+  }
+  var tmp_date =
+    req.params.page_num == 1
+      ? before_time.getDate() + 1
+      : before_time.getDate() - 7 * (req.params.page_num - 1) + day_left + 1;
+  before_time.setFullYear(
     before_time.getFullYear(),
     before_time.getMonth(),
-    before_time.getDate() - 7 * req.params.page_num
+    tmp_date
+  );
+  after_time.setFullYear(
+    after_time.getFullYear(),
+    after_time.getMonth(),
+    after_time.getDate() - 7 * req.params.page_num + day_left + 1
   );
   // convert to UTC timezone to match with mysql
   // Europe/London is GMT equal with UTC
@@ -288,6 +306,8 @@ exports.getScheduleForRecord = (req, res, next) => {
   after.hours(0);
   after.minutes(0);
   after.seconds(0);
+  console.log('Before: ' + before_time);
+  console.log('After: ' + after_time);
   before_time = before.format();
   after_time = after.format();
   // find schedule before current time depend on page_num
