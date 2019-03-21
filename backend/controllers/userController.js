@@ -279,3 +279,23 @@ exports.getUserIndex = function(req, res, next){
     }
   });
 }
+
+
+exports.getUserBMITips = function(req, res, next){
+
+  console.log('Getting user MBI tips');
+  if (req.userData) {
+  
+    console.log(req.userData);
+    common.getTips(10);
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+}
