@@ -56,7 +56,6 @@ exports.deleteTeam = function(req, res, next) {
     teams.destroy();
     // get result
     var result = new ReturnResult(null, null, 'Delete team successfully', null);
-
     // return
     res.jsonp(result);
   });

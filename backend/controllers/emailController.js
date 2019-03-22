@@ -107,3 +107,8 @@ exports.sendFeedBack = function(req, res, next) {
     res
   );
 };
+
+// this function is send monthly report
+exports.monthlyMail = function(users, team, coach_email, number){
+  
+}
