@@ -83,6 +83,6 @@ module.exports = Object.freeze({
     CAN_NOT_GET_SCHEDULE: 'Can’t get schedule information.',
     CAN_NOT_GET_LESSON_EXERCISE: 'Can’t get lesson excercise information.',
     UNEXPECTED_ERROR: 'Unexpected error.',
-
+    EXCUTED_PROCEDURE: 'Excuted procedure'
   }
 });
