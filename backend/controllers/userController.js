@@ -284,10 +284,22 @@ exports.getUserIndex = function(req, res, next){
 exports.getUserBMITips = function(req, res, next){
 
   console.log('Getting user MBI tips');
+  var BMI = req.params.bmi;
   if (req.userData) {
-  
-    console.log(req.userData);
-    common.getTips(10);
+      let query = 'CALL getBMI_tips(?)';
+      common.exec_Procedure(query,BMI).then(
+        function(results) {
+          console.log(results);
+          return  res.jsonp(
+            new ReturnResult(
+             null,
+             results,
+             Constants.messages.EXCUTED_PROCEDURE,
+             null
+           )
+         );
+        }
+      ).catch((err) => setImmediate(() => { throw err; }));
   } else {
     return res.jsonp(
       new ReturnResult(

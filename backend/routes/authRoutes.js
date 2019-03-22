@@ -16,5 +16,5 @@ router.put('/api/updateUser', authCheck, userControllers.updateUser);
 router.get('/api/getCurrentUser', authCheck, userControllers.getCurrentUser);
 
 //router.put('/api/getUserIndex', authCheck, userControllers.getUserIndex)
-router.get('api/getUserBMITips', authCheck, userControllers.getUserBMITips)
+router.get('/api/getUserBMITips/:bmi', authCheck, userControllers.getUserBMITips);
 module.exports = router;
