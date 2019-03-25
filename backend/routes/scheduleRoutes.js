@@ -36,4 +36,7 @@ router.get(
 // get schedule for record
 router.get('/api/getDefaultSchedule', authCheck, scheduleController.getDefaultSchedule);
 
+// get lesson by date
+router.get('/api/getLessonByDate', authCheck, scheduleController.getLessonByDate);
+
 module.exports = router;
