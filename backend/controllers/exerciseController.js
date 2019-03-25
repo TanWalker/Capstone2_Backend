@@ -331,7 +331,7 @@ exports.getExerciseByLessonID = function(req, res, next) {
       attributes: ['exercise_id'],
       where: {
         lesson_id: req.body.lesson_id,
-        type_of_exercise_id: 4
+        type_of_exercise_id: Constants.FINAL_SET_ID
       }
     })
     .then(function(result) {
