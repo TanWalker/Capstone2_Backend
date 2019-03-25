@@ -7,6 +7,7 @@ module.exports = Object.freeze({
   ROLE_COACH_ID: 2,
   ROLE_TRAINEE_ID: 3,
   FEEDBACK_ADMIN_EMAIL: 'phamanhkhoa0@gmail.com',
+  FINAL_SET_ID: 4,
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
@@ -83,6 +84,6 @@ module.exports = Object.freeze({
     CAN_NOT_GET_SCHEDULE: 'Can’t get schedule information.',
     CAN_NOT_GET_LESSON_EXERCISE: 'Can’t get lesson excercise information.',
     UNEXPECTED_ERROR: 'Unexpected error.',
-    EXCUTED_PROCEDURE: 'Excuted procedure'
+    EXCUTED_PROCEDURE: 'Excuted procedure',
   }
 });
