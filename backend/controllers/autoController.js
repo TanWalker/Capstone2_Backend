@@ -1,38 +1,36 @@
-const ReturnResult = require('../libs/ReturnResult');
-const emailController = require('../models/emailController');
-const Constants = require('../libs/Constants');
+const emailController = require('../controllers/emailController');
 const record_md = require('../models/record');
 const user_md = require('../models/user');
+const schedule = require('node-schedule');
+var rule = new schedule.RecurrenceRule();
+rule.second = 1;
 
-exports.monthlyReport = function() {
-  console.log('Monthly report');
-  // get report
-  user_md
-    .findAll({
-      attributes: ['email', 'id'],
-      where: {
-        is_coach: 0
-      }
-    })
-    .then(function(data) {
-      
-      Object.keys(list).forEach(function(key) {
-        var obj = JSON.parse(list[key]);
-        result.push(obj);
-        bcrypt.hash('123456', 10).then(function(password) {
-          user_md.create({
-            username: obj.username,
-            password: password,
-            role_id: 3,
-            team_id: team.id,
-            is_verified: 0
-          });
+module.exports = {
+  monthlyReporter: function() {
+    console.log('Monthly report');
+    // get report
+    // var cronExpress = '*/5 * * * * * *';
+    schedule.scheduleJob(rule, function(fireDate) {
+      console.log('running job!');
+      console.log(fireDate);
+      user_md
+        .findAll({
+          attributes: ['email', 'id'],
+          where: {
+            is_coach: 0
+          }
+        })
+        .then(function(data) {
+            Object.keys(list).forEach(function(key) {
+              var obj = JSON.parse(list[key]);
+              record_md.findAll({
+                  where: {
+                    user_id: obj.id
+                  }
+                });
+            });
+          emailController.monthlyMail(data);
         });
-      });
-      record_md.findAll({
-        where: {
-          user_id: data.id
-        }
-      });
     });
+  }
 };
