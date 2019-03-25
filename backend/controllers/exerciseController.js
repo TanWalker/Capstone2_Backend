@@ -1,7 +1,8 @@
 const ReturnResult = require('../libs/ReturnResult');
 const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
-
+const lesson_exercise_md = require('../models/lesson_exercise');
+const Op = require('sequelize').Op;
 // this function is used to test ( get all exercise )
 exports.getExercise = function(req, res, next) {
   console.log('Getting all Exercises');
@@ -306,5 +307,81 @@ exports.getExerciseByID = function(req, res, next) {
           Constants.messages.CAN_NOT_GET_EXERCISE
         )
       );
+    });
+};
+
+// Get final set exercises by lesson_id
+exports.getExerciseByLessonID = function(req, res, next) {
+  console.log('Get list Exercise By Lesson ID');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  //select all exercise_id by lesson
+  lesson_exercise_md
+    .findAll({
+      attributes: ['exercise_id'],
+      where: {
+        lesson_id: req.body.lesson_id,
+        type_of_exercise_id: 4
+      }
+    })
+    .then(function(result) {
+      // check if result is null or not
+      if (result.length == 0) {
+        // not found
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.LESSON_ID_INVALID
+          )
+        );
+      }
+      //found it.
+      var list = []; // create array of exercise_id
+      Object.keys(result).forEach(function(key) {
+        list.push(result[key].exercise_id); // push exercise_id to array
+      });
+      // find all information of exercise by list exercise_id
+      exercise_md
+        .findAll({
+          where: {
+            id: {
+              [Op.or]: list
+            }
+          }
+        })
+        .then(function(results) {
+          // return result
+          res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              'Get list exercises by Lesson ID successful',
+              null
+            )
+          );
+        })
+        .catch(function(err) {
+          //catch err.
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.CAN_NOT_GET_EXERCISE
+            )
+          );
+        });
     });
 };
