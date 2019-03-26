@@ -311,7 +311,7 @@ exports.getExerciseByID = function(req, res, next) {
 };
 
 // Get final set exercises by lesson_id
-exports.getFinalSetExerciseByLessonID = function(req, res, next) {
+exports.getFinalExerciseByLessonID = function(req, res, next) {
   console.log('Get list Exercise By Lesson ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
