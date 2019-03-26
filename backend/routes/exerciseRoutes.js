@@ -36,7 +36,7 @@ router.get(
 // get Exercises by Lesson ID
 router.get(
   '/api/getFinalExerciseByLessonID/:exercise_id', authCheck, 
-  exerciseController.getFinalSetExerciseByLessonID
+  exerciseController.getFinalExerciseByLessonID
 );
 
 module.exports = router;
