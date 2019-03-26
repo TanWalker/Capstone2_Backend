@@ -1,12 +1,13 @@
 const ReturnResult = require('../libs/ReturnResult');
 const Constants = require('../libs/Constants');
 const nodeMailer = require('nodemailer');
-
+const path = require('path');
 const sender = process.env.FEEDBACK_EMAIL; // The email to be use in sending the email, it's default.
 const password = process.env.FEEDBACK_EMAIL_PASSWORD; // password of the email to use, it's default.
 const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+const XlsxPopulate = require('xlsx-populate');
 //Before sending your email using gmail you have to allow non secure apps to access gmail you can do
 //this by going to your gmail settings here.
 //https://myaccount.google.com/lesssecureapps
@@ -20,12 +21,13 @@ var smtpTransport = nodeMailer.createTransport({
   }
 });
 //function for send email
-var sendMail = function(toAddress, subject, content, res) {
+var sendMail = function(toAddress, subject, content, res, attachment) {
   var mailOptions = {
     from: 'Feedback Center of Quan Khu 5',
     to: toAddress,
     subject: subject,
-    html: content
+    html: content,
+    attachments: attachment
   };
   // send action by transporter
   smtpTransport
@@ -81,7 +83,7 @@ exports.sendNewTeam = function(users, team, coach_email, number) {
         cell1.innerHTML = obj.username;
         cell2.innerHTML = '123456';
       });
-    
+
       var mailOptions = {
         from: 'Feedback Center of Quan Khu 5',
         to: coach_email,
@@ -106,4 +108,39 @@ exports.sendFeedBack = function(req, res, next) {
     params.content, //html content
     res
   );
+};
+
+// this function is send monthly report
+exports.monthlyMail = function(data) {
+  var path_dir = path.join(__dirname, '../templates/monthly_template/');
+  // modify excel
+  XlsxPopulate.fromFileAsync(path_dir + 'monthly_report.xlsx')
+    .then(workbook => {
+      // Modify the workbook.
+      workbook
+        .sheet('Performance')
+        .cell('A5')
+        .value('This is neat!');
+      return workbook.toFileAsync(path_dir + 'out.xlsx');
+    })
+    .then(() => {
+      var to_email =
+        process.env.FEEDBACK_ADMIN_EMAIL || Constants.FEEDBACK_ADMIN_EMAIL;
+      var mailOptions = {
+        from: 'Feedback Center of Quan Khu 5',
+        to: to_email,
+        subject: 'test',
+        html: 'test',
+        attachments: [
+          {
+            path: path_dir + 'out.xlsx'
+          }
+        ]
+      };
+      // send action by transporter
+      smtpTransport.sendMail(mailOptions).catch(function(err) {
+        console.log(err.message);
+      });
+    })
+    .catch(err => console.error(err));
 };

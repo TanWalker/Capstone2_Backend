@@ -312,7 +312,7 @@ exports.getExerciseByID = function(req, res, next) {
 };
 
 // Get final set exercises by lesson_id
-exports.getExerciseByLessonID = function(req, res, next) {
+exports.getFinalExerciseByLessonID = function(req, res, next) {
   console.log('Get list Exercise By Lesson ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -331,7 +331,7 @@ exports.getExerciseByLessonID = function(req, res, next) {
     .findAll({
       attributes: ['exercise_id'],
       where: {
-        lesson_id: req.body.lesson_id,
+        lesson_id: req.params.lesson_id,
         type_of_exercise_id: Constants.FINAL_SET_ID
       }
     })

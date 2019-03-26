@@ -11,8 +11,10 @@ const recordRoutes = require('./routes/recordRoutes');
 const typeRoutes = require('./routes/typeRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const lessonRoutes = require('./routes/lessonRoutes');
-const lessonExerciseRoutes =require('./routes/lessonExerciseRoutes');
+const lessonExerciseRoutes = require('./routes/lessonExerciseRoutes');
+const testRoutes = require('./routes/testRoutes');
 
+// const autoController = require('./controllers/autoController');
 // allow override of environment variables
 require('dotenv').config();
 const app = express();
@@ -34,7 +36,7 @@ app.use((req, res, next) => {
   );
   next();
 });
-
+// autoController.monthlyReporter();
 
 app.use(authRoutes);
 
@@ -59,5 +61,8 @@ app.use(emailRoutes);
 app.use(lessonRoutes);
 
 app.use(lessonExerciseRoutes);
+
+app.use(testRoutes);
+
 
 module.exports = app;
