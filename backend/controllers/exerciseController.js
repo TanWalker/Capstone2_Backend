@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const lesson_exercise_md = require('../models/lesson_exercise');
 const Op = require('sequelize').Op;
 // this function is used to test ( get all exercise )
+"use strict"
 exports.getExercise = function(req, res, next) {
   console.log('Getting all Exercises');
   // check user is log in.
