@@ -475,12 +475,7 @@ exports.getLessonByDate = function(req, res, next) {
       if (result.length == 0) {
         // not found
         res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.INVALID_DATE
-          )
+          new ReturnResult('Error', null, null, Constants.messages.INVALID_DATE)
         );
         return;
       }
@@ -507,6 +502,52 @@ exports.getLessonByDate = function(req, res, next) {
       return res.jsonp(
         new ReturnResult(
           'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_LESSON
+        )
+      );
+    });
+};
+//get schdule by date
+exports.getScheduleByDate = function(req, res, next) {
+  console.log('Get Schedule By Date');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select lesson exercises by lesson_id
+  schedule_md
+    .findAll({
+      where: { day: req.body.day, month: req.body.month, year: req.body.year }
+    })
+    .then(function(result) {
+      // check result if it existing or not
+      if (result.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult('Error', null, null, Constants.messages.INVALID_DATE)
+        );
+        return;
+      }
+      // found it return result
+      return res.jsonp(
+        new ReturnResult(null, result, 'Get schedule by date successful.', null)
+      );
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          err.message,
           null,
           null,
           Constants.messages.CAN_NOT_GET_LESSON
