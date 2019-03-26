@@ -511,8 +511,8 @@ exports.getLessonByDate = function(req, res, next) {
     });
 };
 //get schdule by date
-exports.getScheduleByDate = function(req, res, next) {
-  console.log('Get Schedule By Date');
+exports.getScheduleByDateLesson = function(req, res, next) {
+  console.log('Get Schedule By Date and Lesson');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -525,10 +525,10 @@ exports.getScheduleByDate = function(req, res, next) {
     );
     return;
   }
-  // Select lesson exercises by lesson_id
+  // Select lesson exercises by date and lesson_id
   schedule_md
     .findAll({
-      where: { day: req.body.day, month: req.body.month, year: req.body.year }
+      where: { day: req.body.day, month: req.body.month, year: req.body.year, lesson_id: req.body.lesson_id }
     })
     .then(function(result) {
       // check result if it existing or not
