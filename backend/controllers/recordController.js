@@ -183,9 +183,12 @@ exports.updateRecord = function(req, res, next) {
               : params.schedule_id,
           result: params.result == null ? record.result : params.result,
           date_id: params.date_id == null ? record.date_id : params.date_id,
-          note: params.note == null ? record.note:params.note,
-          best_result: params.best_result == null ? record.best_result:params.best_result,
-          errors: params.errors == null ? record.errors:params.errors,         
+          note: params.note == null ? record.note : params.note,
+          best_result:
+            params.best_result == null
+              ? record.best_result
+              : params.best_result,
+          errors: params.errors == null ? record.errors : params.errors
         })
         .then(success => {
           // if update successfully, return it.
@@ -207,4 +210,61 @@ exports.updateRecord = function(req, res, next) {
         });
     }
   });
+};
+
+//get record by user, schedule, exercise
+
+exports.getRecordByUserScheduleExercise = function(req, res, next) {
+  console.log('Get Lesson By Date');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select lesson exercises by lesson_id
+  record_md
+    .findAll({
+      where: {
+        user_id: req.body.user_id,
+        schedule_id: req.body.schedule_id,
+        exercise_id: req.body.exercise_id
+      }
+    })
+    .then(function(result) {
+      // check result if it existing or not
+      if (result.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.INVALID_INFORMATION
+          )
+        );
+        return;
+      }
+      // found it and return result
+      return res.jsonp(
+        new ReturnResult(null, result, 'Get record successful.', null)
+      );
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
 };
