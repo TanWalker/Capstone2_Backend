@@ -35,7 +35,7 @@ router.get(
 
 // get Exercises by Lesson ID
 router.get(
-  '/api/getFinalSetExerciseByLessonID/:exercise_id', authCheck, 
+  '/api/getFinalExerciseByLessonID/:exercise_id', authCheck, 
   exerciseController.getFinalSetExerciseByLessonID
 );
 
