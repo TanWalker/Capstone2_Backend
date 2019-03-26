@@ -528,7 +528,12 @@ exports.getScheduleByDateLesson = function(req, res, next) {
   // Select lesson exercises by date and lesson_id
   schedule_md
     .findAll({
-      where: { day: req.body.day, month: req.body.month, year: req.body.year, lesson_id: req.body.lesson_id }
+      where: {
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year,
+        lesson_id: req.body.lesson_id
+      }
     })
     .then(function(result) {
       // check result if it existing or not
@@ -557,7 +562,6 @@ exports.getScheduleByDateLesson = function(req, res, next) {
     });
 };
 
-
 // get lesson by date and coach
 exports.getLessonByDateCoach = function(req, res, next) {
   console.log('Get Lesson By Date');
@@ -575,9 +579,13 @@ exports.getLessonByDateCoach = function(req, res, next) {
   }
   schedule_md
     .findAll({
-  
       attributes: ['lesson_id'],
-      where: { day: req.body.day, month: req.body.month, year: req.body.year, coach_id: req.userData.id }
+      where: {
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year,
+        coach_id: req.userData.id
+      }
     })
     .then(function(result) {
       // check result if it existing or not
@@ -589,7 +597,6 @@ exports.getLessonByDateCoach = function(req, res, next) {
         return;
       }
 
-      
       // found it and push lesson_id to list
       var list = [];
       Object.keys(result).forEach(function(key) {
