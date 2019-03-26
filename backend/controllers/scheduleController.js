@@ -3,7 +3,7 @@ const schedule_md = require('../models/schedule');
 const Constants = require('../libs/Constants');
 const moment = require('moment-timezone');
 const sequelize = require('sequelize');
-
+const lesson_md = require('../models/lesson');
 // not finish yet.
 
 // this function is used to test ( get all Schedule )
@@ -224,7 +224,9 @@ exports.updateSchedule = function(req, res, next) {
             time_start: time_start,
             time_end: time_end,
             lesson_name:
-              params.lesson_name == null ? schedules.lesson_name : params.lesson_name
+              params.lesson_name == null
+                ? schedules.lesson_name
+                : params.lesson_name
           })
           .then(success => {
             res
@@ -447,3 +449,68 @@ exports.getScheduleByID = function(req, res, next) {
 //   }
 //   schedule_md.findOne({where:{}})
 // }
+
+exports.getLessonByDate = function(req, res, next) {
+  console.log('Get Lesson By Date');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select lesson exercises by lesson_id
+  schedule_md
+    .findAll({
+      attributes: ['lesson_id'],
+      where: { day: req.body.day, month: req.body.month, year: req.body.year }
+    })
+    .then(function(result) {
+      // check result if it existing or not
+      if (result.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.INVALID_DATE
+          )
+        );
+        return;
+      }
+      // found it and push lesson_id to list
+      var list = [];
+      Object.keys(result).forEach(function(key) {
+        list.push(result[key].lesson_id); // push
+      });
+      // find lesson information by list lesson_id
+      lesson_md.findAll({ where: { id: list } }).then(function(results) {
+        //return result
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            'Get lesson by date successful.',
+            null
+          )
+        );
+      });
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_LESSON
+        )
+      );
+    });
+};
