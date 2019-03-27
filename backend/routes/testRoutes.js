@@ -4,6 +4,7 @@ const router = express.Router();
 const common = require('../common/common');
 const ReturnResult = require('../libs/ReturnResult');
 const Constants = require('../libs/Constants');
+const testController = require('../controllers/testController');
 
 
 router.get('/api/testGetRecordForAutoTool', function(req, res, next) {
@@ -50,4 +51,6 @@ router.get('/api/testAutoInsertRecordMonthly' , function(req,res,next) {
     ).catch((err) => setImmediate(() => { throw err; }));
   });
 
+
+  router.get('/api/miband' ,  testController.testMiband);
 module.exports = router;

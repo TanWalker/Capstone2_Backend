@@ -20,6 +20,7 @@
   "dependencies": {
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
+    "browserify-aes": "^1.2.0",
     "config": "^3.0.1",
     "cron": "^1.7.0",
     "dotenv": "^6.2.0",
@@ -29,12 +30,15 @@
     "moment-timezone": "^0.5.23",
     "mysql": "^2.16.0",
     "mysql2": "^1.6.5",
+    "navigator": "^1.0.1",
     "node-schedule": "^1.3.2",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
     "pkginfo": "^0.4.1",
     "q": "^1.5.1",
     "sequelize": "^4.42.0",
+    "usb": "^1.5.0",
+    "webbluetooth": "^1.0.7",
     "xlsx-populate": "^1.19.1"
   },
   "devDependencies": {
