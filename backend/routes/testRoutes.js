@@ -55,6 +55,6 @@ router.get('/api/testAutoInsertRecordMonthly' , function(req,res,next) {
   router.get('/api/miband' ,  testController.testMiband);
 
   router.get('/api/testMiband' , function(req, res) {
-    res.render('index');
+    res.render('GetHeartRate.ejs');
   });
 module.exports = router;

@@ -9,12 +9,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% include ../head %>
+    <% include ../views/head %>
 </head>
 <body class="container">
 
     <header>
-        <% include ../header %>
+        <% include ../views/header %>
     </header>
 
     <main>
@@ -22,10 +22,15 @@
             <h1>This is great</h1>
             <p>Welcome to templating using EJS</p>
         </div>
+
+        <button id="scanBtn" class="btn-scan">Scan</button>
+
     </main>
 
     <footer>
-        <% include ../footer %>
+        <% include ../views/footer %>
+        <script src="backend/libs/runMiband.js" type="text/javascript"></script>
+
     </footer>
 
 </body>
