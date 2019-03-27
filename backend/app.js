@@ -14,7 +14,7 @@ const lessonRoutes = require('./routes/lessonRoutes');
 const lessonExerciseRoutes = require('./routes/lessonExerciseRoutes');
 const testRoutes = require('./routes/testRoutes');
 
-// const autoController = require('./controllers/autoController');
+const autoController = require('./controllers/autoController');
 // allow override of environment variables
 require('dotenv').config();
 const app = express();
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
   );
   next();
 });
-// autoController.monthlyReporter();
+autoController.monthlyReporter();
 
 app.use(authRoutes);
 
