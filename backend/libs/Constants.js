@@ -85,6 +85,7 @@ module.exports = Object.freeze({
     CAN_NOT_GET_LESSON_EXERCISE: 'Can’t get lesson excercise information.',
     UNEXPECTED_ERROR: 'Unexpected error.',
     EXCUTED_PROCEDURE: 'Excuted procedure',
-    INVALID_DATE: 'Day, month, year not exist'
+    INVALID_DATE: 'Day, month, year not exist',
+    NO_SCHEDULE_FOUND: 'There is not any schedule on this day'
   }
 });

@@ -448,6 +448,7 @@ exports.getScheduleByDate = function(req, res, next) {
       new ReturnResult('Error', null, null, Constant.message.UNAUTHORIZED_USER)
     );
   }
+
   schedule_md
     .findAll({
       where: {
@@ -458,21 +459,31 @@ exports.getScheduleByDate = function(req, res, next) {
       }
     })
     .then(function(schedules) {
-      console.log(schedules);
-      Object.keys(schedules).forEach(function(key) {
-        var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
-        var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
-        schedules[key].time_start = start.format();
-        schedules[key].time_end = end.format();
-      });
-      //console.log(schedules);
-      var result = new ReturnResult(
-        null,
-        schedules,
-        'Get schedule by date successful.',
-        null
-      );
-      return res.jsonp(result);
+      if (schedules.length==0) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_SCHEDULE_FOUND
+          )
+        );
+      } else {
+        Object.keys(schedules).forEach(function(key) {
+          var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+          var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+          schedules[key].time_start = start.format();
+          schedules[key].time_end = end.format();
+        });
+        //console.log(schedules);
+        var result = new ReturnResult(
+          null,
+          schedules,
+          'Get schedule by date successful.',
+          null
+        );
+        return res.jsonp(result);
+      }
     })
     .catch(function(err) {
       return res.jsonp(
