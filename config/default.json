@@ -1,9 +1,9 @@
 {
   "mysql": {
-    "host": "localhost",
+    "host": "mtasa.vn",
     "port": 3306,
-    "database": "swim",
-    "user": "root",
+    "database": "swim_tracker",
+    "user": "poro",
     "password": "123456"
   },
   "App": {

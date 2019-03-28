@@ -1,5 +1,6 @@
 const ReturnResult = require('../libs/ReturnResult');
 const lessonExercise_md = require('../models/lesson_exercise');
+const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
 const common = require('../common/common');
 
@@ -194,7 +195,9 @@ exports.updateLessonExercise = function(req, res, next) {
             // if update successfully, return it.
             res
               .status(200)
-              .jsonp(new ReturnResult(success, null, 'Update successful', null));
+              .jsonp(
+                new ReturnResult(success, null, 'Update successful', null)
+              );
             return;
           })
           .catch(function(err) {
@@ -264,7 +267,7 @@ exports.getLessonExerciseByID = function(req, res, next) {
     });
 };
 
-exports.getLessonExerciseByLessonID = function(req, res, next){
+exports.getLessonExerciseByLessonID = function(req, res, next) {
   console.log('Get Lesson Exercise By Lesson ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -281,7 +284,7 @@ exports.getLessonExerciseByLessonID = function(req, res, next){
   // Select lesson exercises by lesson_id
   lessonExercise_md
     .findAll({
-      where: { lesson_id: req.params.lesson_id}
+      where: { lesson_id: req.params.lesson_id }
     })
     .then(function(result) {
       if (result == null) {
@@ -295,17 +298,23 @@ exports.getLessonExerciseByLessonID = function(req, res, next){
         );
         return;
       }
+      var list = [];
       Object.keys(result).forEach(function(key) {
-        result[key].is_important=common.convertBoolean(result[key].is_important);
+        result[key].is_important = common.convertBoolean(
+          result[key].is_important
+        );
+        list.push(result[key].exercise_id);
       });
-      return res.jsonp(
-        new ReturnResult(
-          null,
-          result,
-          'Get lesson excercise by lesson_ID successful.',
-          null
-        )
-      );
+      exercise_md.findAll({ where: { id: list } }).then(function(results) {
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            'Get lesson excercise by lesson_ID successful.',
+            null
+          )
+        );
+      });
     })
     .catch(function(err) {
       return res.jsonp(
@@ -317,4 +326,4 @@ exports.getLessonExerciseByLessonID = function(req, res, next){
         )
       );
     });
-}
+};

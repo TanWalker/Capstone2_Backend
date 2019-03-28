@@ -12,7 +12,6 @@ var record = db.connect.define(
     },
     user_id: { type: sequelize.INTEGER, allowNull: false },
     createdAt: { type: sequelize.DATE, allowNull: false },
-    schedule_id: { type: sequelize.INTEGER, allowNull: false },
     min_time: { type: sequelize.INTEGER, allowNull: false },
     max_time: { type: sequelize.INTEGER, allowNull: false },
     min_hr: { type: sequelize.INTEGER, allowNull: false },
