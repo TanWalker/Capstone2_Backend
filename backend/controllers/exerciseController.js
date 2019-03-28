@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const lesson_exercise_md = require('../models/lesson_exercise');
 const Op = require('sequelize').Op;
 // this function is used to test ( get all exercise )
+"use strict"
 exports.getExercise = function(req, res, next) {
   console.log('Getting all Exercises');
   // check user is log in.
@@ -311,7 +312,7 @@ exports.getExerciseByID = function(req, res, next) {
 };
 
 // Get final set exercises by lesson_id
-exports.getExerciseByLessonID = function(req, res, next) {
+exports.getFinalExerciseByLessonID = function(req, res, next) {
   console.log('Get list Exercise By Lesson ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -330,7 +331,7 @@ exports.getExerciseByLessonID = function(req, res, next) {
     .findAll({
       attributes: ['exercise_id'],
       where: {
-        lesson_id: req.body.lesson_id,
+        lesson_id: req.params.lesson_id,
         type_of_exercise_id: Constants.FINAL_SET_ID
       }
     })
