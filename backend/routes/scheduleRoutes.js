@@ -39,7 +39,7 @@ router.get('/api/getDefaultSchedule', authCheck, scheduleController.getDefaultSc
 // get lesson by date
 router.post('/api/getLessonByDate', authCheck, scheduleController.getLessonByDate);
 // get schedule by date
-
+router.post('/api/getScheduleByDate', authCheck, scheduleController.getScheduleByDate);
 
 // get lesson by date and coach
 router.post('/api/getScheduleByDateLesson', authCheck, scheduleController.getScheduleByDateLesson);
