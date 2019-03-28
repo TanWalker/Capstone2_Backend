@@ -38,4 +38,10 @@ router.delete(
   authCheck,
   teamControllers.removeTeamMember
 );
+
+router.put(
+  '/api/addTeamMember',
+  authCheck,
+  teamControllers.addMemberToTeam
+);
 module.exports = router;

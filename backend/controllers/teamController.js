@@ -473,7 +473,7 @@ exports.addMemberToTeam = function(req, res, next) {
     });
     data
       .then(function(result) {
-        if (!result) {
+        if (result) {
           res.jsonp(
             new ReturnResult(
               'Error',
@@ -483,19 +483,25 @@ exports.addMemberToTeam = function(req, res, next) {
             )
           );
         } else {
-          result
-            .update({
-              team_id: params.team_id
+          user_md
+            .findOne({
+              where: { id: params.user_id }
             })
-            .then(function(success) {
-              res.jsonp(
-                new ReturnResult(
-                  success,
-                  null,
-                  'Add user to team successfully.',
-                  null
-                )
-              );
+            .then(function(user) {
+              user
+                .update({
+                  team_id: params.team_id
+                })
+                .then(function(success) {
+                  res.jsonp(
+                    new ReturnResult(
+                      null,
+                      null,
+                      'Add user to team successfully.',
+                      null
+                    )
+                  );
+                });
             });
         }
       })
