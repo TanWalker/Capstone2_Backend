@@ -72,6 +72,7 @@ module.exports = Object.freeze({
     LESSON_EXERCISE_ID_INVALID: "Lesson exercise id isn't existing or it's was deleted.",
     EXISTING_TIME: 'There is an exercise in this time already',
     EXISTING_DISTANCE: 'Swim distance already exists',
+    EXISTING_MEMBER: 'Member is already in team',
     DISTANCE_ID_INVALID: "Distance id isn't existing or it's was deleted.",
     CAN_NOT_GET_EXERCISE: 'Can’t get exercise information.',
     CAN_NOT_GET_LESSON: 'Can’t get lesson information.',
