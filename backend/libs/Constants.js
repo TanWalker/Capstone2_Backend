@@ -7,7 +7,7 @@ module.exports = Object.freeze({
   ROLE_COACH_ID: 2,
   ROLE_TRAINEE_ID: 3,
   FEEDBACK_ADMIN_EMAIL: 'phamanhkhoa0@gmail.com',
-  FINAL_SET_ID: 4,
+  FINAL_SET_ID: 3,
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
