@@ -355,25 +355,18 @@ exports.getDefaultSchedule = (req, res, next) => {
       var end_before = 0;
       // define var time of the start of a next schedule
       var start_after = 0;
+      var result;
       for (var i = 0; i < results.length; i++) {
-        var result = results[i];
+        result = results[i];
         var start_time = result.start_hour + result.start_minute / 60;
         var end_time = result.end_hour + result.end_minute / 60;
         // if current_hour inside a schedule
         if (current_hour >= start_time && current_hour <= end_time) {
-          return res
-            .status(200)
-            .jsonp(
-              new ReturnResult(result, null, 'Get Default Schedule.', null)
-            );
+          break;
         } else {
           // if it is the last schedule in the day
           if (i == results.length - 1) {
-            return res
-              .status(200)
-              .jsonp(
-                new ReturnResult(result, null, 'Get Default Schedule.', null)
-              );
+            break;
           }
           // time of the end of a schedule
           end_before = end_time;
@@ -382,12 +375,17 @@ exports.getDefaultSchedule = (req, res, next) => {
             results[i + 1].start_hour + results[i + 1].start_minute / 60;
           // if current_hour is inside the time between 2 schedule, get the previous schedule
           if (current_hour > end_before && current_hour < start_after) {
-            return res.jsonp(
-              new ReturnResult(result, null, 'Get Default Schedule.', null)
-            );
+            break;
           }
         }
       }
+      lesson_md
+        .findOne({ where: { id: result.lesson_id } })
+        .then(function(lesson) {
+          return res.jsonp(
+            new ReturnResult(lesson, null, 'Get Default Lesson.', null)
+          );
+        });
     })
     .catch(function(err) {
       return res.jsonp(
