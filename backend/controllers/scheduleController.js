@@ -378,18 +378,11 @@ exports.getDefaultSchedule = (req, res, next) => {
             break;
           }
         }
+
+        return res.jsonp(
+          new ReturnResult(result, null, 'Get Default schedule.', null)
+        );
       }
-      lesson_md
-        .findOne({ where: { id: result.lesson_id } })
-        .then(function(lesson) {
-          var data = {
-            schedule_id: result.id,
-            lesson: lesson
-          };
-          return res.jsonp(
-            new ReturnResult(data, null, 'Get Default Lesson.', null)
-          );
-        });
     })
     .catch(function(err) {
       return res.jsonp(
