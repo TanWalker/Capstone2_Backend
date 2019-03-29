@@ -441,6 +441,8 @@ exports.getScheduleByID = function(req, res, next) {
 };
 //get schedule by date
 exports.getScheduleByDate = function(req, res, next) {
+
+  console.log('get list schedule by date');
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
       new ReturnResult('Error', null, null, Constant.message.UNAUTHORIZED_USER)
@@ -473,7 +475,7 @@ exports.getScheduleByDate = function(req, res, next) {
           schedules[key].time_start = start.format();
           schedules[key].time_end = end.format();
         });
-        //console.log(schedules);
+        console.log(schedules);
         var result = new ReturnResult(
           null,
           schedules,
