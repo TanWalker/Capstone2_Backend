@@ -345,7 +345,7 @@ exports.getDefaultSchedule = (req, res, next) => {
   // select all schedule in current day and order increasing
   schedule_md
     .findAll({
-      where: { day: day, month: month, year: year },
+      where: { day: day, month: month, year: year, coach_id: req.userData.id },
       order: [['time_end', 'ASC']]
     })
     .then(function(results) {
