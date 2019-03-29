@@ -379,10 +379,11 @@ exports.getDefaultSchedule = (req, res, next) => {
           }
         }
 
-        return res.jsonp(
-          new ReturnResult(result, null, 'Get Default schedule.', null)
-        );
+        
       }
+      return res.jsonp(
+        new ReturnResult(result, null, 'Get Default schedule.', null)
+      );
     })
     .catch(function(err) {
       return res.jsonp(
