@@ -382,8 +382,12 @@ exports.getDefaultSchedule = (req, res, next) => {
       lesson_md
         .findOne({ where: { id: result.lesson_id } })
         .then(function(lesson) {
+          var data = {
+            schedule_id: result.id,
+            lesson: lesson
+          };
           return res.jsonp(
-            new ReturnResult(lesson, null, 'Get Default Lesson.', null)
+            new ReturnResult(data, null, 'Get Default Lesson.', null)
           );
         });
     })

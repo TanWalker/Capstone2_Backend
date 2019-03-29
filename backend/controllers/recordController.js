@@ -49,6 +49,7 @@ exports.addDailyRecord = function(req, res, next) {
     max_hr: params.max_hr,
     heart_rate: params.heart_rate,
     attitude: params.attitude,
+    schedule_id: params.schedule_id,
     result: params.result,
     note: params.note,
     best_result: params.best_result,
