@@ -18878,9 +18878,9 @@
 				constructor() {
 					this.bindEvents();
 					this.band = null;
-					this.chart = [];
-					this.dataStore = [];
-					this.createChart();
+				//	this.chart = [];
+				//	this.dataStore = [];
+				//	this.createChart();
 				}
 				bindEvents() {
 					$('#start').click(() => {
@@ -18889,12 +18889,15 @@
 					$('#stop').click(() => {
 						this.stopMedition();
 					});
+					$('#startGetHR').click(() => {
+						this.startBandInit();
+					});
 				}
 				delay(ms) {
 					return new Promise(resolve => setTimeout(resolve, ms));
 				}
 				log(data) {
-					$('#output').append(data + '\n');
+					$('#output').append(data + '<br>');
 				}
 				async connect() {
 					if (!bluetooth) {
@@ -18924,7 +18927,7 @@
 					try {
 						await this.band.init();
 						this.log('Bắt đầu đo nhịp tim');
-					//	await this.band.showNotification('message');
+						await this.band.showNotification('message');
 						await this.delay(1000);
 					
 					//	const date = new Date();
@@ -18946,7 +18949,7 @@
 						this.delay(15000);
 						await this.band.hrmStop();
 					} catch (error) {
-						this.log('Error while trying to get heart rate');
+						this.log('Đã xảy ra lỗi khi lấy nhịp tim');
 					}
 				}
 				stopMedition() {
