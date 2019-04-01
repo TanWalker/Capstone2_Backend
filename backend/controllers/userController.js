@@ -343,7 +343,7 @@ exports.getTrainee = function(req, res, next) {
         'team_id'
       ],
       where: {
-        role_id: 3
+        role_id: ROLE_TRAINEE_ID
       }
     })
     .then(function(users) {
