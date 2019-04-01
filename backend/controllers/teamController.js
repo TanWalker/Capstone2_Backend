@@ -457,7 +457,7 @@ exports.removeTeamMember = function(req, res, next) {
 exports.getTeamByID = function(req, res, next) {
   console.log('Get Team By ID');
   // check user is log in and not trainee
-  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+  if (!req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
