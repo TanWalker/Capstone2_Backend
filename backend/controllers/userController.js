@@ -114,13 +114,10 @@ exports.Login = (req, res, next) => {
             created_at: fetchedUser.created_at,
             updated_at: fetchedUser.updated_at
           },
-          config.get('token_key'),
-          { expiresIn: '1h' }
+          config.get('token_key')
         );
-        var expiresIn = 3600;
         var data = {
           token: token,
-          expiresIn: expiresIn,
           user: {
             id: fetchedUser.id,
             username: fetchedUser.username,
