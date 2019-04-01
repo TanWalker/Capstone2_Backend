@@ -470,7 +470,7 @@ exports.getTeamByID = function(req, res, next) {
   }
   // Select all team by coach id
   team_md
-    .findAll({
+    .findOne({
       where: { id: req.params.team_id }
     })
     .then(function(result) {
