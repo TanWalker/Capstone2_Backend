@@ -475,7 +475,6 @@ exports.getScheduleByDate = function(req, res, next) {
           schedules[key].time_start = start.format();
           schedules[key].time_end = end.format();
         });
-        console.log(schedules);
         var result = new ReturnResult(
           null,
           schedules,
