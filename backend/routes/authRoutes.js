@@ -19,6 +19,6 @@ router.get('/api/getCurrentUser', authCheck, userControllers.getCurrentUser);
 router.get('/api/getUserBMITips/:bmi', authCheck, userControllers.getUserBMITips);
 
 // get all user in system
-router.get('/api/getUser', authCheck, userControllers.getUser);
+router.get('/api/getTrainee', authCheck, userControllers.getTrainee);
 
 module.exports = router;
