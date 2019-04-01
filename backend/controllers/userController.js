@@ -110,6 +110,7 @@ exports.Login = (req, res, next) => {
             weight: fetchedUser.weight,
             avatar: fetchedUser.avatar,
             slug: fetchedUser.slug,
+            team_id: fetchedUser.team_id,
             created_at: fetchedUser.created_at,
             updated_at: fetchedUser.updated_at
           },
@@ -139,6 +140,7 @@ exports.Login = (req, res, next) => {
             weight: fetchedUser.weight,
             avatar: fetchedUser.avatar,
             slug: fetchedUser.slug,
+            team_id: fetchedUser.team_id,
             created_at: fetchedUser.created_at,
             updated_at: fetchedUser.updated_at
           }
