@@ -343,7 +343,8 @@ exports.getTrainee = function(req, res, next) {
         'team_id'
       ],
       where: {
-        role_id: Constants.ROLE_TRAINEE_ID
+        role_id: Constants.ROLE_TRAINEE_ID,
+        is_verified: Constants.IS_VERIFY_STATUS
       }
     })
     .then(function(users) {
