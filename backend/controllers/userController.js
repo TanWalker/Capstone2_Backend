@@ -311,3 +311,31 @@ exports.getUserBMITips = function(req, res, next){
     );
   }
 }
+//get all user
+exports.getUser = function(req, res, next) {
+  console.log('Getting all Users');
+  // check user is log in and not trainee
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // find all user
+  user_md.findAll({
+    attributes: ['id', 'username', 'display_name','email' ,'avatar', 'age', 'phone', 'address' ,'gender', 'team_id'],
+    where: {
+      role_id: 3
+    }
+  }).then(function(users) {
+    // get result
+    return res.jsonp(
+      new ReturnResult(null, users, 'Get users successful.', null)
+    );
+  });
+};
