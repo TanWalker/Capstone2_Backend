@@ -471,7 +471,7 @@ exports.getTeamByID = function(req, res, next) {
   // Select all team by coach id
   team_md
     .findAll({
-      where: { id: req.body.team_id }
+      where: { id: req.params.team_id }
     })
     .then(function(results) {
       return res.jsonp(
