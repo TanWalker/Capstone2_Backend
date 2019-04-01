@@ -473,11 +473,11 @@ exports.getTeamByID = function(req, res, next) {
     .findAll({
       where: { id: req.params.team_id }
     })
-    .then(function(results) {
+    .then(function(result) {
       return res.jsonp(
         new ReturnResult(
+          result,
           null,
-          results,
           'Get team information successful.',
           null
         )
