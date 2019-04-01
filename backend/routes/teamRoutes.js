@@ -38,4 +38,10 @@ router.delete(
   authCheck,
   teamControllers.removeTeamMember
 );
+// get team by id
+router.post(
+  '/api/getTeamByID',
+  authCheck,
+  teamControllers.getTeamByID
+);
 module.exports = router;
