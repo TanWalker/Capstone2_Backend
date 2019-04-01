@@ -457,7 +457,7 @@ exports.removeTeamMember = function(req, res, next) {
 exports.getTeamByID = function(req, res, next) {
   console.log('Get Team By ID');
   // check user is log in and not trainee
-  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+  if (!req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -470,14 +470,14 @@ exports.getTeamByID = function(req, res, next) {
   }
   // Select all team by coach id
   team_md
-    .findAll({
-      where: { id: req.body.team_id }
+    .findOne({
+      where: { id: req.params.team_id }
     })
-    .then(function(results) {
+    .then(function(result) {
       return res.jsonp(
         new ReturnResult(
+          result,
           null,
-          results,
           'Get team information successful.',
           null
         )

@@ -39,8 +39,8 @@ router.delete(
   teamControllers.removeTeamMember
 );
 // get team by id
-router.post(
-  '/api/getTeamByID',
+router.get(
+  '/api/getTeamByID/:team_id',
   authCheck,
   teamControllers.getTeamByID
 );
