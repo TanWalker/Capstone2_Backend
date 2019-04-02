@@ -33,7 +33,7 @@ router.get(
 router.post('/api/getMemberById', authCheck, teamControllers.getMemberById);
 
 // remove member out of team
-router.delete(
+router.post(
   '/api/removeTeamMember',
   authCheck,
   teamControllers.removeTeamMember

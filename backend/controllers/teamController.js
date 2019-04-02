@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
 const common = require('../common/common');
 const emailController = require('../controllers/emailController');
-
+const team_swimmer_md = require('../models/team_swimmer');
 // this function is used to test ( get all team )
 exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
@@ -293,7 +293,8 @@ exports.getMemberByTeam = function(req, res, next) {
           'avatar',
           'height',
           'weight',
-          'is_verified'
+          'is_verified',
+          'team_id'
         ],
         where: { team_id: req.params.team_id }
       })
@@ -399,7 +400,7 @@ exports.removeTeamMember = function(req, res, next) {
   var params = req.body;
   // find user by the user_id and team_id
   var data = user_md.findOne({
-    where: { id: params.user_id, team_id: params.team_id }
+    where: { id: params.id, team_id: params.team_id }
   });
 
   data.then(function(user) {
@@ -422,7 +423,7 @@ exports.removeTeamMember = function(req, res, next) {
       .then(function() {
         // delete data in team_swimmer too.
         var data = team_swimmer_md.findOne({
-          where: { user_id: params.user_id, team_id: params.team_id }
+          where: { user_id: params.id, team_id: params.team_id }
         });
         // if it was found
         data.then(function(data) {
