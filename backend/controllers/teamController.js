@@ -212,7 +212,9 @@ exports.updateTeam = function(req, res, next) {
           .then(success => {
             res
               .status(200)
-              .jsonp(new ReturnResult(null, null, 'Update successful', null));
+              .jsonp(
+                new ReturnResult(success, null, 'Update successful', null)
+              );
             return;
           })
           .catch(function(err) {
@@ -494,4 +496,59 @@ exports.getTeamByID = function(req, res, next) {
         )
       );
     });
+};
+exports.addMemberToTeam = function(req, res, next) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  } else {
+    var params = req.body;
+    var data = user_md.findOne({
+      where: { id: params.user_id, team_id: params.team_id }
+    });
+    data
+      .then(function(result) {
+        if (result) {
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.EXISTING_MEMBER
+            )
+          );
+        } else {
+          result
+            .update({
+              team_id: params.team_id
+            })
+            .then(function(success) {
+              res.jsonp(
+                new ReturnResult(
+                  success,
+                  null,
+                  'Add user to team successfully.',
+                  null
+                )
+              );
+            });
+        }
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            err.message,
+            null,
+            null,
+            Constants.messages.INVALID_INFORMATION
+          )
+        );
+      });
+  }
 };

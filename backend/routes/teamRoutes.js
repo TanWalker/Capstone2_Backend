@@ -44,4 +44,10 @@ router.get(
   authCheck,
   teamControllers.getTeamByID
 );
+
+router.put(
+  '/api/addTeamMember',
+  authCheck,
+  teamControllers.addMemberToTeam
+);
 module.exports = router;
