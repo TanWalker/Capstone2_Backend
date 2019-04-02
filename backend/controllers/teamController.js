@@ -455,8 +455,10 @@ exports.removeTeamMember = function(req, res, next) {
       });
   });
 };
-
-exports.addMemberToTeam = function(req, res, next) {
+//get team by ID
+exports.getTeamByID = function(req, res, next) {
+  console.log('Get Team By ID');
+  // check user is log in and not trainee
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
@@ -466,48 +468,70 @@ exports.addMemberToTeam = function(req, res, next) {
         Constants.messages.UNAUTHORIZED_USER
       )
     );
-  } else {
-    var params = req.body;
-    var data = user_md.findOne({
-      where: { id: params.user_id, team_id: params.team_id }
+    return;
+  }
+  // Select all team by coach id
+  team_md
+    .findAll({
+      where: { id: req.body.team_id }
+    })
+    .then(function(results) {
+      return res.jsonp(
+        new ReturnResult(
+          null,
+          results,
+          'Get team information successful.',
+          null
+        )
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_TEAM
+        )
+      );
     });
-    data
-      .then(function(result) {
-        if (!result) {
-          res.jsonp(
-            new ReturnResult(
-              'Error',
-              null,
-              null,
-              Constants.messages.EXISTING_MEMBER
-            )
-          );
-        } else {
-          result
-            .update({
-              team_id: params.team_id
-            })
-            .then(function(success) {
-              res.jsonp(
-                new ReturnResult(
-                  success,
-                  null,
-                  'Add user to team successfully.',
-                  null
-                )
-              );
-            });
-        }
+};
+exports.addMemberToTeam = function(req, res, next) {
+
+    if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+      res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
+      return;
+    }
+    // Select all team by coach id
+    team_md
+      .findAll({
+        where: { id: req.body.team_id }
+      })
+      .then(function(results) {
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            'Get team information successful.',
+            null
+          )
+        );
       })
       .catch(function(err) {
         return res.jsonp(
           new ReturnResult(
-            err.message,
+            'Error',
             null,
             null,
-            Constants.messages.INVALID_INFORMATION
+            Constants.messages.CAN_NOT_GET_TEAM
           )
         );
       });
-  }
-};
+  };

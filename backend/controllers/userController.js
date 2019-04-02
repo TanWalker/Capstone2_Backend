@@ -110,6 +110,7 @@ exports.Login = (req, res, next) => {
             weight: fetchedUser.weight,
             avatar: fetchedUser.avatar,
             slug: fetchedUser.slug,
+            team_id: fetchedUser.team_id,
             created_at: fetchedUser.created_at,
             updated_at: fetchedUser.updated_at
           },
@@ -139,6 +140,7 @@ exports.Login = (req, res, next) => {
             weight: fetchedUser.weight,
             avatar: fetchedUser.avatar,
             slug: fetchedUser.slug,
+            team_id: fetchedUser.team_id,
             created_at: fetchedUser.created_at,
             updated_at: fetchedUser.updated_at
           }
@@ -239,67 +241,71 @@ exports.getCurrentUser = function(req, res, next) {
   }
 };
 
-exports.getUserIndex = function(req, res, next){
-
-  record_md.findOne({where:{id : req.userData.id}}).then(function(user){
-  if (!req.userData) {
-    res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
-    return;
-  }else{
+exports.getUserIndex = function(req, res, next) {
+  record_md.findOne({ where: { id: req.userData.id } }).then(function(user) {
+    if (!req.userData) {
+      res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.UNAUTHORIZED_USER
+        )
+      );
+      return;
+    } else {
       user.update({
-        bmi: req.userData.height == null && req.userData.weight == null ? req.userData.bmi : (req.userData.weight/Math.pow(req.userData.weight, 2)),
+        bmi:
+          req.userData.height == null && req.userData.weight == null
+            ? req.userData.bmi
+            : req.userData.weight / Math.pow(req.userData.weight, 2),
         speed: user.time_swim
-      })
-      console.log(typeof req.userData.height)
-      .then(success => {
-        res
-          .status(200)
-          .jsonp(
-            new ReturnResult(success, null, 'Successful', null)
-          );
-        return;
-      })
-      .catch(function(err) {
-        res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.INVALID_INFORMATION
-          )
-        );
       });
+      console
+        .log(typeof req.userData.height)
+        .then(success => {
+          res
+            .status(200)
+            .jsonp(new ReturnResult(success, null, 'Successful', null));
+          return;
+        })
+        .catch(function(err) {
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
     }
   });
-}
+};
 
-
-exports.getUserBMITips = function(req, res, next){
-
+exports.getUserBMITips = function(req, res, next) {
   console.log('Getting user MBI tips');
   var BMI = req.params.bmi;
   if (req.userData) {
-      let query = 'CALL getBMI_tips(?)';
-      common.exec_Procedure(query,BMI).then(
-        function(results) {
-          console.log(results);
-          return  res.jsonp(
-            new ReturnResult(
-             null,
-             results,
-             Constants.messages.EXCUTED_PROCEDURE,
-             null
-           )
-         );
-        }
-      ).catch((err) => setImmediate(() => { throw err; }));
+    let query = 'CALL getBMI_tips(?)';
+    common
+      .exec_Procedure(query, BMI)
+      .then(function(results) {
+        console.log(results);
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            Constants.messages.EXCUTED_PROCEDURE,
+            null
+          )
+        );
+      })
+      .catch(err =>
+        setImmediate(() => {
+          throw err;
+        })
+      );
   } else {
     return res.jsonp(
       new ReturnResult(
@@ -310,4 +316,43 @@ exports.getUserBMITips = function(req, res, next){
       )
     );
   }
-}
+};
+// get all trainee
+exports.getTrainee = function(req, res, next) {
+  console.log('Getting all Users');
+  // check user is log in and not trainee
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // find all user
+  user_md
+    .findAll({
+      attributes: [
+        'id',
+        'display_name',
+        'avatar',
+        'age',
+        'phone',
+        'address',
+        'team_id'
+      ],
+      where: {
+        role_id: Constants.ROLE_TRAINEE_ID,
+        is_verified: Constants.IS_VERIFY_STATUS
+      }
+    })
+    .then(function(users) {
+      // get result
+      return res.jsonp(
+        new ReturnResult(null, users, 'Get trainees successful.', null)
+      );
+    });
+};
