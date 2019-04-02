@@ -29,7 +29,7 @@
               Đo nhịp tim</button>
           </div>
           <div class="col-md-4" style="margin-top: 5px;">
-            <button type="button" class="btn btn-deep-orange btn-block"><i class="fas fa-paper-plane"
+            <button type="button" class="btn btn-deep-orange btn-block" id="stop"><i class="fas fa-paper-plane"
                 style="margin-right: 7px;"></i> Lưu kết quả</button>
           </div>
         </div>
@@ -47,7 +47,9 @@
               <div class="card-body">
                 <h5 class="card-title">Kết quả</h5>
                 <p class="card-text" id="output">
-                 
+                <span class="has-text-danger" id="data">75</span>
+                <span class="has-text-danger" id="data">50</span>
+                <span class="has-text-danger" id="data">60</span>
                 </p>
               </div>
               <div class="card-footer">
@@ -59,7 +61,22 @@
       </div>
     
 </body>
-
+<script>
+$("#stop").click(function(){
+  var data = $('#data').data();
+  var myDataArray = [];
+  $.each(data, function(key, val){
+        myDataArray['data-' + key] = val;
+  });
+  console.log(data);
+  var request = $.post(document.URL,{
+    heart_rate: document.getElementById('data').innerHTML
+  });
+  request.done(function() {
+    console.log('Connect thành công');
+  });
+}); 
+</script>
 <script src="../node_modules/chart.js/dist/Chart.bundle.min.js"></script>
 <script src="/bundle.js" type="text/javascript"></script>
 <!-- Bootstrap tooltips -->

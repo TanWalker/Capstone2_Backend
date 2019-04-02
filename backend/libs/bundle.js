@@ -18871,7 +18871,6 @@
 			const miband = require('miband');
 			const ms = require('ms');
 			const bluetooth = navigator.bluetooth;
-
 			global.jQuery = require("jquery");
 
 			class MiBand {
@@ -18935,7 +18934,7 @@
 					//	await this.band.hrmRead();
 						
 						this.band.on('heart_rate', (rate) => {
-							this.log('<span class="has-text-danger">❤</span> Nhịp tim của bạn : ' + rate);
+							this.log('<span class="has-text-danger" id="data">❤</span> Nhịp tim của bạn : ' + rate);
 					    const dateNow = Date.now();
 						  const time = new Date(dateNow);
 							this.log('Thời gian lấy nhịp tim : ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
@@ -18953,14 +18952,15 @@
 					}
 				}
 				stopMedition() {
-					const csv = this.convertArrayOfObjectsToCSV(this.dataStore);
-					const name = $('#name').val() || 'data';
-					const hiddenElement = document.createElement('a');
-					this.log('Saving data (' + name + '.csv' + ')...');
-					hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-					hiddenElement.target = '_blank';
-					hiddenElement.download = name + '.csv';
-					hiddenElement.click();
+					// const csv = this.convertArrayOfObjectsToCSV(this.dataStore);
+					// const name = $('#name').val() || 'data';
+					// const hiddenElement = document.createElement('a');
+					// this.log('Saving data (' + name + '.csv' + ')...');
+					// hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+					// hiddenElement.target = '_blank';
+					// hiddenElement.download = name + '.csv';
+					// hiddenElement.click();
+					console.log('Stop');
 				}
 				convertArrayOfObjectsToCSV(arrayData) {
 					var result, ctr, keys, columnDelimiter, lineDelimiter, data;
