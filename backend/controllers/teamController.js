@@ -460,8 +460,6 @@ exports.removeTeamMember = function(req, res, next) {
 exports.getTeamByID = function(req, res, next) {
   console.log('Get Team By ID');
   // check user is log in and not trainee
-<<<<<<< HEAD
-=======
   if (!req.userData) {
     res.jsonp(
       new ReturnResult(
@@ -500,7 +498,6 @@ exports.getTeamByID = function(req, res, next) {
     });
 };
 exports.addMemberToTeam = function(req, res, next) {
->>>>>>> backend
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
@@ -510,35 +507,6 @@ exports.addMemberToTeam = function(req, res, next) {
         Constants.messages.UNAUTHORIZED_USER
       )
     );
-<<<<<<< HEAD
-    return;
-  }
-  // Select all team by coach id
-  team_md
-    .findAll({
-      where: { id: req.body.team_id }
-    })
-    .then(function(results) {
-      return res.jsonp(
-        new ReturnResult(
-          null,
-          results,
-          'Get team information successful.',
-          null
-        )
-      );
-    })
-    .catch(function(err) {
-      return res.jsonp(
-        new ReturnResult(
-          'Error',
-          null,
-          null,
-          Constants.messages.CAN_NOT_GET_TEAM
-        )
-      );
-    });
-=======
   } else {
     var params = req.body;
     var data = user_md.findOne({
@@ -583,7 +551,6 @@ exports.addMemberToTeam = function(req, res, next) {
         );
       });
   }
->>>>>>> backend
 };
 exports.addMemberToTeam = function(req, res, next) {
 
