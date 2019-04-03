@@ -17,7 +17,7 @@ router.delete(
 );
 
 // update lesson exercise
-router.put('/api/updateLessonExercise', authCheck, lessonExerciseController.updateLessonExercise);
+router.delete('/api/deleteLessonExerciseByLessonID', authCheck, lessonExerciseController.deleteLessonExerciseByLessonID);
 
 // get by ID
 router.get(
