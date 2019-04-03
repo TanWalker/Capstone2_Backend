@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
 const common = require('../common/common');
 const emailController = require('../controllers/emailController');
-
+const team_swimmer_md = require('../models/team_swimmer');
 // this function is used to test ( get all team )
 exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
@@ -295,7 +295,8 @@ exports.getMemberByTeam = function(req, res, next) {
           'avatar',
           'height',
           'weight',
-          'is_verified'
+          'is_verified',
+          'team_id'
         ],
         where: { team_id: req.params.team_id }
       })
@@ -401,7 +402,7 @@ exports.removeTeamMember = function(req, res, next) {
   var params = req.body;
   // find user by the user_id and team_id
   var data = user_md.findOne({
-    where: { id: params.user_id, team_id: params.team_id }
+    where: { id: params.id, team_id: params.team_id }
   });
 
   data.then(function(user) {
@@ -424,7 +425,7 @@ exports.removeTeamMember = function(req, res, next) {
       .then(function() {
         // delete data in team_swimmer too.
         var data = team_swimmer_md.findOne({
-          where: { user_id: params.user_id, team_id: params.team_id }
+          where: { user_id: params.id, team_id: params.team_id }
         });
         // if it was found
         data.then(function(data) {
@@ -459,6 +460,47 @@ exports.removeTeamMember = function(req, res, next) {
 exports.getTeamByID = function(req, res, next) {
   console.log('Get Team By ID');
   // check user is log in and not trainee
+<<<<<<< HEAD
+=======
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select all team by coach id
+  team_md
+    .findOne({
+      where: { id: req.params.team_id }
+    })
+    .then(function(result) {
+      return res.jsonp(
+        new ReturnResult(
+          result,
+          null,
+          'Get team information successful.',
+          null
+        )
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_TEAM
+        )
+      );
+    });
+};
+exports.addMemberToTeam = function(req, res, next) {
+>>>>>>> backend
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     res.jsonp(
       new ReturnResult(
@@ -468,6 +510,7 @@ exports.getTeamByID = function(req, res, next) {
         Constants.messages.UNAUTHORIZED_USER
       )
     );
+<<<<<<< HEAD
     return;
   }
   // Select all team by coach id
@@ -495,6 +538,52 @@ exports.getTeamByID = function(req, res, next) {
         )
       );
     });
+=======
+  } else {
+    var params = req.body;
+    var data = user_md.findOne({
+      where: { id: params.user_id, team_id: params.team_id }
+    });
+    data
+      .then(function(result) {
+        if (result) {
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.EXISTING_MEMBER
+            )
+          );
+        } else {
+          result
+            .update({
+              team_id: params.team_id
+            })
+            .then(function(success) {
+              res.jsonp(
+                new ReturnResult(
+                  success,
+                  null,
+                  'Add user to team successfully.',
+                  null
+                )
+              );
+            });
+        }
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            err.message,
+            null,
+            null,
+            Constants.messages.INVALID_INFORMATION
+          )
+        );
+      });
+  }
+>>>>>>> backend
 };
 exports.addMemberToTeam = function(req, res, next) {
 
