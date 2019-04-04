@@ -1,10 +1,12 @@
 const ReturnResult = require('../libs/ReturnResult');
 const record_md = require('../models/record');
+const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
 const Op = require('sequelize').Op;
+const emailController = require('./emailController');
 const exercise_md = require('../models/exercise');
-
+const common = require('../common/common');
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -497,5 +499,39 @@ exports.getRecordByID = function(req, res, next) {
           Constants.messages.INVALID_INFORMATION
         )
       );
+    });
+};
+// send report to parent.
+exports.sendReport = function(req, res, next) {
+  console.log('Send report');
+  // get parent email
+  user_md
+    .findOne({
+      attributes: ['email', 'display_name'],
+      where: {
+        id: req.body.user_id
+      }
+    })
+    .then(function(data) {
+      
+      var query = 'CALL `auto_tool_report_proc`( ? , ? , ? );';
+      var month = req.body.month; //months from 1-12
+      var year = req.body.year;
+      const name = data.display_name;
+
+      common
+        .exec_Procedure(query, [month, year, req.body.user_id])
+        .then(function(results) {
+          if (results.length != 0) {
+            emailController.reportMail(data.email, results, name, month, year, req.body.note);
+            // console.log(name);
+            // console.log(results);
+          }
+        })
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
     });
 };

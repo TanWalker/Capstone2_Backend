@@ -28,4 +28,8 @@ router.post('/api/getRecordByYearOfCurrentUser', authCheck, recordController.get
 router.get('/api/getRecordByID/:record_id', authCheck, recordController.getRecordByID);
 
 
+// send report
+router.post('/api/sendReport', authCheck, recordController.sendReport);
+
+
 module.exports = router;

@@ -21,7 +21,7 @@ var smtpTransport = nodeMailer.createTransport({
   }
 });
 //function for send email
-var sendMail = function(toAddress, subject, content, res, attachment) {
+var sendEmail = function(toAddress, subject, content, res, attachment) {
   var mailOptions = {
     from: 'Feedback Center of Quan Khu 5',
     to: toAddress,
@@ -102,7 +102,7 @@ exports.sendFeedBack = function(req, res, next) {
   var to_email =
     process.env.FEEDBACK_ADMIN_EMAIL || Constants.FEEDBACK_ADMIN_EMAIL;
   var params = req.body;
-  sendMail(
+  sendEmail(
     to_email,
     params.title,
     params.content, //html content
@@ -111,36 +111,177 @@ exports.sendFeedBack = function(req, res, next) {
 };
 
 // this function is send monthly report
-exports.monthlyMail = function(data) {
+exports.monthlyMail = function(email, data, name, month) {
   var path_dir = path.join(__dirname, '../templates/monthly_template/');
   // modify excel
   XlsxPopulate.fromFileAsync(path_dir + 'monthly_report.xlsx')
     .then(workbook => {
-      // Modify the workbook.
+      let i = 3;
       workbook
         .sheet('Performance')
-        .cell('A5')
-        .value('This is neat!');
-      return workbook.toFileAsync(path_dir + 'out.xlsx');
+        .cell('A1')
+        .value('THEO DÕI THÀNH TÍCH ' + name + ' THÁNG ' + month);
+      // Modify the workbook.
+      Object.keys(data).forEach(function(key) {
+        data[key] = JSON.stringify(data[key]);
+        var obj = JSON.parse(data[key]);
+        workbook
+          .sheet('Performance')
+          .cell('A' + i)
+          .value(obj.day + '/' + obj.month + '/' + obj.year);
+        workbook
+          .sheet('Performance')
+          .cell('B' + i)
+          .value(obj.name + 'x' + obj.distance);
+        workbook
+          .sheet('Performance')
+          .cell('C' + i)
+          .value(parseInt(obj.time_swim));
+        workbook
+          .sheet('Performance')
+          .cell('C' + i)
+          .style('numberFormat', '0');
+        workbook
+          .sheet('Performance')
+          .cell('D' + i)
+          .value(obj.coach_lname + ' ' + obj.coach_fname);
+        workbook
+          .sheet('Performance')
+          .cell('E' + i)
+          .value(obj.errors);
+        workbook
+          .sheet('Performance')
+          .cell('F' + i)
+          .value(obj.best_result);
+        workbook
+          .sheet('Performance')
+          .cell('G' + i)
+          .value(obj.note);
+        workbook
+          .sheet('Performance')
+          .cell('H' + i)
+          .value(obj.result);
+        i++;
+        console.log(i);
+      });
+      return workbook.toFileAsync(
+        path_dir + 'MonthlyReport_' + name + '_Thang' + month + '.xlsx'
+      );
     })
     .then(() => {
-      var to_email =
-        process.env.FEEDBACK_ADMIN_EMAIL || Constants.FEEDBACK_ADMIN_EMAIL;
       var mailOptions = {
         from: 'Feedback Center of Quan Khu 5',
-        to: to_email,
-        subject: 'test',
-        html: 'test',
+        to: email,
+        subject: 'THEO DÕI THÀNH TÍCH ' + name + ' THÁNG ' + month,
+        html: 'Tải bản tính dưới để theo dõi thành tích.',
         attachments: [
           {
-            path: path_dir + 'out.xlsx'
+            path:
+              path_dir + 'MonthlyReport_' + name + '_Thang' + month + '.xlsx'
           }
         ]
       };
       // send action by transporter
-      smtpTransport.sendMail(mailOptions).catch(function(err) {
-        console.log(err.message);
+      smtpTransport
+        .sendMail(mailOptions)
+        .then(success => {
+          fs.unlinkSync(
+            path_dir + 'MonthlyReport_' + name + '_Thang' + month + '.xlsx'
+          );
+        })
+        .catch(function(err) {
+          console.log(err.message);
+        });
+    })
+    .catch(err => console.error(err));
+};
+
+// this function is send report to parent
+exports.reportMail = function(email, data, name, month , year, note) {
+  var path_dir = path.join(__dirname, '../templates/monthly_template/');
+  // modify excel
+  XlsxPopulate.fromFileAsync(path_dir + 'out.xlsx')
+    .then(workbook => {
+      let i = 3;
+      workbook
+        .sheet('Performance')
+        .cell('A1')
+        .value('THEO DÕI THÀNH TÍCH ' + name + ' ' + month + '-' + year);
+      workbook
+        .sheet('Performance')
+        .cell('H' + 1)
+        .value(note);
+      // Modify the workbook.
+      Object.keys(data).forEach(function(key) {
+        data[key] = JSON.stringify(data[key]);
+        var obj = JSON.parse(data[key]);
+        workbook
+          .sheet('Performance')
+          .cell('A' + i)
+          .value(obj.day + '/' + obj.month + '/' + obj.year);
+        workbook
+          .sheet('Performance')
+          .cell('B' + i)
+          .value(obj.name + 'x' + obj.distance);
+        workbook
+          .sheet('Performance')
+          .cell('C' + i)
+          .value(parseInt(obj.time_swim));
+        workbook
+          .sheet('Performance')
+          .cell('C' + i)
+          .style('numberFormat', '0');
+        workbook
+          .sheet('Performance')
+          .cell('D' + i)
+          .value(obj.display_name);
+        workbook
+          .sheet('Performance')
+          .cell('E' + i)
+          .value(obj.errors);
+        workbook
+          .sheet('Performance')
+          .cell('F' + i)
+          .value(obj.best_result);
+        workbook
+          .sheet('Performance')
+          .cell('G' + i)
+          .value(obj.note);
+        workbook
+          .sheet('Performance')
+          .cell('H' + i)
+          .value(obj.result);
+        i++;
+        console.log(i);
       });
+      return workbook.toFileAsync(
+        path_dir + 'Report_'  + name + '_' + month + '-' + year + '.xlsx'
+      );
+    })
+    .then(() => {
+      var mailOptions = {
+        from: 'Feedback Center of Quan Khu 5',
+        to: email,
+        subject: 'THEO DÕI THÀNH TÍCH '  + name + ' ' + month + '-' + year,
+        html: 'Tải bản tính dưới để theo dõi thành tích.',
+        attachments: [
+          {
+            path:
+              path_dir + 'Report_'  + name + '_' + month + '-' + year + '.xlsx'
+          }
+        ]
+      };
+      // send action by transporter
+      smtpTransport
+        .sendMail(mailOptions)
+        .then(success => {
+          fs.unlinkSync(
+            path_dir + 'Report_'  + name + '_' + month + '-' + year + '.xlsx'
+          );
+        })
+        .catch(function(err) {
+          console.log(err.message);
+        });
     })
     .catch(err => console.error(err));
 };
