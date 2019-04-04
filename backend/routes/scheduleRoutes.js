@@ -11,7 +11,7 @@ router.get('/api/getSchedule', authCheck, scheduleController.getSchedule);
 
 // delete schedule
 router.delete(
-  '/api/deleteSchedule/:schedule_id',
+  '/api/deleteSchedule',
   authCheck,
   scheduleController.deleteSchedule
 );
