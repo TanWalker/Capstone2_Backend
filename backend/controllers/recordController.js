@@ -1,6 +1,9 @@
 const ReturnResult = require('../libs/ReturnResult');
 const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
+const date_md = require('../models/date');
+const Op = require('sequelize').Op;
+const exercise_md = require('../models/exercise');
 
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
@@ -182,7 +185,6 @@ exports.updateRecord = function(req, res, next) {
               ? record.schedule_id
               : params.schedule_id,
           result: params.result == null ? record.result : params.result,
-          date_id: params.date_id == null ? record.date_id : params.date_id,
           note: params.note == null ? record.note : params.note,
           best_result:
             params.best_result == null
@@ -266,5 +268,173 @@ exports.getRecordByUserScheduleExercise = function(req, res, next) {
           Constants.messages.INVALID_INFORMATION
         )
       );
+    });
+};
+
+//get record by month, year of current user
+exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
+  console.log('Get record by month, year of current user');
+  //check if user is logged in, return and exit;
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select record by month, year of current user
+  date_md
+    .findAll({
+      attributes: ['schedule_id'],
+      where: {
+        month: req.body.month,
+        year: req.body.year
+      }
+    })
+    .then(function(result) {
+      var list = [];
+      Object.keys(result).forEach(function(key) {
+        list.push(result[key].schedule_id); // push
+      });
+      // Left join
+      exercise_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+      // Select record by result above
+      record_md
+        .findAll({
+          where: {
+            user_id: req.userData.id,
+            schedule_id: list
+          },
+          include: [
+            {
+              model: exercise_md,
+              as: 'exercise'
+            }
+          ]
+        })
+        .then(function(result) {
+          // check result if it existing or not
+          if (result.length == 0) {
+            // not found
+            res.jsonp(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.NO_RECORD_FOUND
+              )
+            );
+            return;
+          }
+          // found it and return result
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              result,
+              'Get record by month year successful.',
+              null
+            )
+          );
+        })
+        .catch(function(err) {
+          //catch err
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
+    });
+};
+
+//get record by year of current user
+exports.getRecordByYearOfCurrentUser = function(req, res, next) {
+  console.log('Get record by year of current user');
+  //check if user is logged in, return and exit;
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select record by month, year of current user
+  date_md
+    .findAll({
+      attributes: ['schedule_id'],
+      where: {
+        year: req.body.year
+      }
+    })
+    .then(function(result) {
+      var list = [];
+      Object.keys(result).forEach(function(key) {
+        list.push(result[key].schedule_id); // push
+      });
+
+      // Left join
+      exercise_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+      // Select record by result above
+      record_md
+        .findAll({
+          where: {
+            user_id: req.userData.id,
+            schedule_id: list
+          },
+          include: [
+            {
+              model: exercise_md,
+              as: 'exercise'
+            }
+          ]
+        })
+        .then(function(result) {
+          // check result if it existing or not
+          if (result.length == 0) {
+            // not found
+            res.jsonp(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.NO_RECORD_FOUND
+              )
+            );
+            return;
+          }
+          // found it and return result
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              result,
+              'Get record by year successful.',
+              null
+            )
+          );
+        })
+        .catch(function(err) {
+          //catch err
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
     });
 };
