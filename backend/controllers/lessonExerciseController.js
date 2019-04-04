@@ -1,7 +1,6 @@
 const ReturnResult = require('../libs/ReturnResult');
 const lessonExercise_md = require('../models/lesson_exercise');
 const exercise_md = require('../models/exercise');
-const lesson_md = require('../models/lesson');
 const Constants = require('../libs/Constants');
 const common = require('../common/common');
 
@@ -140,8 +139,10 @@ exports.addLessonExercise = (req, res, next) => {
   }
 };
 
-// this function is delete lesson excercise by lesson_id
-exports.deleteLessonExerciseByLessonID = function(req, res, next) {
+// this function is update lesson excercise
+exports.updateLessonExercise = function(req, res, next) {
+  console.log('Updating Lesson Exercise');
+
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -158,51 +159,58 @@ exports.deleteLessonExerciseByLessonID = function(req, res, next) {
   const params = req.body;
   // check if lesson excercise id is exist or not.
   lessonExercise_md
-    .findAll({
-
-      where: { lesson_id: params.lesson_id }
-    })
-    .then(function(result) {
-      console.log(result);
-      // check result if it existing or not
-      if (result.length == 0) {
-        // not found
+    .findOne({ where: { id: params.id } })
+    .then(function(lesson_exercises) {
+      if (lesson_exercises == null) {
         res.jsonp(
           new ReturnResult(
             'Error',
             null,
             null,
-            Constants.messages.LESSON_ID_INVALID
+            Constants.messages.EXERCISE_ID_INVALID
           )
         );
-        return;
+      } else {
+        // if lesson execise id is exist so we update it.
+        lesson_exercises
+          .update({
+            lesson_id:
+              params.lesson_id == null
+                ? lesson_exercises.lesson_id
+                : params.lesson_id,
+            exercise_id:
+              params.exercise_id == null
+                ? lesson_exercises.exercise_id
+                : params.exercise_id,
+            type_of_exercise_id:
+              params.type_of_exercise_id == null
+                ? lesson_exercises.type_of_exercise_id
+                : params.type_of_exercise_id,
+            is_important:
+              params.is_important == null
+                ? lesson_exercises.is_important
+                : common.convertBoolean(params.is_important)
+          })
+          .then(success => {
+            // if update successfully, return it.
+            res
+              .status(200)
+              .jsonp(
+                new ReturnResult(success, null, 'Update successful', null)
+              );
+            return;
+          })
+          .catch(function(err) {
+            res.jsonp(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.INVALID_INFORMATION
+              )
+            );
+          });
       }
-      // found it and push lesson_id to list
-      var list = [];
-      Object.keys(result).forEach(function(key) {
-        list.push(result[key].lesson_id); // push
-      });
-      // find lesson exercise information by list lesson_id
-      console.log(list);
-      lessonExercise_md
-        .destroy({ where: { lesson_id: list }})
-        .then(function(results) {
-          //return result
-          return res.jsonp(
-            new ReturnResult(null, results, 'Delete successful.', null)
-          );
-        });
-    })
-    .catch(function(err) {
-      //catch err
-      return res.jsonp(
-        new ReturnResult(
-          err.message,
-          null,
-          null,
-          Constants.messages.INVALID_INFORMATION
-        )
-      );
     });
 };
 

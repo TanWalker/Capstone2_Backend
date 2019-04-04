@@ -5,8 +5,8 @@ const ReturnResult = require('../libs/ReturnResult');
 
 module.exports = (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    //var token = req.headers['authorization'];
+    //const token = req.headers.authorization.split(' ')[1];
+    var token = req.headers['authorization'];
     const decodedToken = jwt.verify(token, config.get('token_key'));
     req.userData = {
       id: decodedToken.id,
@@ -26,7 +26,8 @@ module.exports = (req, res, next) => {
       height: decodedToken.height,
       weight: decodedToken.weight,
       avatar: decodedToken.avatar,
-      slug: decodedToken.slug
+      slug: decodedToken.slug,
+      team_id: decodedToken.team_id
     };
     next();
   } catch (error) {
