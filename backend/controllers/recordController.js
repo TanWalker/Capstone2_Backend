@@ -3,6 +3,7 @@ const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
 const Op = require('sequelize').Op;
+const exercise_md = require('../models/exercise');
 
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
@@ -299,13 +300,22 @@ exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
       Object.keys(result).forEach(function(key) {
         list.push(result[key].schedule_id); // push
       });
+      // Left join
+      exercise_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
       // Select record by result above
       record_md
         .findAll({
           where: {
             user_id: req.userData.id,
             schedule_id: list
-          }
+          },
+          include: [
+            {
+              model: exercise_md,
+              as: 'exercise'
+            }
+          ]
         })
         .then(function(result) {
           // check result if it existing or not
@@ -373,19 +383,23 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
       Object.keys(result).forEach(function(key) {
         list.push(result[key].schedule_id); // push
       });
+
+      // Left join
+      exercise_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
       // Select record by result above
       record_md
         .findAll({
-          // include: [
-          //   {
-          //     model: exercise,
-          //     as: 'ex'
-          //   }
-          // ],
           where: {
             user_id: req.userData.id,
             schedule_id: list
-          }
+          },
+          include: [
+            {
+              model: exercise_md,
+              as: 'exercise'
+            }
+          ]
         })
         .then(function(result) {
           // check result if it existing or not
