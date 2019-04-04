@@ -316,7 +316,7 @@ exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
                 'Error',
                 null,
                 null,
-                Constants.messages.INVALID_INFORMATION
+                Constants.messages.NO_RECORD_FOUND
               )
             );
             return;
@@ -376,6 +376,12 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
       // Select record by result above
       record_md
         .findAll({
+          // include: [
+          //   {
+          //     model: exercise,
+          //     as: 'ex'
+          //   }
+          // ],
           where: {
             user_id: req.userData.id,
             schedule_id: list
@@ -390,7 +396,7 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
                 'Error',
                 null,
                 null,
-                Constants.messages.INVALID_INFORMATION
+                Constants.messages.NO_RECORD_FOUND
               )
             );
             return;

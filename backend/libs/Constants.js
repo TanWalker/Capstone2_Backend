@@ -88,6 +88,7 @@ module.exports = Object.freeze({
     UNEXPECTED_ERROR: 'Unexpected error.',
     EXCUTED_PROCEDURE: 'Excuted procedure',
     INVALID_DATE: 'Day, month, year not exist',
-    NO_SCHEDULE_FOUND: 'There is not any schedule on this day'
+    NO_SCHEDULE_FOUND: 'There is not any schedule on this day',
+    NO_RECORD_FOUND: 'There are no record was found.'
   }
 });
