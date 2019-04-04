@@ -315,7 +315,8 @@ exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
               model: exercise_md,
               as: 'exercise'
             }
-          ]
+          ],
+          group: ['record.exercise_id']
         })
         .then(function(result) {
           // check result if it existing or not
@@ -399,7 +400,8 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
               model: exercise_md,
               as: 'exercise'
             }
-          ]
+          ],
+          group: ['record.exercise_id']
         })
         .then(function(result) {
           // check result if it existing or not
