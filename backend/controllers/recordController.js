@@ -440,3 +440,62 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
         });
     });
 };
+
+//get record by id
+exports.getRecordByID = function(req, res, next) {
+  console.log('Get record by year of current user');
+  //check if user is logged in, return and exit;
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Left join
+  exercise_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+  // Select record by  id
+  record_md
+    .findOne({
+      where: { id: req.params.record_id },
+      include: [
+        {
+          model: exercise_md,
+          as: 'exercise'
+        }
+      ]
+    })
+    .then(function(result) {
+      if (result == null) {
+        // not found any thing.
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.RECORD_ID_INVALID
+          )
+        );
+        return;
+      }
+      // if found, return it
+      return res.jsonp(
+        new ReturnResult(result, null, 'Get record by ID successful.', null)
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
