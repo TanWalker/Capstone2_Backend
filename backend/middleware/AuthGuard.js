@@ -26,7 +26,8 @@ module.exports = (req, res, next) => {
       height: decodedToken.height,
       weight: decodedToken.weight,
       avatar: decodedToken.avatar,
-      slug: decodedToken.slug
+      slug: decodedToken.slug,
+      team_id: decodedToken.team_id
     };
     next();
   } catch (error) {

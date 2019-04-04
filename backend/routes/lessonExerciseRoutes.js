@@ -32,4 +32,10 @@ router.get(
   lessonExerciseController.getLessonExerciseByLessonID
 );
 
+router.delete(
+  '/api/deleteLessonExerciseByLessonID/:lesson_id',
+  authCheck,
+  lessonExerciseController.deleteLessonExerciseByLessonID
+);
+
 module.exports = router;
