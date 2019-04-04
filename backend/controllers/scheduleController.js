@@ -56,7 +56,7 @@ exports.deleteSchedule = function(req, res, next) {
     );
     return;
   }
-  var id = req.body.id;
+  var id = req.params.schedule_id;
   // find all Schedule
   console.log(id);
   schedule_md
@@ -200,33 +200,19 @@ exports.updateSchedule = function(req, res, next) {
         );
         schedules
           .update({
-            start_hour:
-              params.start_hour == null
-                ? schedules.start_hour
-                : params.start_hour,
-            end_hour:
-              params.end_hour == null ? schedules.end_hour : params.end_hour,
-            lesson_id:
-              params.lesson_id == null ? schedules.lesson_id : params.lesson_id,
-            start_minute:
-              params.start_minute == null
-                ? schedules.start_minute
-                : params.start_minute,
-            end_minute:
-              params.end_minute == null
-                ? schedules.end_minute
-                : params.end_minute,
-            team_name:
-              params.team_name == null ? schedules.team_name : params.team_name,
+            start_hour: params.start_hour == null ? schedules.start_hour : params.start_hour,
+            end_hour: params.end_hour == null ? schedules.end_hour : params.end_hour,
+            lesson_id: params.lesson_id == null ? schedules.lesson_id : params.lesson_id,
+            start_minute: params.start_minute == null ? schedules.start_minute : params.start_minute,
+            end_minute: params.end_minute == null ? schedules.end_minute : params.end_minute,
+            team_id: params.team_id == null ? schedules.team_id : params.team_id,
+            team_name: params.team_name == null ? schedules.team_name : params.team_name,
             day: params.day == null ? schedules.day : params.day,
             month: params.month == null ? schedules.month : params.month,
             year: params.year == null ? schedules.year : params.year,
             time_start: time_start,
             time_end: time_end,
-            lesson_name:
-              params.lesson_name == null
-                ? schedules.lesson_name
-                : params.lesson_name
+            lesson_name: params.lesson_name == null ? schedules.lesson_name : params.lesson_name
           })
           .then(success => {
             res
