@@ -452,6 +452,7 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
     );
     return;
   }
+
   // var firstDay = new Date(req.body.year, req.body.month - 1, 1);
   // var lastDay = new Date(req.body.year, req.body.month, 0);
 
@@ -459,20 +460,26 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
   // lastDay = moment(lastDay).format();
   schedule_md.hasMany(record_md, { foreignKey: 'id' });
   record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+  exercise_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
   record_md
     .findAll({
       where: {
-        user_id: req.userData.id,
-        exercise_id: req.body.exercise_id,
+        user_id: req.body.user_id,
+        exercise_id: req.body.exercise_id
         //createdAt: { [Op.between]: [firstDay, lastDay] }
       },
       include: [
         {
           model: schedule_md,
           as: 'schedule',
-          attributes: ['month', 'year']
+          attributes: ['month', 'year'],
+          where: { month: req.body.month, year: req.body.year }
+        },
+        {
+          model: exercise_md,
+          as: 'exercise'
         }
-        
       ]
     })
     .then(function(results) {
@@ -490,7 +497,8 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
           new ReturnResult(null, results, 'Get List Records Success', null)
         );
       }
-    }).catch(function(err) {
+    })
+    .catch(function(err) {
       //catch err
       return res.jsonp(
         new ReturnResult(
