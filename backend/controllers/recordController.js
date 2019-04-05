@@ -523,7 +523,7 @@ exports.sendReport = function(req, res, next) {
         .exec_Procedure(query, [month, year, req.body.user_id])
         .then(function(results) {
           if (results.length != 0) {
-            emailController.reportMail(data.email, results, name, month, year, req.body.note);
+            emailController.reportMail(data.email, results, name, month, year, req.body.note,res);
             // console.log(name);
             // console.log(results);
           }

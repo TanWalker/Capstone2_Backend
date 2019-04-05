@@ -197,7 +197,7 @@ exports.monthlyMail = function(email, data, name, month) {
 };
 
 // this function is send report to parent
-exports.reportMail = function(email, data, name, month , year, note) {
+exports.reportMail = function(email, data, name, month, year, note, res) {
   var path_dir = path.join(__dirname, '../templates/monthly_template/');
   // modify excel
   XlsxPopulate.fromFileAsync(path_dir + 'out.xlsx')
@@ -255,19 +255,19 @@ exports.reportMail = function(email, data, name, month , year, note) {
         console.log(i);
       });
       return workbook.toFileAsync(
-        path_dir + 'Report_'  + name + '_' + month + '-' + year + '.xlsx'
+        path_dir + 'Report_' + name + '_' + month + '-' + year + '.xlsx'
       );
     })
     .then(() => {
       var mailOptions = {
         from: 'Feedback Center of Quan Khu 5',
         to: email,
-        subject: 'THEO DÕI THÀNH TÍCH '  + name + ' ' + month + '-' + year,
+        subject: 'THEO DÕI THÀNH TÍCH ' + name + ' ' + month + '-' + year,
         html: 'Tải bản tính dưới để theo dõi thành tích.',
         attachments: [
           {
             path:
-              path_dir + 'Report_'  + name + '_' + month + '-' + year + '.xlsx'
+              path_dir + 'Report_' + name + '_' + month + '-' + year + '.xlsx'
           }
         ]
       };
@@ -276,11 +276,26 @@ exports.reportMail = function(email, data, name, month , year, note) {
         .sendMail(mailOptions)
         .then(success => {
           fs.unlinkSync(
-            path_dir + 'Report_'  + name + '_' + month + '-' + year + '.xlsx'
+            path_dir + 'Report_' + name + '_' + month + '-' + year + '.xlsx'
+          );
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              null,
+              Constants.messages.SEND_EMAIL_SUCCESSFUL,
+              null
+            )
           );
         })
         .catch(function(err) {
-          console.log(err.message);
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.SEND_EMAIL_FAIL
+            )
+          );
         });
     })
     .catch(err => console.error(err));
