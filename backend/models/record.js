@@ -25,7 +25,6 @@ var record = db.connect.define(
     best_result: { type: sequelize.TEXT, allowNull: true },
     errors: { type: sequelize.TEXT, allowNull: true },
     coach_id: { type: sequelize.INTEGER, allowNull: false },
-    date_id: { type: sequelize.INTEGER, allowNull: true },
     exercise_id: { type: sequelize.INTEGER, allowNull: false }
   },
   {
