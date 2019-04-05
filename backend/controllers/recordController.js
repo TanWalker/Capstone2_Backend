@@ -465,7 +465,7 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
   record_md
     .findAll({
       where: {
-        user_id: req.body.user_id,
+        user_id: req.userData.id,
         exercise_id: req.body.exercise_id
         //createdAt: { [Op.between]: [firstDay, lastDay] }
       },
