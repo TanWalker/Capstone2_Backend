@@ -510,11 +510,11 @@ exports.addMemberToTeam = function(req, res, next) {
   } else {
     var params = req.body;
     var data = user_md.findOne({
-      where: { id: params.user_id, team_id: params.team_id }
+      where: { id: params.user_id }
     });
     data
       .then(function(result) {
-        if (result) {
+        if (result.team_id == params.team_id) {
           res.jsonp(
             new ReturnResult(
               'Error',
