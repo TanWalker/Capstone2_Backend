@@ -487,14 +487,14 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
         );
       } else {
         return res.jsonp(
-          new ReturnResult(null, results, 'Get Record Success', null)
+          new ReturnResult(null, results, 'Get List Records Success', null)
         );
       }
     }).catch(function(err) {
       //catch err
       return res.jsonp(
         new ReturnResult(
-          'Error',
+          err.messages,
           null,
           null,
           Constants.messages.INVALID_INFORMATION
