@@ -6,6 +6,7 @@ const Op = require('sequelize').Op;
 const exercise_md = require('../models/exercise');
 const moment = require('moment-timezone');
 const schedule_md = require('../models/schedule');
+const user_md = require('../models/user');
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -541,8 +542,13 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
   // lastDay = moment(lastDay).format();
   schedule_md.hasMany(record_md, { foreignKey: 'id' });
   record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+
   exercise_md.hasMany(record_md, { foreignKey: 'id' });
   record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+
+  user_md.hasMany(exercise_md, { foreignKey: 'id' });
+  exercise_md.belongsTo(user_md, { foreignKey: 'coach_id' });
+
   record_md
     .findAll({
       where: {
@@ -554,12 +560,17 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
         {
           model: schedule_md,
           as: 'schedule',
-          attributes: ['day','month', 'year'],
+          attributes: ['day', 'month', 'year'],
           where: { month: req.body.month, year: req.body.year }
         },
         {
           model: exercise_md,
-          as: 'exercise'
+          as: 'exercise',
+          include: [{
+            model: user_md,
+            as: 'user',
+            attributes: ['display_name']
+          }]
         }
       ]
     })
