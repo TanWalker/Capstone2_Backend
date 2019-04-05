@@ -5,7 +5,7 @@ const date_md = require('../models/date');
 const Op = require('sequelize').Op;
 const exercise_md = require('../models/exercise');
 const moment = require('moment-timezone');
-
+const schedule_md = require('../models/schedule');
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -440,7 +440,7 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
     });
 };
 
-exports.getListExerciseByMonth = function(req, res, next) {
+exports.getListRecordByMonthOfYear = function(req, res, next) {
   if (!req.userData) {
     res.jsonp(
       new ReturnResult(
@@ -452,19 +452,28 @@ exports.getListExerciseByMonth = function(req, res, next) {
     );
     return;
   }
-  var firstDay = new Date(req.body.year, req.body.month - 1, 1);
-  var lastDay = new Date(req.body.year, req.body.month, 0);
+  // var firstDay = new Date(req.body.year, req.body.month - 1, 1);
+  // var lastDay = new Date(req.body.year, req.body.month, 0);
 
-  firstDay = moment(firstDay).format();
-  lastDay = moment(lastDay).format();
-
+  // firstDay = moment(firstDay).format();
+  // lastDay = moment(lastDay).format();
+  schedule_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
   record_md
     .findAll({
       where: {
         user_id: req.userData.id,
         exercise_id: req.body.exercise_id,
-        createdAt: { [Op.between]: [firstDay, lastDay] }
-      }
+        //createdAt: { [Op.between]: [firstDay, lastDay] }
+      },
+      include: [
+        {
+          model: schedule_md,
+          as: 'schedule',
+          attributes: ['month', 'year']
+        }
+        
+      ]
     })
     .then(function(results) {
       if (results.length == 0) {
