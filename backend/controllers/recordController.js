@@ -473,7 +473,7 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
         {
           model: schedule_md,
           as: 'schedule',
-          attributes: ['month', 'year'],
+          attributes: ['day','month', 'year'],
           where: { month: req.body.month, year: req.body.year }
         },
         {
