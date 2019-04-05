@@ -79,6 +79,7 @@ module.exports = Object.freeze({
     CAN_NOT_GET_LESSON: 'Can’t get lesson information.',
     EXISTING_SCHEDULE: 'Schedule already exists.',
     RECORD_ID_INVALID: "Record id isn't existing or it's was deleted.",
+    RECORD_NOT_FOUND: "Record isn't existing or it's was deleted.",
     INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team.",
     LESSON_EXERCISE_ID_INVALID: "Lesson exercise id isn't existing or it's was deleted.",
     SEND_EMAIL_SUCCESSFUL: 'The email was sent.',

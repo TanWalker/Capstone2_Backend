@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
 const Op = require('sequelize').Op;
 const exercise_md = require('../models/exercise');
+const moment = require('moment-timezone');
 const schedule_md = require('../models/schedule');
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
@@ -512,6 +513,77 @@ exports.getRecordByID = function(req, res, next) {
       return res.jsonp(
         new ReturnResult(
           'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+
+exports.getListRecordByMonthOfYear = function(req, res, next) {
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+
+  // var firstDay = new Date(req.body.year, req.body.month - 1, 1);
+  // var lastDay = new Date(req.body.year, req.body.month, 0);
+
+  // firstDay = moment(firstDay).format();
+  // lastDay = moment(lastDay).format();
+  schedule_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+  exercise_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+  record_md
+    .findAll({
+      where: {
+        user_id: req.userData.id,
+        exercise_id: req.body.exercise_id
+        //createdAt: { [Op.between]: [firstDay, lastDay] }
+      },
+      include: [
+        {
+          model: schedule_md,
+          as: 'schedule',
+          attributes: ['day','month', 'year'],
+          where: { month: req.body.month, year: req.body.year }
+        },
+        {
+          model: exercise_md,
+          as: 'exercise'
+        }
+      ]
+    })
+    .then(function(results) {
+      if (results.length == 0) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.RECORD_NOT_FOUND
+          )
+        );
+      } else {
+        return res.jsonp(
+          new ReturnResult(null, results, 'Get List Records Success', null)
+        );
+      }
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          err.messages,
           null,
           null,
           Constants.messages.INVALID_INFORMATION
