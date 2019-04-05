@@ -4,7 +4,7 @@ const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
 const Op = require('sequelize').Op;
 const exercise_md = require('../models/exercise');
-
+const schedule_md = require('../models/schedule');
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -287,33 +287,43 @@ exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
     return;
   }
   // Select record by month, year of current user
-  date_md
-    .findAll({
-      attributes: ['schedule_id'],
-      where: {
-        month: req.body.month,
-        year: req.body.year
-      }
-    })
-    .then(function(result) {
-      var list = [];
-      Object.keys(result).forEach(function(key) {
-        list.push(result[key].schedule_id); // push
-      });
+  // date_md
+  //   .findAll({
+  //     attributes: ['schedule_id'],
+  //     where: {
+  //       month: req.body.month,
+  //       year: req.body.year
+  //     }
+  //   })
+  //   .then(function(result) {
+      // var list = [];
+      // Object.keys(result).forEach(function(key) {
+      //   list.push(result[key].schedule_id); // push
+      // });
       // Left join
       exercise_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+      schedule_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
       // Select record by result above
       record_md
         .findAll({
           where: {
-            user_id: req.userData.id,
-            schedule_id: list
+            user_id: req.userData.id
           },
           include: [
             {
               model: exercise_md,
               as: 'exercise'
+            },
+            {
+              model: schedule_md,
+              as: 'schedule',
+              attributes: ['id'],
+              where: {
+                month: req.body.month,
+                year: req.body.year
+              }
             }
           ],
           group: ['record.exercise_id']
@@ -353,7 +363,7 @@ exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
             )
           );
         });
-    });
+    // });
 };
 
 //get record by year of current user
@@ -372,33 +382,43 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
     return;
   }
   // Select record by month, year of current user
-  date_md
-    .findAll({
-      attributes: ['schedule_id'],
-      where: {
-        year: req.body.year
-      }
-    })
-    .then(function(result) {
-      var list = [];
-      Object.keys(result).forEach(function(key) {
-        list.push(result[key].schedule_id); // push
-      });
+  // date_md
+  //   .findAll({
+  //     attributes: ['schedule_id'],
+  //     where: {
+  //       year: req.body.year
+  //     }
+  //   })
+  //   .then(function(result) {
+  //     var list = [];
+  //     Object.keys(result).forEach(function(key) {
+  //       list.push(result[key].schedule_id); // push
+  //     });
 
       // Left join
       exercise_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+      schedule_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
       // Select record by result above
       record_md
         .findAll({
           where: {
-            user_id: req.userData.id,
-            schedule_id: list
+            user_id: req.userData.id
           },
           include: [
             {
               model: exercise_md,
               as: 'exercise'
+            },
+            {
+              model: schedule_md,
+              as: 'schedule',
+              attributes: ['id'],
+              where: {
+                // month: req.body.month,
+                year: req.body.year
+              }
             }
           ],
           group: ['record.exercise_id']
@@ -438,7 +458,7 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
             )
           );
         });
-    });
+    // });
 };
 
 //get record by id
