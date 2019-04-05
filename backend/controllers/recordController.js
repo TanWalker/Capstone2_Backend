@@ -2,8 +2,8 @@ const ReturnResult = require('../libs/ReturnResult');
 const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
-const Op = require('sequelize').Op;
 const exercise_md = require('../models/exercise');
+const schedule_md = require('../models/schedule');
 
 exports.getRecord = function(req, res, next) {
   console.log('Getting all records');
@@ -458,7 +458,9 @@ exports.getRecordByID = function(req, res, next) {
   }
   // Left join
   exercise_md.hasMany(record_md, { foreignKey: 'id' });
+  schedule_md.hasMany(record_md, { foreignKey: 'id' });
   record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
   // Select record by  id
   record_md
     .findOne({
@@ -467,6 +469,10 @@ exports.getRecordByID = function(req, res, next) {
         {
           model: exercise_md,
           as: 'exercise'
+        },
+        {
+          model: schedule_md,
+          as: 'schedule'
         }
       ]
     })
