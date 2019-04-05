@@ -56,7 +56,7 @@ exports.deleteSchedule = function(req, res, next) {
     );
     return;
   }
-  var id = req.params.schedule_id;
+  var id = req.body.id;
   // find all Schedule
   console.log(id);
   schedule_md
@@ -200,19 +200,33 @@ exports.updateSchedule = function(req, res, next) {
         );
         schedules
           .update({
-            start_hour: params.start_hour == null ? schedules.start_hour : params.start_hour,
-            end_hour: params.end_hour == null ? schedules.end_hour : params.end_hour,
-            lesson_id: params.lesson_id == null ? schedules.lesson_id : params.lesson_id,
-            start_minute: params.start_minute == null ? schedules.start_minute : params.start_minute,
-            end_minute: params.end_minute == null ? schedules.end_minute : params.end_minute,
-            team_id: params.team_id == null ? schedules.team_id : params.team_id,
-            team_name: params.team_name == null ? schedules.team_name : params.team_name,
+            start_hour:
+              params.start_hour == null
+                ? schedules.start_hour
+                : params.start_hour,
+            end_hour:
+              params.end_hour == null ? schedules.end_hour : params.end_hour,
+            lesson_id:
+              params.lesson_id == null ? schedules.lesson_id : params.lesson_id,
+            start_minute:
+              params.start_minute == null
+                ? schedules.start_minute
+                : params.start_minute,
+            end_minute:
+              params.end_minute == null
+                ? schedules.end_minute
+                : params.end_minute,
+            team_name:
+              params.team_name == null ? schedules.team_name : params.team_name,
             day: params.day == null ? schedules.day : params.day,
             month: params.month == null ? schedules.month : params.month,
             year: params.year == null ? schedules.year : params.year,
             time_start: time_start,
             time_end: time_end,
-            lesson_name: params.lesson_name == null ? schedules.lesson_name : params.lesson_name
+            lesson_name:
+              params.lesson_name == null
+                ? schedules.lesson_name
+                : params.lesson_name
           })
           .then(success => {
             res
@@ -276,10 +290,10 @@ exports.getScheduleForRecord = (req, res, next) => {
   after.hours(0);
   after.minutes(0);
   after.seconds(0);
-  before_time = before.format();
   after_time = after.format();
   // find schedule before current time depend on page_num
   const op = sequelize.Op;
+  console.log(before_time);
   schedule_md
     .findAll({
       where: {
@@ -364,8 +378,6 @@ exports.getDefaultSchedule = (req, res, next) => {
             break;
           }
         }
-
-        
       }
       return res.jsonp(
         new ReturnResult(result, null, 'Get Default schedule.', null)
@@ -427,7 +439,6 @@ exports.getScheduleByID = function(req, res, next) {
 };
 //get schedule by date
 exports.getScheduleByDate = function(req, res, next) {
-
   console.log('get list schedule by date');
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
@@ -445,7 +456,7 @@ exports.getScheduleByDate = function(req, res, next) {
       }
     })
     .then(function(schedules) {
-      if (schedules.length==0) {
+      if (schedules.length == 0) {
         res.jsonp(
           new ReturnResult(
             'Error',
@@ -659,3 +670,21 @@ exports.getLessonByDateCoach = function(req, res, next) {
       );
     });
 };
+
+// exports.copySchedule = function(req, res, next) {
+//   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+//     res.jsonp(
+//       new ReturnResult(
+//         'Error',
+//         null,
+//         null,
+//         Constants.messages.UNAUTHORIZED_USER
+//       )
+//     );
+//     return;
+//   }
+//   var params = req.body;
+//   schedule_md.findAll({
+//     where: {day:params.day, month:params.month, year: params}
+//   });
+// };

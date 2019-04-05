@@ -24,4 +24,7 @@ router.post('/api/getRecordByMonthYearOfCurrentUser', authCheck, recordControlle
 // get RecordByUserScheduleExercise
 router.post('/api/getRecordByYearOfCurrentUser', authCheck, recordController.getRecordByYearOfCurrentUser);
 
+//get list exercises in record by month
+router.post('/api/getListExerciseByMonth', authCheck, recordController.getListExerciseByMonth);
+
 module.exports = router;
