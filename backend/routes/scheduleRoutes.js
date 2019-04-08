@@ -44,5 +44,7 @@ router.post('/api/getScheduleByDate', authCheck, scheduleController.getScheduleB
 // get lesson by date and coach
 router.post('/api/getScheduleByDateLesson', authCheck, scheduleController.getScheduleByDateLesson);
 
+// get schedule for trainee
+router.get('/api/getScheduleForTrainee', authCheck, scheduleController.getScheduleForTrainee);
 
 module.exports = router;
