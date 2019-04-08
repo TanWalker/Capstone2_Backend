@@ -3,6 +3,7 @@ const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
 const Op = require('sequelize').Op;
+var sequelize = require('sequelize');
 const exercise_md = require('../models/exercise');
 const moment = require('moment-timezone');
 const schedule_md = require('../models/schedule');
@@ -298,74 +299,74 @@ exports.getRecordByMonthYearOfCurrentUser = function(req, res, next) {
   //     }
   //   })
   //   .then(function(result) {
-      // var list = [];
-      // Object.keys(result).forEach(function(key) {
-      //   list.push(result[key].schedule_id); // push
-      // });
-      // Left join
-      exercise_md.hasMany(record_md, { foreignKey: 'id' });
-      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
-      schedule_md.hasMany(record_md, { foreignKey: 'id' });
-      record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
-      // Select record by result above
-      record_md
-        .findAll({
+  // var list = [];
+  // Object.keys(result).forEach(function(key) {
+  //   list.push(result[key].schedule_id); // push
+  // });
+  // Left join
+  exercise_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+  schedule_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+  // Select record by result above
+  record_md
+    .findAll({
+      where: {
+        user_id: req.userData.id
+      },
+      include: [
+        {
+          model: exercise_md,
+          as: 'exercise'
+        },
+        {
+          model: schedule_md,
+          as: 'schedule',
+          attributes: ['id'],
           where: {
-            user_id: req.userData.id
-          },
-          include: [
-            {
-              model: exercise_md,
-              as: 'exercise'
-            },
-            {
-              model: schedule_md,
-              as: 'schedule',
-              attributes: ['id'],
-              where: {
-                month: req.body.month,
-                year: req.body.year
-              }
-            }
-          ],
-          group: ['record.exercise_id']
-        })
-        .then(function(result) {
-          // check result if it existing or not
-          if (result.length == 0) {
-            // not found
-            res.jsonp(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.NO_RECORD_FOUND
-              )
-            );
-            return;
+            month: req.body.month,
+            year: req.body.year
           }
-          // found it and return result
-          return res.jsonp(
-            new ReturnResult(
-              null,
-              result,
-              'Get record by month year successful.',
-              null
-            )
-          );
-        })
-        .catch(function(err) {
-          //catch err
-          return res.jsonp(
-            new ReturnResult(
-              'Error',
-              null,
-              null,
-              Constants.messages.INVALID_INFORMATION
-            )
-          );
-        });
-    // });
+        }
+      ],
+      group: ['record.exercise_id']
+    })
+    .then(function(result) {
+      // check result if it existing or not
+      if (result.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_RECORD_FOUND
+          )
+        );
+        return;
+      }
+      // found it and return result
+      return res.jsonp(
+        new ReturnResult(
+          null,
+          result,
+          'Get record by month year successful.',
+          null
+        )
+      );
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+  // });
 };
 
 //get record by year of current user
@@ -397,70 +398,65 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
   //       list.push(result[key].schedule_id); // push
   //     });
 
-      // Left join
-      exercise_md.hasMany(record_md, { foreignKey: 'id' });
-      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
-      schedule_md.hasMany(record_md, { foreignKey: 'id' });
-      record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
-      // Select record by result above
-      record_md
-        .findAll({
+  // Left join
+  exercise_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+  schedule_md.hasMany(record_md, { foreignKey: 'id' });
+  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+  // Select record by result above
+  record_md
+    .findAll({
+      where: {
+        user_id: req.userData.id
+      },
+      include: [
+        {
+          model: exercise_md,
+          as: 'exercise'
+        },
+        {
+          model: schedule_md,
+          as: 'schedule',
+          attributes: ['id'],
           where: {
-            user_id: req.userData.id
-          },
-          include: [
-            {
-              model: exercise_md,
-              as: 'exercise'
-            },
-            {
-              model: schedule_md,
-              as: 'schedule',
-              attributes: ['id'],
-              where: {
-                // month: req.body.month,
-                year: req.body.year
-              }
-            }
-          ],
-          group: ['record.exercise_id']
-        })
-        .then(function(result) {
-          // check result if it existing or not
-          if (result.length == 0) {
-            // not found
-            res.jsonp(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.NO_RECORD_FOUND
-              )
-            );
-            return;
+            // month: req.body.month,
+            year: req.body.year
           }
-          // found it and return result
-          return res.jsonp(
-            new ReturnResult(
-              null,
-              result,
-              'Get record by year successful.',
-              null
-            )
-          );
-        })
-        .catch(function(err) {
-          //catch err
-          return res.jsonp(
-            new ReturnResult(
-              'Error',
-              null,
-              null,
-              Constants.messages.INVALID_INFORMATION
-            )
-          );
-        });
-    // });
+        }
+      ],
+      group: ['record.exercise_id']
+    })
+    .then(function(result) {
+      // check result if it existing or not
+      if (result.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_RECORD_FOUND
+          )
+        );
+        return;
+      }
+      // found it and return result
+      return res.jsonp(
+        new ReturnResult(null, result, 'Get record by year successful.', null)
+      );
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+  // });
 };
 
 //get record by id
@@ -566,11 +562,13 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
         {
           model: exercise_md,
           as: 'exercise',
-          include: [{
-            model: user_md,
-            as: 'user',
-            attributes: ['display_name']
-          }]
+          include: [
+            {
+              model: user_md,
+              as: 'user',
+              attributes: ['display_name']
+            }
+          ]
         }
       ]
     })
@@ -592,6 +590,88 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
     })
     .catch(function(err) {
       //catch err
+      return res.jsonp(
+        new ReturnResult(
+          err.messages,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+
+exports.getRankByExercise = function(req, res, next) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  var params = req.body;
+  user_md
+    .findAll({ where: { team_id: params.team_id } })
+    .then(function(team) {
+      if (team.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.INVALID_TEAM_ID
+          )
+        );
+        return;
+      }
+
+      var list = [];
+      Object.keys(team).forEach(function(key) {
+        list.push(team[key].id); // push
+      });
+
+      user_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(user_md, { foreignKey: 'user_id' });
+
+      record_md
+        .findAll({
+          where: { user_id: list, exercise_id: params.exercise_id },
+          attributes: ['time_swim'],
+          order: [['time_swim', 'DESC']],
+          group:'user_id',
+          limit: 3,
+          include: [
+            {
+              model: user_md,
+              as: 'user',
+              attributes: [
+                'display_name','id'
+              ]
+            }
+          ]
+        })
+        .then(function(results) {
+          if (results.length == 0) {
+            return res.jsonp(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.NO_RECORD_FOUND
+              )
+            );
+          } else {
+            return res.jsonp(
+              new ReturnResult(null, results, 'Get rank successfully', null)
+            );
+          }
+        });
+    })
+    .catch(function(err) {
       return res.jsonp(
         new ReturnResult(
           err.messages,

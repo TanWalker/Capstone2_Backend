@@ -478,12 +478,7 @@ exports.getTeamByID = function(req, res, next) {
     })
     .then(function(result) {
       return res.jsonp(
-        new ReturnResult(
-          result,
-          null,
-          'Get team information successful.',
-          null
-        )
+        new ReturnResult(result, null, 'Get team information successful.', null)
       );
     })
     .catch(function(err) {
@@ -552,3 +547,4 @@ exports.addMemberToTeam = function(req, res, next) {
       });
   }
 };
+
