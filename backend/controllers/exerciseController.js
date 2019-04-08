@@ -422,7 +422,12 @@ exports.getExerciseGroupByStyle = function(req, res, next) {
           await exercise_md
             .findAll({ where: { style: style, coach_id: req.userData.id } })
             .then(function(results) {
-              result.push({ [results[0].style]: results });
+              if(results.length==0){
+                console.log('Not found');
+              }
+              else{
+                result.push({ [results[0].style]: results });
+              }
             });
         })
       );
