@@ -3,7 +3,6 @@ const record_md = require('../models/record');
 const Constants = require('../libs/Constants');
 const date_md = require('../models/date');
 const Op = require('sequelize').Op;
-var sequelize = require('sequelize');
 const exercise_md = require('../models/exercise');
 const moment = require('moment-timezone');
 const schedule_md = require('../models/schedule');
@@ -634,6 +633,7 @@ exports.getRankByExercise = function(req, res, next) {
         list.push(team[key].id); // push
       });
 
+      //left join user and record
       user_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(user_md, { foreignKey: 'user_id' });
 
@@ -642,15 +642,13 @@ exports.getRankByExercise = function(req, res, next) {
           where: { user_id: list, exercise_id: params.exercise_id },
           attributes: ['time_swim'],
           order: [['time_swim', 'DESC']],
-          group:'user_id',
+          group: 'user_id',
           limit: 3,
           include: [
             {
               model: user_md,
               as: 'user',
-              attributes: [
-                'display_name','id'
-              ]
+              attributes: ['display_name', 'id']
             }
           ]
         })
