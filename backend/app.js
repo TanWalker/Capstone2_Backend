@@ -14,6 +14,7 @@ const lessonRoutes = require('./routes/lessonRoutes');
 const lessonExerciseRoutes = require('./routes/lessonExerciseRoutes');
 const testRoutes = require('./routes/testRoutes');
 const mibandRoutes = require('./routes/mibandRoutes');
+const libraryRoutes = require('./routes/libraryRoutes');
 const path = require('path');
 
 // const autoController = require('./controllers/autoController');
@@ -70,5 +71,7 @@ app.use(lessonExerciseRoutes);
 app.use(testRoutes);
 
 app.use(mibandRoutes);
+
+app.use(libraryRoutes);
 
 module.exports = app;
