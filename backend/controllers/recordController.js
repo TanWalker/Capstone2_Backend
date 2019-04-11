@@ -399,32 +399,22 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
   //     });
 
   // Left join
-  exercise_md.hasMany(record_md, { foreignKey: 'id' });
-  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
-  schedule_md.hasMany(record_md, { foreignKey: 'id' });
-  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+  exercise_md.hasMany(mrecord_md, { foreignKey: 'id' });
+  mrecord_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
   // Select record by result above
-  record_md
+  mrecord_md
     .findAll({
       where: {
-        user_id: req.userData.id
+        user_id: req.userData.id,
+        year : req.body.year
       },
       include: [
         {
           model: exercise_md,
           as: 'exercise'
         },
-        {
-          model: schedule_md,
-          as: 'schedule',
-          attributes: ['id'],
-          where: {
-            // month: req.body.month,
-            year: req.body.year
-          }
-        }
       ],
-      group: ['record.exercise_id']
+      group: ['monthly_record.exercise_id']
     })
     .then(function(result) {
       // check result if it existing or not
