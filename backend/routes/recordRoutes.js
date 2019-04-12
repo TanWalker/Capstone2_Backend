@@ -30,5 +30,7 @@ router.get('/api/getRecordByID/:record_id', authCheck, recordController.getRecor
 //get list exercises in record by month
 router.post('/api/getListRecordByMonthOfYear', authCheck, recordController.getListRecordByMonthOfYear);
 
+//get list exercises in record by year
+router.post('/api/getListRecordByYear', authCheck, recordController.getListRecordByYear);
 
 module.exports = router;
