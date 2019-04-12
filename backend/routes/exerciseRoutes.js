@@ -35,8 +35,16 @@ router.get(
 
 // get Exercises by Lesson ID
 router.get(
-  '/api/getFinalExerciseByLessonID/:lesson_id', authCheck, 
+  '/api/getFinalExerciseByLessonID/:lesson_id',
+  authCheck,
   exerciseController.getFinalExerciseByLessonID
+);
+
+// get Exercises Group by Style
+router.get(
+  '/api/getExerciseGroupByStyle',
+  authCheck,
+  exerciseController.getExerciseGroupByStyle
 );
 
 module.exports = router;

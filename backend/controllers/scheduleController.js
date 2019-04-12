@@ -671,6 +671,38 @@ exports.getLessonByDateCoach = function(req, res, next) {
     });
 };
 
+exports.getScheduleForTrainee = function(req, res, next) {
+  console.log('Get Lesson By Date');
+  //check if user is coach, return and exit;
+  if (req.userData.role_id == Constants.ROLE_COACH_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // find all Schedule
+  schedule_md
+    .findAll({ where: { team_id: req.userData.team_id } })
+    .then(function(schedules) {
+      Object.keys(schedules).forEach(function(key) {
+        var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+        var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+        schedules[key].time_start = start.format();
+        schedules[key].time_end = end.format();
+      });
+
+      // get result
+      var result = new ReturnResult(null, schedules, 'All Schedules', null);
+      // return
+      return res.jsonp(result);
+    });
+};
+
 // exports.copySchedule = function(req, res, next) {
 //   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
 //     res.jsonp(

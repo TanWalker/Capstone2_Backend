@@ -5,6 +5,7 @@ const date_md = require('../models/date');
 const Op = require('sequelize').Op;
 const exercise_md = require('../models/exercise');
 const moment = require('moment-timezone');
+const mrecord_md = require('../models/monthly_record');
 const schedule_md = require('../models/schedule');
 const user_md = require('../models/user');
 exports.getRecord = function(req, res, next) {
@@ -398,32 +399,22 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
   //     });
 
   // Left join
-  exercise_md.hasMany(record_md, { foreignKey: 'id' });
-  record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
-  schedule_md.hasMany(record_md, { foreignKey: 'id' });
-  record_md.belongsTo(schedule_md, { foreignKey: 'schedule_id' });
+  exercise_md.hasMany(mrecord_md, { foreignKey: 'id' });
+  mrecord_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
   // Select record by result above
-  record_md
+  mrecord_md
     .findAll({
       where: {
-        user_id: req.userData.id
+        user_id: req.userData.id,
+        year : req.body.year
       },
       include: [
         {
           model: exercise_md,
           as: 'exercise'
         },
-        {
-          model: schedule_md,
-          as: 'schedule',
-          attributes: ['id'],
-          where: {
-            // month: req.body.month,
-            year: req.body.year
-          }
-        }
       ],
-      group: ['record.exercise_id']
+      group: ['monthly_record.exercise_id']
     })
     .then(function(result) {
       // check result if it existing or not
@@ -517,6 +508,7 @@ exports.getRecordByID = function(req, res, next) {
     });
 };
 
+//get record by month of year
 exports.getListRecordByMonthOfYear = function(req, res, next) {
   if (!req.userData) {
     res.jsonp(
@@ -529,7 +521,6 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
     );
     return;
   }
-
   // var firstDay = new Date(req.body.year, req.body.month - 1, 1);
   // var lastDay = new Date(req.body.year, req.body.month, 0);
 
@@ -600,83 +591,4 @@ exports.getListRecordByMonthOfYear = function(req, res, next) {
     });
 };
 
-exports.getRankByExercise = function(req, res, next) {
-  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
-    return res.jsonp(
-      new ReturnResult(
-        'Error',
-        null,
-        null,
-        Constants.messages.UNAUTHORIZED_USER
-      )
-    );
-  }
-  var params = req.body;
-  user_md
-    .findAll({ where: { team_id: params.team_id } })
-    .then(function(team) {
-      if (team.length == 0) {
-        // not found
-        res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.INVALID_TEAM_ID
-          )
-        );
-        return;
-      }
 
-      var list = [];
-      Object.keys(team).forEach(function(key) {
-        list.push(team[key].id); // push
-      });
-
-      //left join user and record
-      user_md.hasMany(record_md, { foreignKey: 'id' });
-      record_md.belongsTo(user_md, { foreignKey: 'user_id' });
-
-      record_md
-        .findAll({
-          where: { user_id: list, exercise_id: params.exercise_id },
-          attributes: ['time_swim'],
-          order: [['time_swim', 'DESC']],
-          group: 'user_id',
-          limit: 3,
-          include: [
-            {
-              model: user_md,
-              as: 'user',
-              attributes: ['display_name', 'id']
-            }
-          ]
-        })
-        .then(function(results) {
-          if (results.length == 0) {
-            return res.jsonp(
-              new ReturnResult(
-                'Error',
-                null,
-                null,
-                Constants.messages.NO_RECORD_FOUND
-              )
-            );
-          } else {
-            return res.jsonp(
-              new ReturnResult(null, results, 'Get rank successfully', null)
-            );
-          }
-        });
-    })
-    .catch(function(err) {
-      return res.jsonp(
-        new ReturnResult(
-          err.messages,
-          null,
-          null,
-          Constants.messages.INVALID_INFORMATION
-        )
-      );
-    });
-};
