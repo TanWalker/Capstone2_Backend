@@ -76,7 +76,9 @@ exports.addTeam = (req, res, next) => {
     // else coach and admin can use this function below
   } else {
     var params = req.body;
-    var data = team_md.findOne({ where: { name: params.name } });
+    var data = team_md.findOne({
+      where: { name: params.name, coach_id: req.userData.id }
+    });
     // check whether existing team name
     data.then(function(data) {
       if (data) {
@@ -478,12 +480,7 @@ exports.getTeamByID = function(req, res, next) {
     })
     .then(function(result) {
       return res.jsonp(
-        new ReturnResult(
-          result,
-          null,
-          'Get team information successful.',
-          null
-        )
+        new ReturnResult(result, null, 'Get team information successful.', null)
       );
     })
     .catch(function(err) {
