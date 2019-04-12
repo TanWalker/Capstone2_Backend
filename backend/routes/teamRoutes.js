@@ -50,4 +50,8 @@ router.put(
   authCheck,
   teamControllers.addMemberToTeam
 );
+
+//get rank by exercise
+router.post('/api/getRankByExercise', authCheck, teamControllers.getRankByExercise);
+
 module.exports = router;
