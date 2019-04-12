@@ -56,7 +56,7 @@ exports.deleteSchedule = function(req, res, next) {
     );
     return;
   }
-  var id = req.body.id;
+  var id = req.params.schedule_id;
   // find all Schedule
   console.log(id);
   schedule_md
