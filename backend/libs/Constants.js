@@ -90,6 +90,8 @@ module.exports = Object.freeze({
     EXCUTED_PROCEDURE: 'Excuted procedure',
     INVALID_DATE: 'Day, month, year not exist',
     NO_SCHEDULE_FOUND: 'There is not any schedule on this day',
-    NO_RECORD_FOUND: 'There are no record was found.'
+    NO_RECORD_FOUND: 'There are no record was found.',
+    VIDEO_INFO_FOUND: 'Video information was found.',
+    INVALID_VIDEO_LINK: 'Video was removed or Invalid video link.'
   }
 });
