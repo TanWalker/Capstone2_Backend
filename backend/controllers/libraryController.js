@@ -2,7 +2,6 @@ const ReturnResult = require('../libs/ReturnResult');
 const library_md = require('../models/library');
 const style_md = require('../models/style');
 const Constants = require('../libs/Constants');
-const common = require('../common/common');
 
 exports.getYoutubeByStyleId = function(req, res, next) {
   if (!req.userData.id) {
@@ -66,6 +65,7 @@ exports.uploadLinkByStyleId = function(req, res, next) {
     );
   }
   var params = req.body;
+  // insert link to database
   library_md
     .create({
       link: params.link,
@@ -86,8 +86,8 @@ exports.uploadLinkByStyleId = function(req, res, next) {
     });
 };
 
-exports.deleteLinkByStyleId = function(req, res, next) {
-  console.log('Deleting lesson');
+exports.deleteLink = function(req, res, next) {
+  console.log('Deleting link');
 
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -100,8 +100,8 @@ exports.deleteLinkByStyleId = function(req, res, next) {
     );
     return;
   }
-  var id = req.params.library_id;
-  // find all lesson
+  var id = req.body.link_id;
+  // find link
   library_md
     .findOne({ where: { id: id } })
     .then(function(link) {
@@ -111,18 +111,18 @@ exports.deleteLinkByStyleId = function(req, res, next) {
             'Error',
             null,
             null,
-            Constants.messages.LESSON_ID_INVALID
+            Constants.messages.LINK_ID_INVALID
           )
         );
         return;
       }
-      // delete lesson
-      lessons.destroy();
+      // delete link
+      link.destroy();
       // get result
       var result = new ReturnResult(
         null,
         null,
-        'Delete lesson successfully',
+        'Delete link successfully',
         null
       );
       // return
