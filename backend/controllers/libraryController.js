@@ -139,3 +139,45 @@ exports.deleteLink = function(req, res, next) {
       );
     });
 };
+
+exports.getNewLink = function(req, res, next) {
+  if (!req.userData.id) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  // find and get new value inserted
+  library_md
+    .findAll({ order: [['id', 'DESC']], limit: 10 })
+    .then(function(results) {
+      if (!results) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_LINK_FOUND
+          )
+        );
+      } else {
+        return res.jsonp(
+          new ReturnResult(null, results, 'Get new link successfully', null)
+        );
+      }
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.messages,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};

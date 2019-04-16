@@ -12,4 +12,7 @@ router.post('/api/uploadLinkByStyleId', authCheck, libraryController.uploadLinkB
 // delete link by style ID
 router.delete('/api/deleteLink', authCheck, libraryController.deleteLink);
 
+// get new link inserted
+router.get('/api/getNewLink', authCheck, libraryController.getNewLink);
+
 module.exports = router;
