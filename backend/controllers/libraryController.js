@@ -1,9 +1,11 @@
 const ReturnResult = require('../libs/ReturnResult');
-const library_md = require('../models/library');
+const technique_md = require('../models/technique');
+const nutrition_md = require('../models/nutrition');
 const style_md = require('../models/style');
 const Constants = require('../libs/Constants');
 
-exports.getYoutubeByStyleId = function(req, res, next) {
+//Technique
+exports.getLinkTechniqueByStyleId = function(req, res, next) {
   if (!req.userData.id) {
     return res.jsonp(
       new ReturnResult(
@@ -15,14 +17,12 @@ exports.getYoutubeByStyleId = function(req, res, next) {
     );
   }
 
-  var params = req.body;
+  style_md.hasMany(technique_md, { foreignKey: 'id' });
+  technique_md.belongsTo(style_md, { foreignKey: 'style_id' });
 
-  style_md.hasMany(library_md, { foreignKey: 'id' });
-  library_md.belongsTo(style_md, { foreignKey: 'style_id' });
-
-  library_md
+  technique_md
     .findAll({
-      where: { style_id: params.style_id },
+      where: { style_id: req.body.style_id },
       include: [{ model: style_md, as: 'style', attributes: ['swim_name'] }]
     })
     .then(function(results) {
@@ -53,7 +53,7 @@ exports.getYoutubeByStyleId = function(req, res, next) {
     });
 };
 
-exports.uploadLinkByStyleId = function(req, res, next) {
+exports.uploadLinkTechniqueByStyleId = function(req, res, next) {
   if (!req.userData.id || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
       new ReturnResult(
@@ -66,7 +66,7 @@ exports.uploadLinkByStyleId = function(req, res, next) {
   }
   var params = req.body;
   // insert link to database
-  library_md
+  technique_md
     .create({
       link: params.link,
       style_id: params.style_id
@@ -77,7 +77,7 @@ exports.uploadLinkByStyleId = function(req, res, next) {
     .catch(function(err) {
       res.jsonp(
         new ReturnResult(
-          err.messages,
+          err.message,
           null,
           null,
           Constants.messages.INVALID_INFORMATION
@@ -86,7 +86,7 @@ exports.uploadLinkByStyleId = function(req, res, next) {
     });
 };
 
-exports.deleteLink = function(req, res, next) {
+exports.deleteLinkTechnique = function(req, res, next) {
   console.log('Deleting link');
 
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
@@ -102,7 +102,7 @@ exports.deleteLink = function(req, res, next) {
   }
   var id = req.params.link_id;
   // find link
-  library_md
+  technique_md
     .findOne({ where: { id: id } })
     .then(function(link) {
       if (link == null) {
@@ -140,7 +140,7 @@ exports.deleteLink = function(req, res, next) {
     });
 };
 
-exports.getNewLink = function(req, res, next) {
+exports.getNewLinkTechnique = function(req, res, next) {
   if (!req.userData.id) {
     return res.jsonp(
       new ReturnResult(
@@ -152,8 +152,8 @@ exports.getNewLink = function(req, res, next) {
     );
   }
   // find and get new value inserted
-  library_md
-    .findAll({ order: [['id', 'DESC']], limit: 10 })
+  technique_md
+    .findAll({ order: [['id', 'DESC']], limit: 5 })
     .then(function(results) {
       if (!results) {
         return res.jsonp(
@@ -181,3 +181,177 @@ exports.getNewLink = function(req, res, next) {
       );
     });
 };
+
+//Nutrition 
+exports.getLinkNutrition = function(req, res, next) {
+  if (!req.userData.id) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  nutrition_md
+    .findAll({
+    })
+    .then(function(results) {
+      if (results.length == 0) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_LINK_FOUND
+          )
+        );
+      } else {
+        return res.jsonp(
+          new ReturnResult(null, results, 'Get link successful', null)
+        );
+      }
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.messages,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+
+exports.uploadLinkNutrition = function(req, res, next) {
+  if (!req.userData.id || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  var params = req.body;
+  // insert link to database
+  nutrition_md
+    .create({
+      link: params.link
+    })
+    .then(function(result) {
+      res.jsonp(new ReturnResult(result, null, 'Upload link successful', null));
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+
+exports.deleteLinkNutrition = function(req, res, next) {
+  console.log('Deleting link');
+
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  var id = req.params.link_id;
+  // find link
+  nutrition_md
+    .findOne({ where: { id: id } })
+    .then(function(link) {
+      if (link == null) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.LINK_ID_INVALID
+          )
+        );
+        return;
+      }
+      // delete link
+      link.destroy();
+      // get result
+      var result = new ReturnResult(
+        null,
+        null,
+        'Delete link successfully',
+        null
+      );
+      // return
+      res.jsonp(result);
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+
+exports.getNewLinkNutrition = function(req, res, next) {
+  if (!req.userData.id) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  // find and get new value inserted
+  nutrition_md
+    .findAll({ order: [['id', 'DESC']], limit: 5 })
+    .then(function(results) {
+      if (!results) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_LINK_FOUND
+          )
+        );
+      } else {
+        return res.jsonp(
+          new ReturnResult(null, results, 'Get new link successfully', null)
+        );
+      }
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.messages,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+
+
+
