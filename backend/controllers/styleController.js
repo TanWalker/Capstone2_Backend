@@ -185,7 +185,48 @@ exports.getStyleByCoach = function(req, res, next) {
             'Error',
             null,
             null,
-            Constants.messages.CAN_NOT_GET_EXERCISE
+            Constants.messages.CAN_NOT_GET_STYLE
+          )
+        );
+      });
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
+// get style by id
+exports.getStyleById = function(req, res, next) {
+  console.log('Get Style By ID');
+  if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
+    // Select all team by coach id
+    style_md
+      .findOne({
+        where: { id: req.params.style_id }
+      })
+      .then(function(results) {
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            'Get styles by ID successful.',
+            null
+          )
+        );
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_STYLE
           )
         );
       });
