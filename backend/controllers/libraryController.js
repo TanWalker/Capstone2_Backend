@@ -100,7 +100,7 @@ exports.deleteLink = function(req, res, next) {
     );
     return;
   }
-  var id = req.body.link_id;
+  var id = req.params.link_id;
   // find link
   library_md
     .findOne({ where: { id: id } })
