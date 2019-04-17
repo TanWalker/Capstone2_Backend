@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 const authCheck = require('../middleware/AuthGuard');
 
-// Technique routes 
+// ******************** Technique routes *********************
+
 // get link by style ID
 router.post('/api/getLinkTechniqueByStyleId', authCheck, libraryController.getLinkTechniqueByStyleId);
 
@@ -16,7 +17,8 @@ router.delete('/api/deleteLinkTechnique/:link_id', authCheck, libraryController.
 // get new link inserted
 router.get('/api/getNewLinkTechnique', authCheck, libraryController.getNewLinkTechnique);
 
-// Nutrition routes
+// ****************** Nutrition routes ***********************
+
 // get link 
 router.get('/api/getLinkNutrition', authCheck, libraryController.getLinkNutrition);
 
