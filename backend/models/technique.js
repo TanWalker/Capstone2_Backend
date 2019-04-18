@@ -1,8 +1,8 @@
 var db = require("../common/database");
 var sequelize = require("sequelize");
 
-var youtube = db.connect.define(
-  "youtube",
+var technique = db.connect.define(
+  "technique",
   {
     id: {
       type: sequelize.INTEGER,
@@ -16,8 +16,8 @@ var youtube = db.connect.define(
   {
     timestamps: false,
     freezeTableName: true,
-    tableName: youtube
+    tableName: technique
   }
 );
 
-module.exports = youtube;
+module.exports = technique;
