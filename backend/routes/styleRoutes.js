@@ -22,4 +22,11 @@ router.put('/api/updateStyle', authCheck, styleController.updateStyle);
 //Get Style By Coach.
 router.get('/api/getStyleByCoach', authCheck, styleController.getStyleByCoach);
 
+// get style by id
+router.get(
+  '/api/getStyleById/:style_id',
+  authCheck,
+  styleController.getStyleById
+);
+
 module.exports = router;

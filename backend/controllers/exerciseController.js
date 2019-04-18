@@ -3,8 +3,9 @@ const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
 const lesson_exercise_md = require('../models/lesson_exercise');
 const Op = require('sequelize').Op;
+const style_md = require('../models/style');
 // this function is used to test ( get all exercise )
-"use strict"
+('use strict');
 exports.getExercise = function(req, res, next) {
   console.log('Getting all Exercises');
   // check user is log in.
@@ -385,4 +386,69 @@ exports.getFinalExerciseByLessonID = function(req, res, next) {
           );
         });
     });
+};
+
+// get exercise and group by style
+exports.getExerciseGroupByStyle = function(req, res, next) {
+  console.log('Get Exercise Group by Style.');
+  // check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  result = [];
+  // get all style
+  var findStyle = new Promise(function(resolve, reject) {
+    style_md
+      .findAll({ where: { coach_id: req.userData.id } })
+      .then(function(styles) {
+        resolve(styles);
+      });
+  });
+
+  // group exercise
+  async function groupExercise(styles) {
+    if (styles instanceof Array) {
+      await Promise.all(
+        styles.map(async map => {
+          var style = map.swim_name;
+          console.log(map.swim_name);
+          await exercise_md
+            .findAll({ where: { style: style, coach_id: req.userData.id } })
+            .then(function(results) {
+              if(results.length==0){
+                console.log('Not found');
+              }
+              else{
+                result.push({ [results[0].style]: results });
+              }
+            });
+        })
+      );
+      console.log('group exercise');
+    } else {
+      return false;
+    }
+  }
+
+  // return data
+  function returnData() {
+    console.log('Done');
+    return res.jsonp(new ReturnResult(null, result, 'Exercise by Style', null));
+  }
+
+  // return response
+  async function returnGroupEx() {
+    var styles = await findStyle;
+    await groupExercise(styles);
+    returnData();
+  }
+
+  returnGroupEx();
 };
