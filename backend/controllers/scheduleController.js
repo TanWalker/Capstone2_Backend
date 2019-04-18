@@ -671,7 +671,7 @@ exports.getLessonByDateCoach = function(req, res, next) {
     });
 };
 
-exports.getScheduleForTrainee = function(req, res, next) {
+exports.getScheduleByTeam = function(req, res, next) {
   console.log('Get schedule by team');
   //check if user is coach, return and exit;
   if (req.userData.role_id == Constants.ROLE_COACH_ID || !req.userData) {
