@@ -314,6 +314,42 @@ exports.getUserBMITips = function(req, res, next) {
     );
   }
 };
+
+exports.getUserHRTips = function(req, res, next) {
+  console.log('Getting user MBI tips');
+  var HR = req.params.hr;
+  if (req.userData) {
+    let query = 'CALL getHR_tips(?)';
+    common
+      .exec_Procedure(query, HR)
+      .then(function(results) {
+        console.log(results);
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            Constants.messages.EXCUTED_PROCEDURE,
+            null
+          )
+        );
+      })
+      .catch(err =>
+        setImmediate(() => {
+          throw err;
+        })
+      );
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
 // get all trainee
 exports.getTrainee = function(req, res, next) {
   console.log('Getting all Users');

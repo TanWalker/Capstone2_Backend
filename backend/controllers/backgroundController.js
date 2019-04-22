@@ -1,7 +1,8 @@
 const ReturnResult = require('../libs/ReturnResult');
 const background_md = require('../models/background');
+const style_md = require('../models/style');
 const Constants = require('../libs/Constants');
-var sequelize = require("sequelize");
+var sequelize = require('sequelize');
 
 exports.randomBackground = function(req, res, next) {
   if (!req.userData.id) {
@@ -15,10 +16,10 @@ exports.randomBackground = function(req, res, next) {
     );
   }
 
-  background_md
-    .findAll({ order: [[sequelize.literal('RAND()')]], limit: 1})
-    .then(function(result) {
-      if (!result) {
+  style_md
+    .findAll()
+    .then(function(styles) {
+      if (styles.length == null) {
         return res.jsonp(
           new ReturnResult(
             'Error',
@@ -28,14 +29,35 @@ exports.randomBackground = function(req, res, next) {
           )
         );
       } else {
-        return res.jsonp(
-          new ReturnResult(
-            result,
-            null,
-            'Get random background successfully',
-            null
-          )
-        );
+        var random = new Promise(function(resolve, reject) {
+          background_md
+            .findAll({attributes: ['url']})
+            .then(function(background) {
+              
+              return resolve(background);
+            });
+        });
+        
+        random.then(function(background){
+          
+          var results = styles;
+          for (var i = 0; i < results.length; i++) {
+            var tmp = Math.round(Math.floor(Math.random()*background.length));
+            console.log(tmp);
+            results[i].dataValues.url = background[tmp].dataValues.url;
+            //console.log(ok);
+          }
+          return res.jsonp(
+            new ReturnResult(
+              null,
+
+              results,
+              'Get random background successfully',
+              null
+            )
+          );
+        });
+        
       }
     })
     .catch(function(err) {
