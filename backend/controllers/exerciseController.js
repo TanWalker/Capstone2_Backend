@@ -314,7 +314,7 @@ exports.getExerciseByID = function(req, res, next) {
 
 // Get final set exercises by lesson_id
 exports.getFinalExerciseByLessonID = function(req, res, next) {
-  console.log('Get list Exercise By Lesson ID');
+  console.log('Get final Exercise By Lesson ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -369,7 +369,7 @@ exports.getFinalExerciseByLessonID = function(req, res, next) {
             new ReturnResult(
               null,
               results,
-              'Get list exercises by Lesson ID successful',
+              'Get final exercises by Lesson ID successful',
               null
             )
           );
@@ -422,10 +422,9 @@ exports.getExerciseGroupByStyle = function(req, res, next) {
           await exercise_md
             .findAll({ where: { style: style, coach_id: req.userData.id } })
             .then(function(results) {
-              if(results.length==0){
+              if (results.length == 0) {
                 console.log('Not found');
-              }
-              else{
+              } else {
                 result.push({ [results[0].style]: results });
               }
             });
@@ -451,4 +450,77 @@ exports.getExerciseGroupByStyle = function(req, res, next) {
   }
 
   returnGroupEx();
+};
+
+exports.getExerciseByLessonID = function(req, res, next) {
+  console.log('Get list Exercise By Lesson ID');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  //select all exercise_id by lesson
+  lesson_exercise_md
+    .findAll({
+      attributes: ['exercise_id'],
+      where: {
+        lesson_id: req.params.lesson_id
+      }
+    })
+    .then(function(result) {
+      // check if result is null or not
+      if (result.length == 0) {
+        // not found
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.LESSON_ID_INVALID
+          )
+        );
+      }
+      //found it.
+      var list = []; // create array of exercise_id
+      Object.keys(result).forEach(function(key) {
+        list.push(result[key].exercise_id); // push exercise_id to array
+      });
+      // find all information of exercise by list exercise_id
+      exercise_md
+        .findAll({
+          where: {
+            id: {
+              [Op.or]: list
+            }
+          }
+        })
+        .then(function(results) {
+          // return result
+          res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              'Get list exercises by Lesson ID successful',
+              null
+            )
+          );
+        })
+        .catch(function(err) {
+          //catch err.
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.CAN_NOT_GET_EXERCISE
+            )
+          );
+        });
+    });
 };
