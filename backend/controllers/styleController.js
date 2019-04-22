@@ -164,7 +164,7 @@ exports.updateStyle = function(req, res, next) {
 exports.getStyleByCoach = function(req, res, next) {
   console.log('Get Style By Coach');
   if (req.userData.role_id != Constants.ROLE_TRAINEE_ID) {
-    // Select all team by coach id
+    // Select all styles by coach id
     style_md
       .findAll({
         where: { coach_id: req.userData.id }
@@ -185,7 +185,7 @@ exports.getStyleByCoach = function(req, res, next) {
             'Error',
             null,
             null,
-            Constants.messages.CAN_NOT_GET_EXERCISE
+            Constants.messages.CAN_NOT_GET_STYLE
           )
         );
       });
@@ -199,4 +199,50 @@ exports.getStyleByCoach = function(req, res, next) {
       )
     );
   }
+};
+
+// get style by id
+exports.getStyleById = function(req, res, next) {
+  console.log('Get Style By ID');
+  if (!req.userData.id) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  // Select all style by id
+  style_md
+    .findOne({
+      where: { id: req.params.style_id }
+    })
+    .then(function(result) {
+      if (!result) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_STYLE
+          )
+        );
+      } else {
+        return res.jsonp(
+          new ReturnResult(result, null, 'Get Style by ID successfully')
+        );
+      }
+    })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.messages,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
 };
