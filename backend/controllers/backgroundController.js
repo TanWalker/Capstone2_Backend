@@ -15,9 +15,9 @@ exports.randomBackground = function(req, res, next) {
       )
     );
   }
-
+  //SELECT ALL STYLES
   style_md
-    .findAll()
+    .findAll({ attributes: ['id', 'swim_name'] })
     .then(function(styles) {
       if (styles.length == null) {
         return res.jsonp(
@@ -25,39 +25,49 @@ exports.randomBackground = function(req, res, next) {
             'Error',
             null,
             null,
-            Constants.messages.NO_LINK_FOUND
+            Constants.messages.CAN_NOT_GET_STYLE
           )
         );
       } else {
+        // select all background link
         var random = new Promise(function(resolve, reject) {
           background_md
-            .findAll({attributes: ['url']})
+            .findAll({ attributes: ['url'] })
             .then(function(background) {
-              
-              return resolve(background);
+              if (background.length == null) {
+                return res.jsonp(
+                  new ReturnResult(
+                    'Error',
+                    null,
+                    null,
+                    Constants.messages.NO_LINK_FOUND
+                  )
+                );
+              } else {
+                return resolve(background);
+              }
             });
         });
-        
-        random.then(function(background){
-          
+        //add a random link into json of each object in styles array
+        random.then(function(background) {
           var results = styles;
           for (var i = 0; i < results.length; i++) {
-            var tmp = Math.round(Math.floor(Math.random()*background.length));
-            console.log(tmp);
+            // random an element from array 
+            var tmp = Math.round(Math.floor(Math.random() * background.length));
+            // creatr a new field 'url' in dataValues of each styles object
             results[i].dataValues.url = background[tmp].dataValues.url;
-            //console.log(ok);
+            // remove the element just random out of array
+            background.splice(tmp, 1);
           }
           return res.jsonp(
             new ReturnResult(
               null,
-
               results,
               'Get random background successfully',
               null
             )
           );
         });
-        
       }
     })
     .catch(function(err) {
