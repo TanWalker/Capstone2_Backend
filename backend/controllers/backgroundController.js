@@ -17,7 +17,7 @@ exports.randomBackground = function(req, res, next) {
   }
   //SELECT ALL STYLES
   style_md
-    .findAll({attributes: ['id', 'swim_name']})
+    .findAll({ attributes: ['id', 'swim_name'] })
     .then(function(styles) {
       if (styles.length == null) {
         return res.jsonp(
@@ -52,12 +52,12 @@ exports.randomBackground = function(req, res, next) {
         random.then(function(background) {
           var results = styles;
           for (var i = 0; i < results.length; i++) {
+            // random an element from array 
             var tmp = Math.round(Math.floor(Math.random() * background.length));
             // creatr a new field 'url' in dataValues of each styles object
-            //console.log(tmp);
             results[i].dataValues.url = background[tmp].dataValues.url;
-            background.slice(tmp,1);
-            //return background;
+            // remove the element just random out of array
+            background.splice(tmp, 1);
           }
           return res.jsonp(
             new ReturnResult(
