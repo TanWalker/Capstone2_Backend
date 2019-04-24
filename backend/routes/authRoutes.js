@@ -24,6 +24,9 @@ router.get('/api/getUserBMITips/:bmi', authCheck, userControllers.getUserBMITips
 //get heart-rate tips
 router.get('/api/getUserHRTips/:hr', authCheck, userControllers.getUserHRTips);
 
+//get speed tips
+router.get('/api/getUserSpeedTips/:pace', authCheck, userControllers.getUserSpeedTips);
+
 // get all user in system
 router.get('/api/getTrainee', authCheck, userControllers.getTrainee);
 

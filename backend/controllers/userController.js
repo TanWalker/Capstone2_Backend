@@ -350,6 +350,41 @@ exports.getUserHRTips = function(req, res, next) {
   }
 };
 
+exports.getUserSpeedTips = function(req, res, next) {
+  console.log('Getting user speed tips');
+  var pace = req.params.pace;
+  if (req.userData) {
+    let query = 'CALL getSpeed_tips(?)';
+    common
+      .exec_Procedure(query, pace)
+      .then(function(results) {
+        console.log(results);
+        return res.jsonp(
+          new ReturnResult(
+            null,
+            results,
+            Constants.messages.EXCUTED_PROCEDURE,
+            null
+          )
+        );
+      })
+      .catch(err =>
+        setImmediate(() => {
+          throw err;
+        })
+      );
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
 // get all trainee
 exports.getTrainee = function(req, res, next) {
   console.log('Getting all Users');
