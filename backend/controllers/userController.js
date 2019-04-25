@@ -287,25 +287,31 @@ exports.getUserBMITips = function(req, res, next) {
   console.log('Getting user MBI tips');
   var BMI = req.params.bmi;
   if (req.userData) {
-    let query = 'CALL getBMI_tips(?)';
-    common
-      .exec_Procedure(query, BMI)
-      .then(function(results) {
-        console.log(results);
-        return res.jsonp(
-          new ReturnResult(
-            null,
-            results,
-            Constants.messages.EXCUTED_PROCEDURE,
-            null
-          )
-        );
-      })
-      .catch(err =>
-        setImmediate(() => {
-          throw err;
+    if (req.params.bmi >= 0 && req.params.bmi < 1000) {
+      let query = 'CALL getBMI_tips(?)';
+      common
+        .exec_Procedure(query, BMI)
+        .then(function(results) {
+          console.log(results);
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              Constants.messages.EXCUTED_PROCEDURE,
+              null
+            )
+          );
         })
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
+    } else {
+      return res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
       );
+    }
   } else {
     return res.jsonp(
       new ReturnResult(
@@ -322,25 +328,31 @@ exports.getUserHRTips = function(req, res, next) {
   console.log('Getting user MBI tips');
   var HR = req.params.hr;
   if (req.userData) {
-    let query = 'CALL getHR_tips(?)';
-    common
-      .exec_Procedure(query, HR)
-      .then(function(results) {
-        console.log(results);
-        return res.jsonp(
-          new ReturnResult(
-            null,
-            results,
-            Constants.messages.EXCUTED_PROCEDURE,
-            null
-          )
-        );
-      })
-      .catch(err =>
-        setImmediate(() => {
-          throw err;
+    if (req.params.hr > 0 && req.params.hr < 250) {
+      let query = 'CALL getHR_tips(?)';
+      common
+        .exec_Procedure(query, HR)
+        .then(function(results) {
+          console.log(results);
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              Constants.messages.EXCUTED_PROCEDURE,
+              null
+            )
+          );
         })
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
+    } else {
+      return res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
       );
+    }
   } else {
     return res.jsonp(
       new ReturnResult(
@@ -357,25 +369,31 @@ exports.getUserSpeedTips = function(req, res, next) {
   console.log('Getting user speed tips');
   var pace = req.params.pace;
   if (req.userData) {
-    let query = 'CALL getSpeed_tips(?)';
-    common
-      .exec_Procedure(query, pace)
-      .then(function(results) {
-        console.log(results);
-        return res.jsonp(
-          new ReturnResult(
-            null,
-            results,
-            Constants.messages.EXCUTED_PROCEDURE,
-            null
-          )
-        );
-      })
-      .catch(err =>
-        setImmediate(() => {
-          throw err;
+    if (req.params.pace > 0 && req.params.pace < 200) {
+      let query = 'CALL getSpeed_tips(?)';
+      common
+        .exec_Procedure(query, pace)
+        .then(function(results) {
+          console.log(results);
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              Constants.messages.EXCUTED_PROCEDURE,
+              null
+            )
+          );
         })
-      );
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
+    } else {
+      return res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
+        );
+    }
   } else {
     return res.jsonp(
       new ReturnResult(
