@@ -45,42 +45,76 @@ exports.addDailyRecord = function(req, res, next) {
   }
   // if not continue to add record
   const params = req.body;
-  // Insert record info to database
-  var result = record_md.create({
-    user_id: params.user_id,
-    min_time: params.min_time,
-    max_time: params.max_time,
-    time_swim: params.time_swim,
-    min_hr: params.min_hr,
-    max_hr: params.max_hr,
-    heart_rate: params.heart_rate,
-    attitude: params.attitude,
-    schedule_id: params.schedule_id,
-    result: params.result,
-    note: params.note,
-    best_result: params.best_result,
-    errors: params.errors,
-    coach_id: req.userData.id,
-    exercise_id: params.exercise_id
+  console.log(params);
+  // check if record already have
+  var check = record_md.findOne({
+    where: {
+      user_id: params.user_id,
+      schedule_id: params.schedule_id,
+      exercise_id: params.exercise_id
+    }
   });
-  result
-    .then(function(record) {
-      // if success return this record and message
-      res
+  check.then(function(result) {
+    if (result) {
+      result.update({
+        user_id: params.user_id,
+        min_time: params.min_time,
+        max_time: params.max_time,
+        time_swim: params.time_swim,
+        min_hr: params.min_hr,
+        max_hr: params.max_hr,
+        heart_rate: params.heart_rate,
+        attitude: params.attitude,
+        schedule_id: params.schedule_id,
+        result: params.result,
+        note: params.note,
+        best_result: params.best_result,
+        errors: params.errors,
+        coach_id: req.userData.id,
+        exercise_id: params.exercise_id
+      });
+      return res
         .status(200)
-        .jsonp(new ReturnResult(record, null, 'Record Created', null));
-    })
-    .catch(function(err) {
-      //catch error
-      res.jsonp(
-        new ReturnResult(
-          err.message,
-          null,
-          null,
-          Constants.messages.INVALID_INFORMATION
-        )
-      );
-    });
+        .jsonp(new ReturnResult(null, null, 'Record Updated', null));
+    } else {
+      // Insert record info to database
+      var result = record_md.create({
+        user_id: params.user_id,
+        min_time: params.min_time,
+        max_time: params.max_time,
+        time_swim: params.time_swim,
+        min_hr: params.min_hr,
+        max_hr: params.max_hr,
+        heart_rate: params.heart_rate,
+        attitude: params.attitude,
+        schedule_id: params.schedule_id,
+        result: params.result,
+        note: params.note,
+        best_result: params.best_result,
+        errors: params.errors,
+        coach_id: req.userData.id,
+        exercise_id: params.exercise_id
+      });
+      result
+        .then(function(record) {
+          // if success return this record and message
+          return res
+            .status(200)
+            .jsonp(new ReturnResult(record, null, 'Record Created', null));
+        })
+        .catch(function(err) {
+          //catch error
+          return res.jsonp(
+            new ReturnResult(
+              err.message,
+              null,
+              null,
+              Constants.messages.INVALID_INFORMATION
+            )
+          );
+        });
+    }
+  });
 };
 // function deleteRecord
 exports.deleteRecord = function(req, res, next) {
@@ -406,13 +440,13 @@ exports.getRecordByYearOfCurrentUser = function(req, res, next) {
     .findAll({
       where: {
         user_id: req.userData.id,
-        year : req.body.year
+        year: req.body.year
       },
       include: [
         {
           model: exercise_md,
           as: 'exercise'
-        },
+        }
       ],
       group: ['monthly_record.exercise_id']
     })
