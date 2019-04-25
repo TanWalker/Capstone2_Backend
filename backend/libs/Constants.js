@@ -96,6 +96,7 @@ module.exports = Object.freeze({
     NO_RECORD_FOUND: 'There are no record was found.',
     NO_LINK_FOUND: 'There are no link was found.',
     VIDEO_INFO_FOUND: 'Video information was found.',
-    INVALID_VIDEO_LINK: 'Video was removed or Invalid video link.'
+    INVALID_VIDEO_LINK: 'Video was removed or Invalid video link.',
+    NO_INDEX_FOUND: 'There is no index was found'
   }
 });

@@ -239,70 +239,79 @@ exports.getCurrentUser = function(req, res, next) {
 };
 
 exports.getUserIndex = function(req, res, next) {
-  record_md.findOne({ where: { id: req.userData.id } }).then(function(user) {
-    if (!req.userData) {
+  if (!req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+
+  user_md
+    .findOne({
+      where: { id: req.userData.id },
+      attributes: ['id', 'bmi', 'endurance', 'speed']
+    })
+    .then(function(result) {
+      if (result == null) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.CAN_NOT_GET_USER
+          )
+        );
+      } else {
+        return res.jsonp(
+          new ReturnResult(result, null, 'Get user index successfully', null)
+        );
+      }
+    })
+    .catch(function(err) {
       res.jsonp(
         new ReturnResult(
-          'Error',
+          err.message,
           null,
           null,
-          Constants.messages.UNAUTHORIZED_USER
+          Constants.messages.INVALID_INFORMATION
         )
       );
-      return;
-    } else {
-      user.update({
-        bmi:
-          req.userData.height == null && req.userData.weight == null
-            ? req.userData.bmi
-            : req.userData.weight / Math.pow(req.userData.weight, 2),
-        speed: user.time_swim
-      });
-      console
-        .log(typeof req.userData.height)
-        .then(success => {
-          res
-            .status(200)
-            .jsonp(new ReturnResult(success, null, 'Successful', null));
-          return;
-        })
-        .catch(function(err) {
-          res.jsonp(
-            new ReturnResult(
-              'Error',
-              null,
-              null,
-              Constants.messages.INVALID_INFORMATION
-            )
-          );
-        });
-    }
-  });
+    });
 };
 
 exports.getUserBMITips = function(req, res, next) {
   console.log('Getting user MBI tips');
   var BMI = req.params.bmi;
   if (req.userData) {
-    let query = 'CALL getBMI_tips(?)';
-    common
-      .exec_Procedure(query, BMI)
-      .then(function(results) {
-        console.log(results);
-        return res.jsonp(
-          new ReturnResult(
-            null,
-            results,
-            Constants.messages.EXCUTED_PROCEDURE,
-            null
-          )
-        );
-      })
-      .catch(err =>
-        setImmediate(() => {
-          throw err;
+    if (req.params.bmi >= 0 && req.params.bmi <= 1000) {
+      let query = 'CALL getBMI_tips(?)';
+      common
+        .exec_Procedure(query, BMI)
+        .then(function(results) {
+          console.log(results);
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              Constants.messages.EXCUTED_PROCEDURE,
+              null
+            )
+          );
         })
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
+    } else {
+      return res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
       );
+    }
   } else {
     return res.jsonp(
       new ReturnResult(
@@ -316,28 +325,75 @@ exports.getUserBMITips = function(req, res, next) {
 };
 
 exports.getUserHRTips = function(req, res, next) {
-  console.log('Getting user MBI tips');
+  console.log('Getting user heart-rate tips');
   var HR = req.params.hr;
   if (req.userData) {
-    let query = 'CALL getHR_tips(?)';
-    common
-      .exec_Procedure(query, HR)
-      .then(function(results) {
-        console.log(results);
-        return res.jsonp(
-          new ReturnResult(
-            null,
-            results,
-            Constants.messages.EXCUTED_PROCEDURE,
-            null
-          )
-        );
-      })
-      .catch(err =>
-        setImmediate(() => {
-          throw err;
+    if (req.params.hr > 79 && req.params.hr < 230) {
+      let query = 'CALL getHR_tips(?)';
+      common
+        .exec_Procedure(query, HR)
+        .then(function(results) {
+          console.log(results);
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              Constants.messages.EXCUTED_PROCEDURE,
+              null
+            )
+          );
         })
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
+    } else {
+      return res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
       );
+    }
+  } else {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+};
+
+exports.getUserSpeedTips = function(req, res, next) {
+  console.log('Getting user speed tips');
+  var pace = req.params.pace;
+  if (req.userData) {
+    if (req.params.pace > 39 && req.params.pace < 200) {
+      let query = 'CALL getSpeed_tips(?)';
+      common
+        .exec_Procedure(query, pace)
+        .then(function(results) {
+          console.log(results);
+          return res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              Constants.messages.EXCUTED_PROCEDURE,
+              null
+            )
+          );
+        })
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
+    } else {
+      return res.jsonp(
+        new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
+        );
+    }
   } else {
     return res.jsonp(
       new ReturnResult(

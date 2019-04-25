@@ -16,13 +16,17 @@ router.put('/api/updateUser', authCheck, userControllers.updateUser);
 router.get('/api/getCurrentUser', authCheck, userControllers.getCurrentUser);
 
 //get user index
-router.put('/api/getUserIndex', authCheck, userControllers.getUserIndex);
+router.get('/api/getUserIndex', authCheck, userControllers.getUserIndex);
 
 //get BMI tips
 router.get('/api/getUserBMITips/:bmi', authCheck, userControllers.getUserBMITips);
 
 //get heart-rate tips
 router.get('/api/getUserHRTips/:hr', authCheck, userControllers.getUserHRTips);
+
+//get heart-rate tips
+router.get('/api/getUserSpeedTips/:pace', authCheck, userControllers.getUserSpeedTips);
+
 
 // get all user in system
 router.get('/api/getTrainee', authCheck, userControllers.getTrainee);
