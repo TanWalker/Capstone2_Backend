@@ -287,7 +287,7 @@ exports.getUserBMITips = function(req, res, next) {
   console.log('Getting user MBI tips');
   var BMI = req.params.bmi;
   if (req.userData) {
-    if (req.params.bmi >= 0 && req.params.bmi < 1000) {
+    if (req.params.bmi >= 0 && req.params.bmi <= 1000) {
       let query = 'CALL getBMI_tips(?)';
       common
         .exec_Procedure(query, BMI)
@@ -325,10 +325,10 @@ exports.getUserBMITips = function(req, res, next) {
 };
 
 exports.getUserHRTips = function(req, res, next) {
-  console.log('Getting user MBI tips');
+  console.log('Getting user heart-rate tips');
   var HR = req.params.hr;
   if (req.userData) {
-    if (req.params.hr > 0 && req.params.hr < 250) {
+    if (req.params.hr > 79 && req.params.hr < 230) {
       let query = 'CALL getHR_tips(?)';
       common
         .exec_Procedure(query, HR)
@@ -369,7 +369,7 @@ exports.getUserSpeedTips = function(req, res, next) {
   console.log('Getting user speed tips');
   var pace = req.params.pace;
   if (req.userData) {
-    if (req.params.pace > 0 && req.params.pace < 200) {
+    if (req.params.pace > 39 && req.params.pace < 200) {
       let query = 'CALL getSpeed_tips(?)';
       common
         .exec_Procedure(query, pace)
