@@ -8,6 +8,7 @@ module.exports = Object.freeze({
   ROLE_TRAINEE_ID: 3,
   FEEDBACK_ADMIN_EMAIL: 'phamanhkhoa0@gmail.com',
   FINAL_SET_ID: 3,
+  IS_VERIFY_STATUS: 1,
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
     USER_NOT_FOUND: 'Authentication failed. User not found.',
@@ -69,14 +70,18 @@ module.exports = Object.freeze({
     EXERCISE_ID_INVALID: "Exercise id isn't existing or it's was deleted.",
     SCHEDULE_ID_INVALID: "Schedule id isn't existing or it's was deleted.",
     LESSON_ID_INVALID: "Lesson id isn't existing or it's was deleted.",
+    LINK_ID_INVALID: "Link id isn't existing or it's was deleted.",
     LESSON_EXERCISE_ID_INVALID: "Lesson exercise id isn't existing or it's was deleted.",
     EXISTING_TIME: 'There is an exercise in this time already',
     EXISTING_DISTANCE: 'Swim distance already exists',
+    EXISTING_MEMBER: 'Member is already in team',
     DISTANCE_ID_INVALID: "Distance id isn't existing or it's was deleted.",
     CAN_NOT_GET_EXERCISE: 'Can’t get exercise information.',
+    CAN_NOT_GET_STYLE: 'Can’t get style information.',
     CAN_NOT_GET_LESSON: 'Can’t get lesson information.',
     EXISTING_SCHEDULE: 'Schedule already exists.',
     RECORD_ID_INVALID: "Record id isn't existing or it's was deleted.",
+    RECORD_NOT_FOUND: "Record isn't existing or it's was deleted.",
     INVALID_USER_IN_TEAM: "User id isn't existing or User not in this team.",
     LESSON_EXERCISE_ID_INVALID: "Lesson exercise id isn't existing or it's was deleted.",
     SEND_EMAIL_SUCCESSFUL: 'The email was sent.',
@@ -86,6 +91,12 @@ module.exports = Object.freeze({
     UNEXPECTED_ERROR: 'Unexpected error.',
     EXCUTED_PROCEDURE: 'Excuted procedure',
     INVALID_DATE: 'Day, month, year not exist',
-    NO_SCHEDULE_FOUND: 'There is not any schedule on this day'
+    NO_SCHEDULE_FOUND_ON_DATE: 'There is not any schedule on this day',
+    NO_SCHEDULE_FOUND: 'There is not any schedule found',
+    NO_RECORD_FOUND: 'There are no record was found.',
+    NO_LINK_FOUND: 'There are no link was found.',
+    VIDEO_INFO_FOUND: 'Video information was found.',
+    INVALID_VIDEO_LINK: 'Video was removed or Invalid video link.',
+    NO_INDEX_FOUND: 'There is no index was found'
   }
 });

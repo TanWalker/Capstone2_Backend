@@ -14,6 +14,9 @@ const lessonRoutes = require('./routes/lessonRoutes');
 const lessonExerciseRoutes = require('./routes/lessonExerciseRoutes');
 const testRoutes = require('./routes/testRoutes');
 const mibandRoutes = require('./routes/mibandRoutes');
+const libraryRoutes = require('./routes/libraryRoutes');
+const videoRoutes = require('./routes/videoRoutes');
+const backgrooundRoutes = require('./routes/backgroundRoutes');
 const path = require('path');
 
 // const autoController = require('./controllers/autoController');
@@ -70,5 +73,10 @@ app.use(lessonExerciseRoutes);
 app.use(testRoutes);
 
 app.use(mibandRoutes);
+
+app.use(libraryRoutes);
+
+app.use(videoRoutes);
+app.use(backgrooundRoutes);
 
 module.exports = app;

@@ -33,9 +33,25 @@ router.get(
 router.post('/api/getMemberById', authCheck, teamControllers.getMemberById);
 
 // remove member out of team
-router.delete(
+router.post(
   '/api/removeTeamMember',
   authCheck,
   teamControllers.removeTeamMember
 );
+// get team by id
+router.get(
+  '/api/getTeamByID/:team_id',
+  authCheck,
+  teamControllers.getTeamByID
+);
+
+router.put(
+  '/api/addTeamMember',
+  authCheck,
+  teamControllers.addMemberToTeam
+);
+
+//get rank by exercise
+router.post('/api/getRankByExercise', authCheck, teamControllers.getRankByExercise);
+
 module.exports = router;

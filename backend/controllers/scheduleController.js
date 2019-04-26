@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const moment = require('moment-timezone');
 const sequelize = require('sequelize');
 const lesson_md = require('../models/lesson');
+const user_md = require('../models/user');
 // not finish yet.
 
 // this function is used to test ( get all Schedule )
@@ -56,7 +57,7 @@ exports.deleteSchedule = function(req, res, next) {
     );
     return;
   }
-  var id = req.body.id;
+  var id = req.params.schedule_id;
   // find all Schedule
   console.log(id);
   schedule_md
@@ -290,10 +291,10 @@ exports.getScheduleForRecord = (req, res, next) => {
   after.hours(0);
   after.minutes(0);
   after.seconds(0);
-  before_time = before.format();
   after_time = after.format();
   // find schedule before current time depend on page_num
   const op = sequelize.Op;
+  console.log(before_time);
   schedule_md
     .findAll({
       where: {
@@ -378,8 +379,6 @@ exports.getDefaultSchedule = (req, res, next) => {
             break;
           }
         }
-
-        
       }
       return res.jsonp(
         new ReturnResult(result, null, 'Get Default schedule.', null)
@@ -441,7 +440,6 @@ exports.getScheduleByID = function(req, res, next) {
 };
 //get schedule by date
 exports.getScheduleByDate = function(req, res, next) {
-
   console.log('get list schedule by date');
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
@@ -459,7 +457,7 @@ exports.getScheduleByDate = function(req, res, next) {
       }
     })
     .then(function(schedules) {
-      if (schedules.length==0) {
+      if (schedules.length == 0) {
         res.jsonp(
           new ReturnResult(
             'Error',
@@ -673,3 +671,76 @@ exports.getLessonByDateCoach = function(req, res, next) {
       );
     });
 };
+
+exports.getScheduleByTeam = function(req, res, next) {
+  console.log('Get Schedule by Team');
+  //check if user is coach, return and exit;
+  if ( !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  user_md.hasMany(schedule_md, { foreignKey: 'id' });
+  schedule_md.belongsTo(user_md, { foreignKey: 'coach_id' });
+  // find all Schedule
+  schedule_md
+    .findAll({
+      where: { team_id: req.userData.team_id },
+      include: [
+        {
+          model: user_md,
+          as: 'user',
+          attributes: ['display_name']
+        }
+      ]
+    })
+    .then(function(schedules) {
+      Object.keys(schedules).forEach(function(key) {
+        var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+        var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+        schedules[key].time_start = start.format();
+        schedules[key].time_end = end.format();
+      });
+      if (schedules.length == null) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_SCHEDULE_FOUND
+          )
+        );
+      } else {
+        // get result
+        var result = new ReturnResult(null, schedules, 'All Schedules', null);
+        // return
+        return res.jsonp(result);
+      }
+    }).catch(function(err) {
+       res.jsonp(new ReturnResult(err.message, null, null, Constants.messages.INVALID_INFORMATION));
+    })
+};
+
+// exports.copySchedule = function(req, res, next) {
+//   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+//     res.jsonp(
+//       new ReturnResult(
+//         'Error',
+//         null,
+//         null,
+//         Constants.messages.UNAUTHORIZED_USER
+//       )
+//     );
+//     return;
+//   }
+//   var params = req.body;
+//   schedule_md.findAll({
+//     where: {day:params.day, month:params.month, year: params}
+//   });
+// };
