@@ -18871,16 +18871,15 @@
 			const miband = require('miband');
 			const ms = require('ms');
 			const bluetooth = navigator.bluetooth;
-
 			global.jQuery = require("jquery");
 
 			class MiBand {
 				constructor() {
 					this.bindEvents();
 					this.band = null;
-					this.chart = [];
-					this.dataStore = [];
-					this.createChart();
+				//	this.chart = [];
+				//	this.dataStore = [];
+				//	this.createChart();
 				}
 				bindEvents() {
 					$('#start').click(() => {
@@ -18889,12 +18888,15 @@
 					$('#stop').click(() => {
 						this.stopMedition();
 					});
+					$('#startGetHR').click(() => {
+						this.startBandInit();
+					});
 				}
 				delay(ms) {
 					return new Promise(resolve => setTimeout(resolve, ms));
 				}
 				log(data) {
-					$('#output').append(data + '\n');
+					$('#output').append(data + '<br>');
 				}
 				async connect() {
 					if (!bluetooth) {
@@ -18924,7 +18926,7 @@
 					try {
 						await this.band.init();
 						this.log('Bắt đầu đo nhịp tim');
-					//	await this.band.showNotification('message');
+						await this.band.showNotification('message');
 						await this.delay(1000);
 					
 					//	const date = new Date();
@@ -18932,7 +18934,7 @@
 					//	await this.band.hrmRead();
 						
 						this.band.on('heart_rate', (rate) => {
-							this.log('<span class="has-text-danger">❤</span> Nhịp tim của bạn : ' + rate);
+							this.log('<span class="has-text-danger" id="data">❤</span> Nhịp tim của bạn : ' + rate);
 					    const dateNow = Date.now();
 						  const time = new Date(dateNow);
 							this.log('Thời gian lấy nhịp tim : ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
@@ -18946,18 +18948,19 @@
 						this.delay(15000);
 						await this.band.hrmStop();
 					} catch (error) {
-						this.log('Error while trying to get heart rate');
+						this.log('Đã xảy ra lỗi khi lấy nhịp tim');
 					}
 				}
 				stopMedition() {
-					const csv = this.convertArrayOfObjectsToCSV(this.dataStore);
-					const name = $('#name').val() || 'data';
-					const hiddenElement = document.createElement('a');
-					this.log('Saving data (' + name + '.csv' + ')...');
-					hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-					hiddenElement.target = '_blank';
-					hiddenElement.download = name + '.csv';
-					hiddenElement.click();
+					// const csv = this.convertArrayOfObjectsToCSV(this.dataStore);
+					// const name = $('#name').val() || 'data';
+					// const hiddenElement = document.createElement('a');
+					// this.log('Saving data (' + name + '.csv' + ')...');
+					// hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+					// hiddenElement.target = '_blank';
+					// hiddenElement.download = name + '.csv';
+					// hiddenElement.click();
+					console.log('Stop');
 				}
 				convertArrayOfObjectsToCSV(arrayData) {
 					var result, ctr, keys, columnDelimiter, lineDelimiter, data;
