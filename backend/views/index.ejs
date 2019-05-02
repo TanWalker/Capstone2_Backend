@@ -69,6 +69,7 @@ $("#stop").click(function(){
   var request = $.post(document.URL,{
     heart_rate: document.getElementById('data').innerHTML
   });
+  alert('Đã lưu kết quả');
   request.done(function() {
     console.log('Connect thành công');
   });
