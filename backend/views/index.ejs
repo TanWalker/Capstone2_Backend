@@ -47,9 +47,7 @@
               <div class="card-body">
                 <h5 class="card-title">Kết quả</h5>
                 <p class="card-text" id="output">
-                <span class="has-text-danger" id="data">75</span>
-                <span class="has-text-danger" id="data">50</span>
-                <span class="has-text-danger" id="data">60</span>
+                  
                 </p>
               </div>
               <div class="card-footer">
@@ -72,6 +70,7 @@ $("#stop").click(function(){
   var request = $.post(document.URL,{
     heart_rate: document.getElementById('data').innerHTML
   });
+  alert('Đã lưu kết quả');
   request.done(function() {
     console.log('Connect thành công');
   });
