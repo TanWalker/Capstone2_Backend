@@ -18934,7 +18934,7 @@
 					//	await this.band.hrmRead();
 						
 						this.band.on('heart_rate', (rate) => {
-							this.log('<span class="has-text-danger" id="data">❤</span> Nhịp tim của bạn : ' + rate);
+							this.log('<span class="has-text-danger">❤</span> Nhịp tim của bạn : ' + '<span class="has-text-danger" id="data">'+rate+'</span>');
 					    const dateNow = Date.now();
 						  const time = new Date(dateNow);
 						  this.log('<span class="has-text-danger">❤</span> Nhịp tim của bạn : ' + '<span class="has-text-danger" id="data">'+rate+'</span>');
