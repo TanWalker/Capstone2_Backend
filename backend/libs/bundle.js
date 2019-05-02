@@ -18937,7 +18937,7 @@
 							this.log('<span class="has-text-danger" id="data">❤</span> Nhịp tim của bạn : ' + rate);
 					    const dateNow = Date.now();
 						  const time = new Date(dateNow);
-							this.log('Thời gian lấy nhịp tim : ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds());
+						  this.log('<span class="has-text-danger">❤</span> Nhịp tim của bạn : ' + '<span class="has-text-danger" id="data">'+rate+'</span>');
 
 							// this.dataStore.push({ time: time, val: rate });
 							//	const timeF = new Date(time);
