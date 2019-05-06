@@ -8,6 +8,9 @@ module.exports = Object.freeze({
   ROLE_TRAINEE_ID: 3,
   FEEDBACK_ADMIN_EMAIL: 'phamanhkhoa0@gmail.com',
   FINAL_SET_ID: 3,
+  email_credentials: '847183912182-bhuici6p07t6nnjnc070puipdjiuttrj.apps.googleusercontent.com',
+  email_refreshtoken: '1/4Gt-P9LIf5LycGqqL1z5ykFM6Yx4cCLbOvyXYyTYitI',
+  email_secret: 'zohtTaqUI6NYv9xYfKwHT59f',
   IS_VERIFY_STATUS: 1,
   messages: {
     INTERNAL_ERROR: 'An internal error has occurred',
