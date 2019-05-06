@@ -588,11 +588,10 @@ exports.getRankByTeam = function(req, res, next) {
       user_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(user_md, { foreignKey: 'user_id' });
 
-
       record_md
         .findAll({
-          where: { user_id: list},
-          attributes: ['time_swim', 'exercise_id', 'time_swim'],
+          where: { user_id: list, 'exercise_id': req.body.exercise_id },
+          attributes: ['time_swim', 'exercise_id'],
           order: [['time_swim', 'ASC']],
           group: 'user_id',
           limit: 3,
@@ -632,4 +631,3 @@ exports.getRankByTeam = function(req, res, next) {
       );
     });
 };
-
