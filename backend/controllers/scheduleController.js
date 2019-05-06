@@ -4,6 +4,7 @@ const Constants = require('../libs/Constants');
 const moment = require('moment-timezone');
 const sequelize = require('sequelize');
 const lesson_md = require('../models/lesson');
+const user_md = require('../models/user');
 // not finish yet.
 
 // this function is used to test ( get all Schedule )
@@ -56,7 +57,7 @@ exports.deleteSchedule = function(req, res, next) {
     );
     return;
   }
-  var id = req.body.id;
+  var id = req.params.schedule_id;
   // find all Schedule
   console.log(id);
   schedule_md
@@ -290,10 +291,10 @@ exports.getScheduleForRecord = (req, res, next) => {
   after.hours(0);
   after.minutes(0);
   after.seconds(0);
-  before_time = before.format();
   after_time = after.format();
   // find schedule before current time depend on page_num
   const op = sequelize.Op;
+  console.log(before_time);
   schedule_md
     .findAll({
       where: {
@@ -345,7 +346,7 @@ exports.getDefaultSchedule = (req, res, next) => {
   // select all schedule in current day and order increasing
   schedule_md
     .findAll({
-      where: { day: day, month: month, year: year },
+      where: { day: day, month: month, year: year, coach_id: req.userData.id },
       order: [['time_end', 'ASC']]
     })
     .then(function(results) {
@@ -355,25 +356,18 @@ exports.getDefaultSchedule = (req, res, next) => {
       var end_before = 0;
       // define var time of the start of a next schedule
       var start_after = 0;
+      var result;
       for (var i = 0; i < results.length; i++) {
-        var result = results[i];
+        result = results[i];
         var start_time = result.start_hour + result.start_minute / 60;
         var end_time = result.end_hour + result.end_minute / 60;
         // if current_hour inside a schedule
         if (current_hour >= start_time && current_hour <= end_time) {
-          return res
-            .status(200)
-            .jsonp(
-              new ReturnResult(result, null, 'Get Default Schedule.', null)
-            );
+          break;
         } else {
           // if it is the last schedule in the day
           if (i == results.length - 1) {
-            return res
-              .status(200)
-              .jsonp(
-                new ReturnResult(result, null, 'Get Default Schedule.', null)
-              );
+            break;
           }
           // time of the end of a schedule
           end_before = end_time;
@@ -382,12 +376,13 @@ exports.getDefaultSchedule = (req, res, next) => {
             results[i + 1].start_hour + results[i + 1].start_minute / 60;
           // if current_hour is inside the time between 2 schedule, get the previous schedule
           if (current_hour > end_before && current_hour < start_after) {
-            return res.jsonp(
-              new ReturnResult(result, null, 'Get Default Schedule.', null)
-            );
+            break;
           }
         }
       }
+      return res.jsonp(
+        new ReturnResult(result, null, 'Get Default schedule.', null)
+      );
     })
     .catch(function(err) {
       return res.jsonp(
@@ -443,12 +438,61 @@ exports.getScheduleByID = function(req, res, next) {
       );
     });
 };
-// exports.getScheduleByDate = function(req, res, next){
-//   if(!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID){
-//     return  res.jsonp(new ReturnResult('Error', null ,null, Constant.message.UNAUTHORIZED_USER));
-//   }
-//   schedule_md.findOne({where:{}})
-// }
+//get schedule by date
+exports.getScheduleByDate = function(req, res, next) {
+  console.log('get list schedule by date');
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    return res.jsonp(
+      new ReturnResult('Error', null, null, Constant.message.UNAUTHORIZED_USER)
+    );
+  }
+
+  schedule_md
+    .findAll({
+      where: {
+        coach_id: req.userData.id,
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year
+      }
+    })
+    .then(function(schedules) {
+      if (schedules.length == 0) {
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_SCHEDULE_FOUND
+          )
+        );
+      } else {
+        Object.keys(schedules).forEach(function(key) {
+          var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+          var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+          schedules[key].time_start = start.format();
+          schedules[key].time_end = end.format();
+        });
+        var result = new ReturnResult(
+          null,
+          schedules,
+          'Get schedule by date successful.',
+          null
+        );
+        return res.jsonp(result);
+      }
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_SCHEDULE
+        )
+      );
+    });
+};
 
 // get lesson by date
 exports.getLessonByDate = function(req, res, next) {
@@ -476,12 +520,7 @@ exports.getLessonByDate = function(req, res, next) {
       if (result.length == 0) {
         // not found
         res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.INVALID_DATE
-          )
+          new ReturnResult('Error', null, null, Constants.messages.INVALID_DATE)
         );
         return;
       }
@@ -515,6 +554,57 @@ exports.getLessonByDate = function(req, res, next) {
       );
     });
 };
+//get schdule by date
+exports.getScheduleByDateLesson = function(req, res, next) {
+  console.log('Get Schedule By Date and Lesson');
+  //check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select lesson exercises by date and lesson_id
+  schedule_md
+    .findAll({
+      where: {
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year,
+        lesson_id: req.body.lesson_id
+      }
+    })
+    .then(function(result) {
+      // check result if it existing or not
+      if (result.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult('Error', null, null, Constants.messages.INVALID_DATE)
+        );
+        return;
+      }
+      // found it return result
+      return res.jsonp(
+        new ReturnResult(null, result, 'Get schedule by date successful.', null)
+      );
+    })
+    .catch(function(err) {
+      //catch err
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_LESSON
+        )
+      );
+    });
+};
 
 // get lesson by date and coach
 exports.getLessonByDateCoach = function(req, res, next) {
@@ -531,26 +621,26 @@ exports.getLessonByDateCoach = function(req, res, next) {
     );
     return;
   }
-  // Select lesson exercises by lesson_id
   schedule_md
     .findAll({
       attributes: ['lesson_id'],
-      where: { day: req.body.day, month: req.body.month, year: req.body.year, coach_id: req.userData.id }
+      where: {
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year,
+        coach_id: req.userData.id
+      }
     })
     .then(function(result) {
       // check result if it existing or not
       if (result.length == 0) {
         // not found
         res.jsonp(
-          new ReturnResult(
-            'Error',
-            null,
-            null,
-            Constants.messages.INVALID_DATE
-          )
+          new ReturnResult('Error', null, null, Constants.messages.INVALID_DATE)
         );
         return;
       }
+
       // found it and push lesson_id to list
       var list = [];
       Object.keys(result).forEach(function(key) {
@@ -581,3 +671,76 @@ exports.getLessonByDateCoach = function(req, res, next) {
       );
     });
 };
+
+exports.getScheduleByTeam = function(req, res, next) {
+  console.log('Get Schedule by Team');
+  //check if user is coach, return and exit;
+  if ( !req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  user_md.hasMany(schedule_md, { foreignKey: 'id' });
+  schedule_md.belongsTo(user_md, { foreignKey: 'coach_id' });
+  // find all Schedule
+  schedule_md
+    .findAll({
+      where: { team_id: req.userData.team_id },
+      include: [
+        {
+          model: user_md,
+          as: 'user',
+          attributes: ['display_name']
+        }
+      ]
+    })
+    .then(function(schedules) {
+      Object.keys(schedules).forEach(function(key) {
+        var start = moment(schedules[key].time_start).tz('Asia/Ho_Chi_Minh');
+        var end = moment(schedules[key].time_end).tz('Asia/Ho_Chi_Minh');
+        schedules[key].time_start = start.format();
+        schedules[key].time_end = end.format();
+      });
+      if (schedules.length == null) {
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.NO_SCHEDULE_FOUND
+          )
+        );
+      } else {
+        // get result
+        var result = new ReturnResult(null, schedules, 'All Schedules', null);
+        // return
+        return res.jsonp(result);
+      }
+    }).catch(function(err) {
+       res.jsonp(new ReturnResult(err.message, null, null, Constants.messages.INVALID_INFORMATION));
+    })
+};
+
+// exports.copySchedule = function(req, res, next) {
+//   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+//     res.jsonp(
+//       new ReturnResult(
+//         'Error',
+//         null,
+//         null,
+//         Constants.messages.UNAUTHORIZED_USER
+//       )
+//     );
+//     return;
+//   }
+//   var params = req.body;
+//   schedule_md.findAll({
+//     where: {day:params.day, month:params.month, year: params}
+//   });
+// };

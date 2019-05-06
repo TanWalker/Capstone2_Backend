@@ -11,7 +11,7 @@ router.get('/api/getSchedule', authCheck, scheduleController.getSchedule);
 
 // delete schedule
 router.delete(
-  '/api/deleteSchedule',
+  '/api/deleteSchedule/:schedule_id',
   authCheck,
   scheduleController.deleteSchedule
 );
@@ -38,9 +38,13 @@ router.get('/api/getDefaultSchedule', authCheck, scheduleController.getDefaultSc
 
 // get lesson by date
 router.post('/api/getLessonByDate', authCheck, scheduleController.getLessonByDate);
+// get schedule by date
+router.post('/api/getScheduleByDate', authCheck, scheduleController.getScheduleByDate);
 
 // get lesson by date and coach
-router.post('/api/getLessonByDateCoach', authCheck, scheduleController.getLessonByDateCoach);
+router.post('/api/getScheduleByDateLesson', authCheck, scheduleController.getScheduleByDateLesson);
 
+// get schedule for trainee
+router.get('/api/getScheduleByTeam', authCheck, scheduleController.getScheduleByTeam);
 
 module.exports = router;

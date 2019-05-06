@@ -1,12 +1,13 @@
 const ReturnResult = require('../libs/ReturnResult');
 const team_md = require('../models/team');
+const record_md = require('../models/record');
 const user_md = require('../models/user');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
 const common = require('../common/common');
 const emailController = require('../controllers/emailController');
-
+const team_swimmer_md = require('../models/team_swimmer');
 // this function is used to test ( get all team )
 exports.getTeam = function(req, res, next) {
   console.log('Getting all team');
@@ -76,7 +77,9 @@ exports.addTeam = (req, res, next) => {
     // else coach and admin can use this function below
   } else {
     var params = req.body;
-    var data = team_md.findOne({ where: { name: params.name } });
+    var data = team_md.findOne({
+      where: { name: params.name, coach_id: req.userData.id }
+    });
     // check whether existing team name
     data.then(function(data) {
       if (data) {
@@ -127,7 +130,12 @@ exports.addTeam = (req, res, next) => {
                   list[i] = {};
                   list[i] = user;
                 }
-                emailController.sendNewTeam(list, team, req.userData.email, params.number);
+                emailController.sendNewTeam(
+                  list,
+                  team,
+                  req.userData.email,
+                  params.number
+                );
                 // loop the list and add to db
                 Object.keys(list).forEach(function(key) {
                   var obj = JSON.parse(list[key]);
@@ -207,7 +215,9 @@ exports.updateTeam = function(req, res, next) {
           .then(success => {
             res
               .status(200)
-              .jsonp(new ReturnResult(null, null, 'Update successful', null));
+              .jsonp(
+                new ReturnResult(success, null, 'Update successful', null)
+              );
             return;
           })
           .catch(function(err) {
@@ -288,7 +298,8 @@ exports.getMemberByTeam = function(req, res, next) {
           'avatar',
           'height',
           'weight',
-          'is_verified'
+          'is_verified',
+          'team_id'
         ],
         where: { team_id: req.params.team_id }
       })
@@ -394,7 +405,7 @@ exports.removeTeamMember = function(req, res, next) {
   var params = req.body;
   // find user by the user_id and team_id
   var data = user_md.findOne({
-    where: { id: params.user_id, team_id: params.team_id }
+    where: { id: params.id, team_id: params.team_id }
   });
 
   data.then(function(user) {
@@ -417,7 +428,7 @@ exports.removeTeamMember = function(req, res, next) {
       .then(function() {
         // delete data in team_swimmer too.
         var data = team_swimmer_md.findOne({
-          where: { user_id: params.user_id, team_id: params.team_id }
+          where: { user_id: params.id, team_id: params.team_id }
         });
         // if it was found
         data.then(function(data) {
@@ -448,3 +459,176 @@ exports.removeTeamMember = function(req, res, next) {
       });
   });
 };
+//get team by ID
+exports.getTeamByID = function(req, res, next) {
+  console.log('Get Team By ID');
+  // check user is log in and not trainee
+  if (!req.userData) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+    return;
+  }
+  // Select all team by coach id
+  team_md
+    .findOne({
+      where: { id: req.params.team_id }
+    })
+    .then(function(result) {
+      return res.jsonp(
+        new ReturnResult(result, null, 'Get team information successful.', null)
+      );
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.CAN_NOT_GET_TEAM
+        )
+      );
+    });
+};
+exports.addMemberToTeam = function(req, res, next) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  } else {
+    var params = req.body;
+    var data = user_md.findOne({
+      where: { id: params.user_id }
+    });
+    data
+      .then(function(result) {
+        if (result.team_id == params.team_id) {
+          res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.EXISTING_MEMBER
+            )
+          );
+        } else {
+          result
+            .update({
+              team_id: params.team_id
+            })
+            .then(function(success) {
+              res.jsonp(
+                new ReturnResult(
+                  success,
+                  null,
+                  'Add user to team successfully.',
+                  null
+                )
+              );
+            });
+        }
+      })
+      .catch(function(err) {
+        return res.jsonp(
+          new ReturnResult(
+            err.message,
+            null,
+            null,
+            Constants.messages.INVALID_INFORMATION
+          )
+        );
+      });
+  }
+};
+
+exports.getRankByExercise = function(req, res, next) {
+  if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  var params = req.body;
+  user_md
+    .findAll({ where: { team_id: params.team_id } })
+    .then(function(team) {
+      if (team.length == 0) {
+        // not found
+        res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.INVALID_TEAM_ID
+          )
+        );
+        return;
+      }
+
+      var list = [];
+      Object.keys(team).forEach(function(key) {
+        list.push(team[key].id); // push
+      });
+
+      //left join user and record
+      user_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(user_md, { foreignKey: 'user_id' });
+
+      record_md
+        .findAll({
+          where: { user_id: list, exercise_id: params.exercise_id },
+          attributes: ['time_swim'],
+          order: [['time_swim', 'DESC']],
+          group: 'user_id',
+          limit: 3,
+          include: [
+            {
+              model: user_md,
+              as: 'user',
+              attributes: ['display_name', 'id']
+            }
+          ]
+        })
+        .then(function(results) {
+          if (results.length == 0) {
+            return res.jsonp(
+              new ReturnResult(
+                'Error',
+                null,
+                null,
+                Constants.messages.NO_RECORD_FOUND
+              )
+            );
+          } else {
+            return res.jsonp(
+              new ReturnResult(null, results, 'Get rank successfully', null)
+            );
+          }
+        });
+    })
+    .catch(function(err) {
+      return res.jsonp(
+        new ReturnResult(
+          err.messages,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
+};
+

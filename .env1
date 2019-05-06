@@ -1,0 +1,10 @@
+NODE_ENV=local
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=swim_fake_tracker
+DB_USERNAME=gamekvnn
+DB_PASSWORD=imkaiser
+token_key = dgj1qgh21j125125k1hj25j125ghj21g4j1h2g51j5g6b09u8
+FEEDBACK_EMAIL=feedback.swim.tracker@gmail.com
+FEEDBACK_EMAIL_PASSWORD=enclaveit
+FEEDBACK_ADMIN_EMAIL=phamanhkhoa0@gmail.com

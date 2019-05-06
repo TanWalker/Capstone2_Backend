@@ -18,4 +18,19 @@ router.delete(
 // get Record By User Schedule and Exercise getRecordByUserScheduleExercise
 router.post('/api/getRecordByUserScheduleExercise', authCheck, recordController.getRecordByUserScheduleExercise);
 
+//  getRecordByUserScheduleExercise
+router.post('/api/getRecordByMonthYearOfCurrentUser', authCheck, recordController.getRecordByMonthYearOfCurrentUser);
+
+// get RecordByUserScheduleExercise
+router.post('/api/getRecordByYearOfCurrentUser', authCheck, recordController.getRecordByYearOfCurrentUser);
+
+// get record by id
+router.get('/api/getRecordByID/:record_id', authCheck, recordController.getRecordByID);
+
+//get list exercises in record by month
+router.post('/api/getListRecordByMonthOfYear', authCheck, recordController.getListRecordByMonthOfYear);
+
+//get list exercises in record by year
+router.post('/api/getListRecordByYear', authCheck, recordController.getListRecordByYear);
+
 module.exports = router;

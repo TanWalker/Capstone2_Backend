@@ -3,7 +3,9 @@ const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
 const lesson_exercise_md = require('../models/lesson_exercise');
 const Op = require('sequelize').Op;
+const style_md = require('../models/style');
 // this function is used to test ( get all exercise )
+('use strict');
 exports.getExercise = function(req, res, next) {
   console.log('Getting all Exercises');
   // check user is log in.
@@ -311,8 +313,8 @@ exports.getExerciseByID = function(req, res, next) {
 };
 
 // Get final set exercises by lesson_id
-exports.getExerciseByLessonID = function(req, res, next) {
-  console.log('Get list Exercise By Lesson ID');
+exports.getFinalExerciseByLessonID = function(req, res, next) {
+  console.log('Get final Exercise By Lesson ID');
   //check if user is trainee, return and exit;
   if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
     res.jsonp(
@@ -330,8 +332,145 @@ exports.getExerciseByLessonID = function(req, res, next) {
     .findAll({
       attributes: ['exercise_id'],
       where: {
-        lesson_id: req.body.lesson_id,
+        lesson_id: req.params.lesson_id,
         type_of_exercise_id: Constants.FINAL_SET_ID
+      }
+    })
+    .then(function(result) {
+      // check if result is null or not
+      if (result.length == 0) {
+        // not found
+        return res.jsonp(
+          new ReturnResult(
+            'Error',
+            null,
+            null,
+            Constants.messages.LESSON_ID_INVALID
+          )
+        );
+      }
+      //found it.
+      var list = []; // create array of exercise_id
+      Object.keys(result).forEach(function(key) {
+        list.push(result[key].exercise_id); // push exercise_id to array
+      });
+      // find all information of exercise by list exercise_id
+      exercise_md
+        .findAll({
+          where: {
+            id: {
+              [Op.or]: list
+            }
+          }
+        })
+        .then(function(results) {
+          // return result
+          res.jsonp(
+            new ReturnResult(
+              null,
+              results,
+              'Get final exercises by Lesson ID successful',
+              null
+            )
+          );
+        })
+        .catch(function(err) {
+          //catch err.
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.CAN_NOT_GET_EXERCISE
+            )
+          );
+        });
+    });
+};
+
+// get exercise and group by style
+exports.getExerciseGroupByStyle = function(req, res, next) {
+  console.log('Get Exercise Group by Style.');
+  // check if user is trainee, return and exit;
+  if (req.userData.role_id == Constants.ROLE_TRAINEE_ID || !req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  result = [];
+  // get all style
+  var findStyle = new Promise(function(resolve, reject) {
+    style_md
+      .findAll({ where: { coach_id: req.userData.id } })
+      .then(function(styles) {
+        resolve(styles);
+      });
+  });
+
+  // group exercise
+  async function groupExercise(styles) {
+    if (styles instanceof Array) {
+      await Promise.all(
+        styles.map(async map => {
+          var style = map.swim_name;
+          console.log(map.swim_name);
+          await exercise_md
+            .findAll({ where: { style: style, coach_id: req.userData.id } })
+            .then(function(results) {
+              if (results.length == 0) {
+                console.log('Not found');
+              } else {
+                result.push({ [results[0].style]: results });
+              }
+            });
+        })
+      );
+      console.log('group exercise');
+    } else {
+      return false;
+    }
+  }
+
+  // return data
+  function returnData() {
+    console.log('Done');
+    return res.jsonp(new ReturnResult(null, result, 'Exercise by Style', null));
+  }
+
+  // return response
+  async function returnGroupEx() {
+    var styles = await findStyle;
+    await groupExercise(styles);
+    returnData();
+  }
+
+  returnGroupEx();
+};
+
+exports.getExerciseByLessonID = function(req, res, next) {
+  console.log('Get list Exercise By Lesson ID');
+  //check if user is trainee, return and exit;
+  if (!req.userData) {
+    return res.jsonp(
+      new ReturnResult(
+        'Error',
+        null,
+        null,
+        Constants.messages.UNAUTHORIZED_USER
+      )
+    );
+  }
+  //select all exercise_id by lesson
+  lesson_exercise_md
+    .findAll({
+      attributes: ['exercise_id'],
+      where: {
+        lesson_id: req.params.lesson_id
       }
     })
     .then(function(result) {

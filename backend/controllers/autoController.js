@@ -5,12 +5,13 @@ const schedule = require('node-schedule');
 const common = require('../common/common');
 var rule = new schedule.RecurrenceRule();
 rule.second = 1;
+rule.month = 1;
 
-exports.monthlyReporter = function() {
+exports.monthlyReporter = function () {
   console.log('Monthly report');
   // get report
   // var cronExpress = '*/5 * * * * * *';
-  schedule.scheduleJob(rule, function(fireDate) {
+  schedule.scheduleJob(rule, function (fireDate) {
     console.log('running job!');
     console.log(fireDate);
     user_md
@@ -20,8 +21,8 @@ exports.monthlyReporter = function() {
           is_coach: 0
         }
       })
-      .then(function(data) {
-        Object.keys(data).forEach(function(key) {
+      .then(function (data) {
+        Object.keys(data).forEach(function (key) {
           data[key] = JSON.stringify(data[key]);
           var obj = JSON.parse(data[key]);
           var query = 'CALL `auto_tool_report_proc`( ? , ? , ? );';
@@ -29,24 +30,33 @@ exports.monthlyReporter = function() {
           var month = dateObj.getUTCMonth() + 1; //months from 1-12
           var year = dateObj.getUTCFullYear();
           const name = obj.last_name + ' ' + obj.first_name;
-
-          common
-            .exec_Procedure(query, [month, year, obj.id])
-            .then(function(results) {
-              if (results.length != 0) {
-                emailController.monthlyMail(obj.email, results, name, month);
-                console.log(name);
-                console.log(results);
-              }
-            })
-            .catch(err =>
-              setImmediate(() => {
-                throw err;
+          if (obj.email != null) {
+            common
+              .exec_Procedure(query, [month, year, obj.id])
+              .then(function (results) {
+                if (results.length != 0) {
+                  emailController.monthlyMail(obj.email, results, name, month);
+                  console.log(name);
+                  console.log(results);
+                }
               })
-            );
-
-          // i++;
-          // if(i==6) break;
+              .catch(err =>
+                setImmediate(() => {
+                  throw err;
+                })
+              );
+            var query1 = 'CALL `auto_insert_monthly_report_proc`( ? , ? , ? );';
+            common
+              .exec_Procedure(query1, [month, year, obj.id])
+              .then(function (results) {
+                if(results == undefined) console.log("ok");
+              })
+              .catch(err =>
+                setImmediate(() => {
+                  throw err;
+                })
+              );
+          }
         });
       });
   });
