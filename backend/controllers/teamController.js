@@ -551,7 +551,7 @@ exports.addMemberToTeam = function(req, res, next) {
   }
 };
 
-exports.getRankByExercise = function(req, res, next) {
+exports.getRankByTeam = function(req, res, next) {
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
       new ReturnResult(
@@ -562,9 +562,9 @@ exports.getRankByExercise = function(req, res, next) {
       )
     );
   }
-  var params = req.body;
+
   user_md
-    .findAll({ where: { team_id: params.team_id } })
+    .findAll({ where: { team_id: req.params.team_id } })
     .then(function(team) {
       if (team.length == 0) {
         // not found
@@ -588,11 +588,12 @@ exports.getRankByExercise = function(req, res, next) {
       user_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(user_md, { foreignKey: 'user_id' });
 
+
       record_md
         .findAll({
-          where: { user_id: list, exercise_id: params.exercise_id },
-          attributes: ['time_swim'],
-          order: [['time_swim', 'DESC']],
+          where: { user_id: list},
+          attributes: ['time_swim', 'exercise_id', 'time_swim'],
+          order: [['time_swim', 'ASC']],
           group: 'user_id',
           limit: 3,
           include: [
