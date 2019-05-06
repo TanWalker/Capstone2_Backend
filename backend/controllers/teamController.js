@@ -2,6 +2,7 @@ const ReturnResult = require('../libs/ReturnResult');
 const team_md = require('../models/team');
 const record_md = require('../models/record');
 const user_md = require('../models/user');
+const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
@@ -551,7 +552,7 @@ exports.addMemberToTeam = function(req, res, next) {
   }
 };
 
-exports.getRankByExercise = function(req, res, next) {
+exports.getRankByTeam = function(req, res, next) {
   if (!req.userData || req.userData.role_id == Constants.ROLE_TRAINEE_ID) {
     return res.jsonp(
       new ReturnResult(
@@ -562,9 +563,9 @@ exports.getRankByExercise = function(req, res, next) {
       )
     );
   }
-  var params = req.body;
+
   user_md
-    .findAll({ where: { team_id: params.team_id } })
+    .findAll({ where: { team_id: req.body.team_id } })
     .then(function(team) {
       if (team.length == 0) {
         // not found
@@ -588,11 +589,14 @@ exports.getRankByExercise = function(req, res, next) {
       user_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(user_md, { foreignKey: 'user_id' });
 
+      exercise_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+
       record_md
         .findAll({
-          where: { user_id: list, exercise_id: params.exercise_id },
-          attributes: ['time_swim'],
-          order: [['time_swim', 'DESC']],
+          where: { user_id: list, exercise_id: req.body.exercise_id },
+          attributes: ['time_swim', 'exercise_id'],
+          order: [['time_swim', 'ASC']],
           group: 'user_id',
           limit: 3,
           include: [
@@ -600,6 +604,11 @@ exports.getRankByExercise = function(req, res, next) {
               model: user_md,
               as: 'user',
               attributes: ['display_name', 'id']
+            },
+            {
+              model: exercise_md,
+              as: 'exercise',
+              attributes: ['reps']
             }
           ]
         })
@@ -631,4 +640,3 @@ exports.getRankByExercise = function(req, res, next) {
       );
     });
 };
-
