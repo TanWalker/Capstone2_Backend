@@ -564,7 +564,7 @@ exports.getRankByTeam = function(req, res, next) {
   }
 
   user_md
-    .findAll({ where: { team_id: req.params.team_id } })
+    .findAll({ where: { team_id: req.body.team_id } })
     .then(function(team) {
       if (team.length == 0) {
         // not found

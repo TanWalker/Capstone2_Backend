@@ -52,6 +52,6 @@ router.put(
 );
 
 //get rank by team
-router.get('/api/getRankByTeam/:team_id', authCheck, teamControllers.getRankByTeam);
+router.post('/api/getRankByTeam', authCheck, teamControllers.getRankByTeam);
 
 module.exports = router;
