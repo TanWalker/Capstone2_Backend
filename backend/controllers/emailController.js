@@ -8,14 +8,16 @@ const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const XlsxPopulate = require('xlsx-populate');
+// const xoauth2 = require('xoauth2');
 //Before sending your email using gmail you have to allow non secure apps to access gmail you can do
 //this by going to your gmail settings here.
 //https://myaccount.google.com/lesssecureapps
 
 // create send transporter
 var smtpTransport = nodeMailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
   auth: {
+    type: "login", // default
     user: sender,
     pass: password
   }
