@@ -2,6 +2,7 @@ const ReturnResult = require('../libs/ReturnResult');
 const team_md = require('../models/team');
 const record_md = require('../models/record');
 const user_md = require('../models/user');
+const exercise_md = require('../models/exercise');
 const Constants = require('../libs/Constants');
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/AuthGuard');
@@ -588,6 +589,9 @@ exports.getRankByTeam = function(req, res, next) {
       user_md.hasMany(record_md, { foreignKey: 'id' });
       record_md.belongsTo(user_md, { foreignKey: 'user_id' });
 
+      exercise_md.hasMany(record_md, { foreignKey: 'id' });
+      record_md.belongsTo(exercise_md, { foreignKey: 'exercise_id' });
+
       record_md
         .findAll({
           where: { user_id: list, exercise_id: req.body.exercise_id },
@@ -600,6 +604,11 @@ exports.getRankByTeam = function(req, res, next) {
               model: user_md,
               as: 'user',
               attributes: ['display_name', 'id']
+            },
+            {
+              model: exercise_md,
+              as: 'exercise',
+              attributes: ['reps']
             }
           ]
         })
