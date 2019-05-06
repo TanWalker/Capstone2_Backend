@@ -8,22 +8,30 @@ const fs = require('fs');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const XlsxPopulate = require('xlsx-populate');
-// const xoauth2 = require('xoauth2');
+const xoauth2 = require('xoauth2');
 //Before sending your email using gmail you have to allow non secure apps to access gmail you can do
 //this by going to your gmail settings here.
 //https://myaccount.google.com/lesssecureapps
 
 // create send transporter
 var smtpTransport = nodeMailer.createTransport({
-  host: 'smtp.gmail.com',
+  // host: 'smtp.gmail.com',
+  // auth: {
+  //   type: "login", // default
+  //   user: sender,
+  //   pass: password
+  // }
+  host: "smtp.gmail.com",
   auth: {
-    type: "login", // default
-    user: sender,
-    pass: password
+    type: "OAuth2",
+    user: "feedback.swimtracker@gmail.com",
+    clientId: Constants.email_credentials,
+    clientSecret: Constants.email_secret,
+    refreshToken: Constants.email_refreshtoken
   }
 });
 //function for send email
-var sendMail = function(toAddress, subject, content, res, attachment) {
+var sendMail = function (toAddress, subject, content, res, attachment) {
   var mailOptions = {
     from: 'Feedback Center of Quan Khu 5',
     to: toAddress,
@@ -34,7 +42,7 @@ var sendMail = function(toAddress, subject, content, res, attachment) {
   // send action by transporter
   smtpTransport
     .sendMail(mailOptions)
-    .then(function(success) {
+    .then(function (success) {
       res.jsonp(
         new ReturnResult(
           null,
@@ -44,7 +52,7 @@ var sendMail = function(toAddress, subject, content, res, attachment) {
         )
       );
     })
-    .catch(function(err) {
+    .catch(function (err) {
       res.jsonp(
         new ReturnResult(
           'Error',
@@ -57,12 +65,12 @@ var sendMail = function(toAddress, subject, content, res, attachment) {
 };
 
 // send new team to admin email
-exports.sendNewTeam = function(users, team, coach_email, number) {
+exports.sendNewTeam = function (users, team, coach_email, number) {
   //define html
   fs.readFile(
     __dirname + '/../templates/new_team/newteam_email.html',
     'utf8',
-    function(err, html) {
+    function (err, html) {
       //send html to dom
       const dom = new JSDOM(html);
       // get table and set information of new team
@@ -74,7 +82,7 @@ exports.sendNewTeam = function(users, team, coach_email, number) {
       dom.window.document.getElementById('team_number').innerHTML =
         'Team number: ' + number;
       // set list new user.
-      Object.keys(users).forEach(function(key) {
+      Object.keys(users).forEach(function (key) {
         var obj = JSON.parse(users[key]);
         // Create an empty <tr> element and add it to the 1st position of the table:
         var row = table.insertRow(-1);
@@ -99,7 +107,7 @@ exports.sendNewTeam = function(users, team, coach_email, number) {
 };
 
 // this function is send feedback
-exports.sendFeedBack = function(req, res, next) {
+exports.sendFeedBack = function (req, res, next) {
   console.log('Sending Feedback');
   var to_email =
     process.env.FEEDBACK_ADMIN_EMAIL || Constants.FEEDBACK_ADMIN_EMAIL;
@@ -113,7 +121,7 @@ exports.sendFeedBack = function(req, res, next) {
 };
 
 // this function is send monthly report
-exports.monthlyMail = function(data) {
+exports.monthlyMail = function (data) {
   var path_dir = path.join(__dirname, '../templates/monthly_template/');
   // modify excel
   XlsxPopulate.fromFileAsync(path_dir + 'monthly_report.xlsx')
@@ -140,7 +148,7 @@ exports.monthlyMail = function(data) {
         ]
       };
       // send action by transporter
-      smtpTransport.sendMail(mailOptions).catch(function(err) {
+      smtpTransport.sendMail(mailOptions).catch(function (err) {
         console.log(err.message);
       });
     })
