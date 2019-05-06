@@ -590,7 +590,7 @@ exports.getRankByTeam = function(req, res, next) {
 
       record_md
         .findAll({
-          where: { user_id: list, 'exercise_id': req.body.exercise_id },
+          where: { user_id: list, exercise_id: req.body.exercise_id },
           attributes: ['time_swim', 'exercise_id'],
           order: [['time_swim', 'ASC']],
           group: 'user_id',
