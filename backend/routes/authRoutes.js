@@ -16,7 +16,7 @@ router.put('/api/updateUser', authCheck, userControllers.updateUser);
 router.get('/api/getCurrentUser', authCheck, userControllers.getCurrentUser);
 
 //get user index
-router.get('/api/getUserIndex', authCheck, userControllers.getUserIndex);
+router.get('/api/getUserIndex/:user_id', authCheck, userControllers.getUserIndex);
 
 //get BMI tips
 router.get('/api/getUserBMITips/:bmi', authCheck, userControllers.getUserBMITips);

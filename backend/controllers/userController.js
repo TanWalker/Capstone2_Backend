@@ -252,7 +252,7 @@ exports.getUserIndex = function(req, res, next) {
 
   user_md
     .findOne({
-      where: { id: req.userData.id },
+      where: { id: req.params.user_id },
       attributes: ['id', 'bmi', 'endurance', 'speed']
     })
     .then(function(result) {
