@@ -51,6 +51,7 @@ exports.randomBackground = function(req, res, next) {
         //add a random link into json of each object in styles array
         random.then(function(background) {
           var results = styles;
+          //console.log(background);
           for (var i = 0; i < results.length; i++) {
             // random an element from array 
             var tmp = Math.round(Math.floor(Math.random() * background.length));

@@ -77,6 +77,7 @@ app.use(mibandRoutes);
 app.use(libraryRoutes);
 
 app.use(videoRoutes);
+
 app.use(backgrooundRoutes);
 
 module.exports = app;
