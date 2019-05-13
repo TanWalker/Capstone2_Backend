@@ -104,11 +104,12 @@ exports.addSchedule = (req, res, next) => {
     const params = req.body;
     var time_start = new Date();
     var time_end = new Date();
+    var current = new Date();
     time_start.setFullYear(params.year, params.month - 1, params.day);
     time_start.setHours(params.start_hour, params.start_minute, 0);
     time_end.setFullYear(params.year, params.month - 1, params.day);
     time_end.setHours(params.end_hour, params.end_minute, 0);
-    if (time_start > time_end) {
+    if (time_start > time_end || time_start < current) {
       return res.jsonp(
         new ReturnResult(
           'Error',
@@ -187,6 +188,7 @@ exports.updateSchedule = function(req, res, next) {
       } else {
         var time_start = new Date();
         var time_end = new Date();
+        var current = new Date();
         time_start.setFullYear(
           params.year == null ? schedules.year : params.year,
           params.month == null ? schedules.month - 1 : params.month - 1,
@@ -209,7 +211,7 @@ exports.updateSchedule = function(req, res, next) {
           params.end_minute == null ? schedules.end_minute : params.end_minute,
           0
         );
-        if (time_start > time_end) {
+        if (time_start > time_end || time_start < current) {
           return res.jsonp(
             new ReturnResult(
               'Error',
