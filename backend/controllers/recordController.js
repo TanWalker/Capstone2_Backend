@@ -644,7 +644,9 @@ exports.getListRecordByYear = function(req, res, next) {
         user_id: req.userData.id,
         exercise_id: req.body.exercise_id,
         year: req.body.year
-      }
+        
+      },
+      order: [['month','ASC']]
     })
     .then(function(results) {
       if (results.length == 0) {

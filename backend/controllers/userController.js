@@ -252,7 +252,7 @@ exports.getUserIndex = function(req, res, next) {
 
   user_md
     .findOne({
-      where: { id: req.userData.id },
+      where: { id: req.params.user_id },
       attributes: ['id', 'bmi', 'endurance', 'speed']
     })
     .then(function(result) {
@@ -328,7 +328,7 @@ exports.getUserHRTips = function(req, res, next) {
   console.log('Getting user heart-rate tips');
   var HR = req.params.hr;
   if (req.userData) {
-    if (req.params.hr > 79 && req.params.hr < 230) {
+    if (req.params.hr > 0 && req.params.hr < 230) {
       let query = 'CALL getHR_tips(?)';
       common
         .exec_Procedure(query, HR)
