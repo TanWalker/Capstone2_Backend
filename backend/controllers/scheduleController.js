@@ -108,6 +108,16 @@ exports.addSchedule = (req, res, next) => {
     time_start.setHours(params.start_hour, params.start_minute, 0);
     time_end.setFullYear(params.year, params.month - 1, params.day);
     time_end.setHours(params.end_hour, params.end_minute, 0);
+    if (time_start > time_end) {
+      return res.jsonp(
+        new ReturnResult(
+          'Error',
+          null,
+          null,
+          Constants.messages.INVALID_TIME_SCHEDULE
+        )
+      );
+    }
     // Insert Schedule info to database
     var result = schedule_md.create({
       start_hour: params.start_hour,
@@ -199,6 +209,16 @@ exports.updateSchedule = function(req, res, next) {
           params.end_minute == null ? schedules.end_minute : params.end_minute,
           0
         );
+        if (time_start > time_end) {
+          return res.jsonp(
+            new ReturnResult(
+              'Error',
+              null,
+              null,
+              Constants.messages.INVALID_TIME_SCHEDULE
+            )
+          );
+        }
         schedules
           .update({
             start_hour:
@@ -675,7 +695,7 @@ exports.getLessonByDateCoach = function(req, res, next) {
 exports.getScheduleByTeam = function(req, res, next) {
   console.log('Get Schedule by Team');
   //check if user is coach, return and exit;
-  if ( !req.userData) {
+  if (!req.userData) {
     res.jsonp(
       new ReturnResult(
         'Error',
@@ -722,9 +742,17 @@ exports.getScheduleByTeam = function(req, res, next) {
         // return
         return res.jsonp(result);
       }
-    }).catch(function(err) {
-       res.jsonp(new ReturnResult(err.message, null, null, Constants.messages.INVALID_INFORMATION));
     })
+    .catch(function(err) {
+      res.jsonp(
+        new ReturnResult(
+          err.message,
+          null,
+          null,
+          Constants.messages.INVALID_INFORMATION
+        )
+      );
+    });
 };
 
 // exports.copySchedule = function(req, res, next) {
