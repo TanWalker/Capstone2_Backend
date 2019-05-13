@@ -169,6 +169,39 @@ exports.updateUser = (req, res, next) => {
         new ReturnResult('Error', null, null, Constants.messages.USER_NOT_FOUND)
       );
     } else {
+      if (params.password) {
+        bcrypt.hash(params.password, 10).then(function(result) {
+          user
+            .update({
+              avatar: params.avatar,
+              first_name: params.first_name,
+              last_name: params.last_name,
+              password: result,
+              email: params.email,
+              phone: params.phone,
+              dob: params.dob,
+              gender: params.gender,
+              height: params.height,
+              weight: params.weight,
+              is_verified: 1
+            })
+            .then(function() {
+              return res.jsonp(
+                new ReturnResult(null, null, 'User update successfully.', null)
+              );
+            })
+            .catch(function() {
+              return res.jsonp(
+                new ReturnResult(
+                  'Error',
+                  null,
+                  null,
+                  Constants.messages.INVALID_INFORMATION
+                )
+              );
+            });
+        });
+      }
       user
         .update({
           avatar: params.avatar,
@@ -392,7 +425,7 @@ exports.getUserSpeedTips = function(req, res, next) {
     } else {
       return res.jsonp(
         new ReturnResult('Error', null, null, Constants.messages.NO_INDEX_FOUND)
-        );
+      );
     }
   } else {
     return res.jsonp(
